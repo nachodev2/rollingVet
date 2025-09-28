@@ -13,6 +13,14 @@
 }
 
 .titulo {
-  color: #8da9a3;
   font-size: 2.2rem;
+}
+
+.card-sobreNosotros{
+    border: 2px groove;
+}
+
+.img-card-sobreNosotros{
+    width: 300px;
+    height: auto;
 }
