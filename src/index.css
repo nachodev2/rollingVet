@@ -1,7 +1,14 @@
 .titulo {
-  font-size: 2.2rem;
+  font-size: 3rem;
   font-family: "Noto Sans", sans-serif;
 }
 
+.texto-cuerpo{
+    font-family: "Quicksand", sans-serif;
+    color: black!important;
+}
 
+body{
+    
+}
 
