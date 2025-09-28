@@ -1,0 +1,46 @@
+/* ------------------------------------------------ */
+/* ESTADO INICIAL (NO SCROLL) */
+/* ------------------------------------------------ */
+.navbar-base {
+    /* Fondo inicial: opaco, como una sola cosa con el contenido */
+    background-color: white !important;
+    /* Se asegura que el Navbar esté arriba de todo */
+    z-index: 1000; 
+    box-shadow: none; /* Sin sombra al inicio */
+    /* Añadir una transición suave para que el cambio no sea abrupto */
+    transition: background-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* ------------------------------------------------ */
+/* ESTADO SCROLL (SEPARACIÓN Y EFECTO BLUR) */
+/* ------------------------------------------------ */
+.navbar-base.scrolled {
+    /* 1. Separación: Fondo semi-transparente */
+    background-color: rgba(255, 255, 255, 0.95) !important;
+    /* Añadir una sombra sutil para reforzar la sensación de flotar */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
+}
+
+/* Estilos de los links en estado inicial (integrado) */
+.integrado-central-links {
+    /* Fondo transparente, sin blur ni borde */
+    background-color: transparent !important;
+    border-radius: 0 !important;
+    padding: 0 !important;
+    backdrop-filter: none !important;
+}
+
+/* Estilos de los links en estado flotante (scrolled) - EL BLUR */
+.flotante-central-links {
+    /* 2. El Rectángulo Flotante con Blur */
+    background-color: rgba(255, 255, 255, 0.4) !important; 
+    border-radius: 50px !important; 
+    padding: 0.5rem 2rem !important;
+    
+    /* PROPIEDAD CLAVE: El desenfoque */
+    backdrop-filter: blur(10px); 
+    -webkit-backdrop-filter: blur(10px);
+    
+    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+    transition: all 0.3s ease; /* Transición suave para el rectángulo */
+}

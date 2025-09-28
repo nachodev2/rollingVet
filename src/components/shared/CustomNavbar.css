@@ -1,0 +1,127 @@
+/* components/CustomNavbar.css */
+
+/* Enlaces que aparecen al hacer scroll - centrados arriba */
+.navbar-center-scrolled {
+  position: fixed;
+  top: 1.5rem;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 1050;
+}
+
+.navbar-center-scrolled.visible {
+  visibility: visible;
+  opacity: 1;
+}
+
+.navbar-center-scrolled.hidden {
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.glass-nav-container {
+  background: rgba(255, 255, 255, 0.8);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 50px;
+  padding: 0.75rem 2rem;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.1);
+}
+
+/* Fallback para navegadores sin soporte backdrop-filter */
+@supports not (backdrop-filter: blur(12px)) {
+  .glass-nav-container {
+    background: rgba(255, 255, 255, 0.95);
+  }
+}
+
+.nav-link-custom {
+  color: #374151 !important;
+  font-weight: 500;
+  text-decoration: none;
+  transition: color 0.2s ease;
+  white-space: nowrap;
+}
+
+.nav-link-custom:hover {
+  color: #1f2937 !important;
+}
+
+/* Navbar inicial completo */
+.navbar-initial {
+  width: 100%;
+  padding: 1.5rem 0;
+}
+
+.navbar-initial.visible {
+  visibility: visible;
+  opacity: 1;
+}
+
+.navbar-initial.hidden {
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+
+.navbar-initial .navbar-brand {
+  color: #374151 !important;
+  text-decoration: none;
+}
+
+.navbar-initial .navbar-brand:hover {
+  color: #1f2937 !important;
+}
+
+.nav-link-initial {
+  color: #374151 !important;
+  font-weight: 500;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.nav-link-initial:hover {
+  color: #1f2937 !important;
+}
+
+.btn-register:hover {
+  background-color: #166534 !important;
+  border-color: #166534 !important;
+}
+
+.btn-login:hover {
+  background-color: #15803d !important;
+  border-color: #15803d !important;
+}
+
+/* Responsive design */
+@media (max-width: 992px) {
+  .glass-nav-container {
+    padding: 0.5rem 1rem;
+    margin: 0 1rem;
+  }
+  
+  .nav-link-custom {
+    margin: 0 0.5rem !important;
+    font-size: 0.9rem;
+  }
+}
+
+@media (max-width: 768px) {
+  .navbar-center-scrolled.visible {
+    visibility: hidden;
+    opacity: 0;
+  }
+  
+  .navbar-initial.hidden {
+    visibility: visible !important;
+    opacity: 1 !important;
+  }
+}
+
+/* Smooth scrolling */
+html {
+  scroll-behavior: smooth;
+}
