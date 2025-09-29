@@ -42,47 +42,47 @@ const CustomNavbar = () => {
       <Navbar 
         expand="lg" 
         className={`navbar-initial ${isScrolled ? 'hidden' : 'visible'}`}
-        style={{ backgroundColor: 'transparent' }}
       >
         <Container>
           {/* Logo */}
-          <Navbar.Brand href="#home" className="fw-bold fs-3">
+          <Navbar.Brand href="#home" className="navbar-brand-custom fw-bold fs-3">
             RollingVet
           </Navbar.Brand>
 
-          {/* Enlaces centrales */}
-          <Nav className="mx-auto">
-            <Nav.Link href="#productos" className="nav-link-initial mx-3">
-              Productos
-            </Nav.Link>
-            <Nav.Link href="#planes" className="nav-link-initial mx-3">
-              Planes
-            </Nav.Link>
-            <Nav.Link href="#contacto" className="nav-link-initial mx-3">
-              Contacto
-            </Nav.Link>
-            <Nav.Link href="#nosotros" className="nav-link-initial mx-3">
-              Sobre nosotros
-            </Nav.Link>
-          </Nav>
+          {/* Botón hamburguesa para móviles y tablets */}
+          <Navbar.Toggle 
+            aria-controls="navbar-nav-collapse" 
+            className="navbar-toggler-custom"
+          />
 
-          {/* Botones */}
-          <div className="d-flex gap-3">
-            <Button 
-              variant="success" 
-              className="btn-register rounded-pill px-4"
-              style={{ backgroundColor: '#15803d', borderColor: '#15803d' }}
-            >
-              Registrarse
-            </Button>
-            <Button 
-              variant="success" 
-              className="btn-login rounded-pill px-4"
-              style={{ backgroundColor: '#16a34a', borderColor: '#16a34a' }}
-            >
-              Iniciar Sesión
-            </Button>
-          </div>
+          {/* Contenido colapsable */}
+          <Navbar.Collapse id="navbar-nav-collapse">
+            {/* Enlaces centrales */}
+            <Nav className="mx-auto nav-links-center"> 
+              <Nav.Link href="#productos" className="nav-link-initial mx-3">
+                Productos
+              </Nav.Link>
+              <Nav.Link href="#planes" className="nav-link-initial mx-3">
+                Planes
+              </Nav.Link>
+              <Nav.Link href="#contacto" className="nav-link-initial mx-3">
+                Contacto
+              </Nav.Link>
+              <Nav.Link href="#nosotros" className="nav-link-initial mx-3">
+                Sobre nosotros
+              </Nav.Link>
+            </Nav>
+
+            {/* Botones */}
+            <div className="navbar-buttons d-flex gap-3">
+              <Button className="btn-register-custom rounded-pill px-4">
+                Registrarse
+              </Button>
+              <Button className="btn-login-custom rounded-pill px-4">
+                Iniciar Sesión
+              </Button>
+            </div>
+          </Navbar.Collapse>
         </Container>
       </Navbar>
     </>

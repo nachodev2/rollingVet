@@ -1,12 +1,115 @@
-/* components/CustomNavbar.css */
+/* CustomNavbar.css */
 
-/* Enlaces que aparecen al hacer scroll - centrados arriba */
+/* =================================
+   VARIABLES CSS
+   ================================= */
+:root {
+  --navbar-text-color: #374151;
+  --navbar-text-hover: #78C2AD; /* Color personalizado */
+  --btn-primary-bg: #78C2AD; /* Color personalizado */
+  --btn-primary-hover: #5fa793; /* Versión más oscura del color personalizado */
+  --btn-text-color: #1a5245; /* Texto oscuro para mejor contraste */
+}
+
+/* =================================
+   NAVBAR INICIAL (SIN SCROLL)
+   ================================= */
+
+/* Transparencia del navbar inicial */
+.navbar-initial {
+  background-color: transparent;
+  width: 100%;
+  padding: 1.5rem 0;
+}
+
+/* Control de visibilidad */
+.navbar-initial.visible {
+  visibility: visible;
+  opacity: 1;
+}
+
+.navbar-initial.hidden {
+  visibility: hidden;
+  opacity: 0;
+  pointer-events: none;
+}
+
+/* Logo y marca */
+.navbar-brand-custom {
+  color: var(--navbar-text-color);
+  text-decoration: none;
+}
+
+.navbar-brand-custom:hover,
+.navbar-brand-custom:focus {
+  color: var(--navbar-text-hover);
+  text-decoration: none;
+}
+
+/* Enlaces del navbar inicial */
+.nav-link-initial {
+  color: var(--navbar-text-color);
+  font-weight: 500;
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+.nav-link-initial:hover,
+.nav-link-initial:focus {
+  color: var(--navbar-text-hover);
+}
+
+/* =================================
+   BOTONES PERSONALIZADOS
+   ================================= */
+
+/* Botón Registrarse */
+.btn-register-custom {
+  background-color: var(--btn-primary-bg);
+  border-color: var(--btn-primary-bg);
+  color: var(--btn-text-color);
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.btn-register-custom:hover,
+.btn-register-custom:focus,
+.btn-register-custom:active {
+  background-color: var(--btn-primary-hover);
+  border-color: var(--btn-primary-hover);
+  color: var(--btn-text-color);
+  box-shadow: 0 4px 12px rgba(120, 194, 173, 0.4);
+}
+
+/* Botón Iniciar Sesión */
+.btn-login-custom {
+  background-color: var(--btn-primary-bg);
+  border-color: var(--btn-primary-bg);
+  color: var(--btn-text-color);
+  font-weight: 600;
+  transition: all 0.2s ease;
+}
+
+.btn-login-custom:hover,
+.btn-login-custom:focus,
+.btn-login-custom:active {
+  background-color: var(--btn-primary-hover);
+  border-color: var(--btn-primary-hover);
+  color: var(--btn-text-color);
+  box-shadow: 0 4px 12px rgba(120, 194, 173, 0.4);
+}
+
+/* =================================
+   NAVBAR FLOTANTE (CON SCROLL)
+   ================================= */
+
 .navbar-center-scrolled {
   position: fixed;
   top: 1.5rem;
   left: 50%;
   transform: translateX(-50%);
   z-index: 1050;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
 }
 
 .navbar-center-scrolled.visible {
@@ -20,16 +123,16 @@
   pointer-events: none;
 }
 
+/* Efecto Glassmorphism */
 .glass-nav-container {
-  /* Efecto glass simulado sin backdrop-filter */
   background: linear-gradient(
     135deg, 
     rgba(255, 255, 255, 0.4) 0%,
     rgba(255, 255, 255, 0.2) 50%,
     rgba(255, 255, 255, 0.3) 100%
   );
-  backdrop-filter: blur(20px) brightness(1.1);
-  -webkit-backdrop-filter: blur(20px) brightness(1.1);
+  backdrop-filter: blur(25px) saturate(180%);
+  -webkit-backdrop-filter: blur(25px) saturate(180%);
   border: 1px solid rgba(255, 255, 255, 0.6);
   border-radius: 50px;
   padding: 0.75rem 2rem;
@@ -42,79 +145,70 @@
   transform: translateZ(0);
 }
 
-/* Test: Forzar backdrop-filter con vendor prefixes */
-.glass-nav-container {
-  -webkit-backdrop-filter: blur(25px) saturate(180%);
-  backdrop-filter: blur(25px) saturate(180%);
-}
-
-/* Si backdrop-filter funciona, usar fondo más transparente */
+/* Optimización para navegadores con soporte backdrop-filter */
 @supports (backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px)) {
   .glass-nav-container {
     background: rgba(255, 255, 255, 0.15);
   }
 }
 
+/* Enlaces dentro del contenedor glass */
 .nav-link-custom {
-  color: #374151 !important;
+  color: var(--navbar-text-color);
   font-weight: 500;
   text-decoration: none;
   transition: color 0.2s ease;
   white-space: nowrap;
 }
 
-.nav-link-custom:hover {
-  color: #1f2937 !important;
+.nav-link-custom:hover,
+.nav-link-custom:focus {
+  color: var(--navbar-text-hover);
 }
 
-/* Navbar inicial completo */
-.navbar-initial {
-  width: 100%;
-  padding: 1.5rem 0;
+/* =================================
+   RESPONSIVE DESIGN
+   ================================= */
+
+/* Estilos del botón hamburguesa */
+.navbar-toggler-custom {
+  border-color: var(--navbar-text-color);
+  padding: 0.5rem 0.75rem;
 }
 
-.navbar-initial.visible {
-  visibility: visible;
-  opacity: 1;
+.navbar-toggler-custom:focus {
+  box-shadow: 0 0 0 0.2rem rgba(55, 65, 81, 0.25);
 }
 
-.navbar-initial.hidden {
-  visibility: hidden;
-  opacity: 0;
-  pointer-events: none;
+.navbar-toggler-custom .navbar-toggler-icon {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%2855, 65, 81, 0.75%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
 }
 
-.navbar-initial .navbar-brand {
-  color: #374151 !important;
-  text-decoration: none;
+/* Menú colapsable en móviles */
+@media (max-width: 991px) {
+  /* Alineación de enlaces en móviles */
+  .nav-links-center {
+    margin: 1rem 0;
+  }
+  
+  .nav-link-initial {
+    padding: 0.5rem 0;
+    text-align: center;
+  }
+  
+  /* Botones en columna en móviles */
+  .navbar-buttons {
+    flex-direction: column;
+    width: 100%;
+    margin-top: 1rem;
+  }
+  
+  .navbar-buttons .btn-register-custom,
+  .navbar-buttons .btn-login-custom {
+    width: 100%;
+  }
 }
 
-.navbar-initial .navbar-brand:hover {
-  color: #1f2937 !important;
-}
-
-.nav-link-initial {
-  color: #374151 !important;
-  font-weight: 500;
-  text-decoration: none;
-  transition: color 0.2s ease;
-}
-
-.nav-link-initial:hover {
-  color: #1f2937 !important;
-}
-
-.btn-register:hover {
-  background-color: #166534 !important;
-  border-color: #166534 !important;
-}
-
-.btn-login:hover {
-  background-color: #15803d !important;
-  border-color: #15803d !important;
-}
-
-/* Responsive design */
 @media (max-width: 992px) {
   .glass-nav-container {
     padding: 0.5rem 1rem;
@@ -122,24 +216,22 @@
   }
   
   .nav-link-custom {
-    margin: 0 0.5rem !important;
+    margin: 0 0.5rem;
     font-size: 0.9rem;
   }
 }
 
 @media (max-width: 768px) {
+  /* Ocultar la barra flotante en móviles */
   .navbar-center-scrolled.visible {
     visibility: hidden;
     opacity: 0;
   }
   
+  /* Mantener la barra inicial visible en móviles */
   .navbar-initial.hidden {
-    visibility: visible !important;
-    opacity: 1 !important;
+    visibility: visible;
+    opacity: 1;
+    pointer-events: auto;
   }
-}
-
-/* Smooth scrolling */
-html {
-  scroll-behavior: smooth;
 }
