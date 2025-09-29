@@ -10,7 +10,7 @@ function Login() {
   return (
     <>
       <Button variant="primary" onClick={handleShow}>
-        Launch static backdrop modal
+        Iniciar sesión
       </Button>
 
       <Modal
@@ -42,7 +42,9 @@ function Login() {
                 autoFocus
               />
             </Form.Group>
-       
+       <div>
+        <p>Si aún no tenés una cuenta,registrate aquí</p>
+       </div>
           </Form>
         </Modal.Body>
         <Modal.Footer className='d-flex justify-content-start'>
