@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import {Button, Modal} from 'react-bootstrap';
+import {Button, Modal, Form} from 'react-bootstrap';
 
 function Login() {
   const [show, setShow] = useState(false);
@@ -20,17 +20,36 @@ function Login() {
         keyboard={false}
       >
         <Modal.Header closeButton>
-          <Modal.Title>Modal title</Modal.Title>
+          <Modal.Title>Iniciar sesión</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          I will not close if you click outside me. Do not even try to press
-          escape key.
+          <Form>
+            <Form.Group className="mb-3" controlId="ControlInput1">
+              <Form.Label>Email</Form.Label>
+              <Form.Control
+                type="email"
+                placeholder="Ejemplo@gmail.com"
+                required
+                autoFocus
+              />
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="ControlInput2">
+              <Form.Label>Contraseña</Form.Label>
+              <Form.Control
+                type="password"
+                placeholder="********"
+                required
+                autoFocus
+              />
+            </Form.Group>
+       
+          </Form>
         </Modal.Body>
-        <Modal.Footer>
+        <Modal.Footer className='d-flex justify-content-start'>
           <Button variant="secondary" onClick={handleClose}>
-            Close
+            Cerrar
           </Button>
-          <Button variant="primary">Understood</Button>
+          <Button variant="primary">Ingresar</Button>
         </Modal.Footer>
       </Modal>
     </>
