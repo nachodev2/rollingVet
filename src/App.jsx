@@ -1,14 +1,13 @@
-// App.jsx
-import React from 'react';
 import { useState } from 'react'
-import { Container, Row, Col, Card } from 'react-bootstrap';
-import CustomNavbar from './components/shared/CustomNavbar';
-import './App.css';
+import reactLogo from './assets/react.svg'
+import viteLogo from '/vite.svg'
+import './App.css'
 import './index.css'
 
 function App() {
   return (
     <div className="min-vh-100" style={{ backgroundColor: '#f8f9fa' }}>
+      <Error404 />
       <CustomNavbar />
       
       {/* Contenido principal */}
@@ -153,5 +152,6 @@ function App() {
     </div>
   );
 }
+
 
 export default App;

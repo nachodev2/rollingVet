@@ -1,27 +1,18 @@
-/* ------------------------------------------------ */
-/* ESTADO INICIAL (NO SCROLL) */
-/* ------------------------------------------------ */
+
 .navbar-base {
-    /* Fondo inicial: opaco, como una sola cosa con el contenido */
     background-color: white !important;
-    /* Se asegura que el Navbar esté arriba de todo */
     z-index: 1000; 
-    box-shadow: none; /* Sin sombra al inicio */
-    /* Añadir una transición suave para que el cambio no sea abrupto */
+    box-shadow: none;
     transition: background-color 0.3s ease, box-shadow 0.3s ease;
 }
 
-/* ------------------------------------------------ */
-/* ESTADO SCROLL (SEPARACIÓN Y EFECTO BLUR) */
-/* ------------------------------------------------ */
+
 .navbar-base.scrolled {
-    /* 1. Separación: Fondo semi-transparente */
     background-color: rgba(255, 255, 255, 0.95) !important;
-    /* Añadir una sombra sutil para reforzar la sensación de flotar */
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
 }
 
-/* Estilos de los links en estado inicial (integrado) */
+
 .integrado-central-links {
     /* Fondo transparente, sin blur ni borde */
     background-color: transparent !important;
@@ -43,4 +34,31 @@
     
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
     transition: all 0.3s ease; /* Transición suave para el rectángulo */
+}
+
+.img-error404 {
+  width: 75%;
+  height: auto;
+  max-width: 600px;
+  max-height: 600px;
+  margin-top: 20px;
+}
+
+@media (max-width: 576px) {
+  .img-error404 {
+    width: 100%;
+  }
+}
+
+.titulo {
+  font-size: 2.2rem;
+}
+
+.card-sobreNosotros{
+    border: 2px groove;
+}
+
+.img-card-sobreNosotros{
+    width: 300px;
+    height: auto;
 }
