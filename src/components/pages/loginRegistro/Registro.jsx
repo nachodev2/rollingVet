@@ -19,7 +19,7 @@ function Registro() {
 
   return (
     <>
-      <Button onClick={() => setLgShow(true)}>Large modal</Button>
+      <Button onClick={() => setLgShow(true)}>Registro</Button>
       <Modal
         size="lg"
         show={lgShow}
@@ -35,32 +35,28 @@ function Registro() {
             <Form noValidate validated={validated} onSubmit={handleSubmit}>
       <Row className="mb-3">
         <Form.Group as={Col} md="4" controlId="validationCustom01">
-          <Form.Label>First name</Form.Label>
+          <Form.Label>Nombre completo</Form.Label>
           <Form.Control
             required
             type="text"
-            placeholder="First name"
+            placeholder="Juan Ramirez"
             defaultValue="Mark"
           />
-          <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
         </Form.Group>
         <Form.Group as={Col} md="4" controlId="validationCustom02">
-          <Form.Label>Last name</Form.Label>
+          <Form.Label>Contraseña</Form.Label>
           <Form.Control
             required
-            type="text"
-            placeholder="Last name"
-            defaultValue="Otto"
+            type="password"
+            placeholder="123456789"
           />
-          <Form.Control.Feedback>Looks good!</Form.Control.Feedback>
         </Form.Group>
-        <Form.Group as={Col} md="4" controlId="validationCustomUsername">
-          <Form.Label>Username</Form.Label>
+        <Form.Group as={Col} md="4" controlId="validationCustomEmail">
+          <Form.Label>Email</Form.Label>
           <InputGroup hasValidation>
-            <InputGroup.Text id="inputGroupPrepend">@</InputGroup.Text>
             <Form.Control
-              type="text"
-              placeholder="Username"
+              type="email"
+              placeholder="Email"
               aria-describedby="inputGroupPrepend"
               required
             />
@@ -72,25 +68,16 @@ function Registro() {
       </Row>
       <Row className="mb-3">
         <Form.Group as={Col} md="6" controlId="validationCustom03">
-          <Form.Label>City</Form.Label>
-          <Form.Control type="text" placeholder="City" required />
-          <Form.Control.Feedback type="invalid">
-            Please provide a valid city.
-          </Form.Control.Feedback>
+          <Form.Label>Provincia</Form.Label>
+          <Form.Control type="text" placeholder="Provincia" required />
         </Form.Group>
         <Form.Group as={Col} md="3" controlId="validationCustom04">
-          <Form.Label>State</Form.Label>
-          <Form.Control type="text" placeholder="State" required />
-          <Form.Control.Feedback type="invalid">
-            Please provide a valid state.
-          </Form.Control.Feedback>
+          <Form.Label>Localidad</Form.Label>
+          <Form.Control type="text" placeholder="Localidad" required />
         </Form.Group>
         <Form.Group as={Col} md="3" controlId="validationCustom05">
-          <Form.Label>Zip</Form.Label>
-          <Form.Control type="text" placeholder="Zip" required />
-          <Form.Control.Feedback type="invalid">
-            Please provide a valid zip.
-          </Form.Control.Feedback>
+          <Form.Label>Codigo de area</Form.Label>
+          <Form.Control type="text" placeholder="1122" required />
         </Form.Group>
       </Row>
       <Form.Group className="mb-3">
@@ -101,7 +88,7 @@ function Registro() {
           feedbackType="invalid"
         />
       </Form.Group>
-      <Button type="submit">Submit form</Button>
+      <Button type="submit">Registrarme</Button>
     </Form>
         </Modal.Body>
       </Modal>
