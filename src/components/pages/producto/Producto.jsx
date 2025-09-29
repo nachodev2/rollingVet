@@ -139,9 +139,9 @@ function Producto() {
                   Correa para perros
                 </Card.Title>
                 <Card.Text className="texto-cuerpo">
-                  Formulado para tratar afecciones comunes con eficacia,
-                  seguridad y mejorar la salud de tu mascota bajo supervisión
-                  veterinaria.
+                  Segura, resistente y cómoda. Ideal para paseos tranquilos o
+                  activos, con diseño funcional que garantiza control y
+                  libertad.
                 </Card.Text>
               </Card.Body>
             </Card>
