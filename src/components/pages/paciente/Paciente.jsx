@@ -36,13 +36,6 @@ function Paciente() {
         <h4 className="text-center my-3">Datos del Dueño</h4>
         <Container className="mb-5">{renderCampos(camposDueno)}</Container>
       </div>
-      {/* <div className="d-flex justify-content-center my-5">
-        <img
-          src="../public/images/fichaVeterinaria.png"
-          alt="Mascotas"
-          className="w-25"
-        />
-      </div> */}
     </>
   );
 }
