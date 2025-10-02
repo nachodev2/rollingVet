@@ -1,0 +1,13 @@
+.img-error404 {
+  width: 75%;
+  height: auto;
+  max-width: 600px;
+  max-height: 600px;
+  margin-top: 20px;
+}
+
+@media (max-width: 576px) {
+  .img-error404 {
+    width: 100%;
+  }
+}
