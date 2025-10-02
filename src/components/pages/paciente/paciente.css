@@ -12,3 +12,10 @@
 .contenedor-paciente{
     background-color: #f4fcfd;
 }
+
+@media (max-width: 576px) {
+    .contenedor-paciente{
+        background-color: white;
+        border: none!important;
+    }
+}

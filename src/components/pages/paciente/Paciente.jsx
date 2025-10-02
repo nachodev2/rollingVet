@@ -15,7 +15,7 @@ function Paciente() {
             className="border border-info bg-info-subtle py-3 px-4 rounded d-flex align-items-center"
             style={{ maxWidth: "400px", width: "100%" }}
           >
-            <label className="text-dark me-3 mb-0">{campo}:</label>
+            <label className="text-dark me-3 mb-0 w-25">{campo}:</label>
             <input
               type="text"
               className="bg-light rounded-2 border border-2 input-paciente flex-grow-1"

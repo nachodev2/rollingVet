@@ -12,10 +12,11 @@ function App() {
     <>
       <Menu />
       <main>
+        <Paciente />
         <Error404 />
+        <SobreNosotros />
       </main>
       <Footer />
-      <Paciente />
     </>
   );
 }
