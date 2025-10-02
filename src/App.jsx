@@ -8,16 +8,16 @@ import "./index.css";
 
 function App() {
   return (
-    <>
+    <div className="layout-contenedor">
       <Menu />
-      <main>
+      <main className="contenido-principal">
         <Paciente />
         <Error404 />
         <SobreNosotros />
         <Producto></Producto>
       </main>
       <Footer />
-    </>
+    </div>
   );
 }
 
