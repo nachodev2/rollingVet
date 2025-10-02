@@ -1,19 +1,23 @@
 import { useState } from "react";
 import { Button, Modal, Col, InputGroup, Form, Row } from "react-bootstrap";
+import { useForm } from "react-hook-form";
 
 function Registro() {
   const [lgShow, setLgShow] = useState(false);
-  const [validated, setValidated] = useState(false);
+ 
+  const {
+register,
+handleSubmit,
+reset,
+setError,
+setFocus,
+formState: { errors, isSubmitting },
+} = useForm();
 
-  const handleSubmit = (event) => {
-    const form = event.currentTarget;
-    if (form.checkValidity() === false) {
-      event.preventDefault();
-      event.stopPropagation();
-    }
+useEffect(() => {
+if (!lgShow) reset();
+}, [lgShow, reset]);
 
-    setValidated(true);
-  };
 
   return (
     <>
