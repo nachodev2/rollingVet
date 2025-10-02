@@ -8,6 +8,6 @@
 
 @media (max-width: 576px) {
   .img-error404 {
-    width: 100%;
+    width: 100%!important;
   }
 }
