@@ -1,0 +1,14 @@
+
+.input-paciente{
+    border: 2px solid rgb(212, 212, 212)!important;
+    border-style: none;
+}
+
+.input-paciente:focus{
+    box-shadow: none;
+    outline: 2px solid #6CC3D5;
+}
+
+.contenedor-paciente{
+    background-color: #f4fcfd;
+}
