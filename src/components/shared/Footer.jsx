@@ -8,7 +8,10 @@ const Footer = () => {
             <Container>
                 <Row className="g-4"> 
                     <Col xs={12} md={3} className="text-center text-md-start">
-                        <h5 className="fw-bold mb-3">RollingVet</h5>
+                        <div className="logo-alineado">
+                            <img src="../../../../public/images/logo.svg" alt="logo" className="logoFooter" />
+                            <h5 className="fw-bold display-6 mb-0 text-black">RollingVet</h5> 
+                        </div>
                     </Col>
                     <Col xs={12} md={3} className="text-center text-md-start">
                         <h5 className="mb-3 text-dark">Contáctanos</h5>
@@ -28,11 +31,11 @@ const Footer = () => {
                         <h5 className="mb-3 text-dark">Horarios y Legal</h5>
                         <p className="mb-1">Lunes a Viernes: 9:00 - 18:00</p>
                         <p className="mb-0">Sábados: 9:00 - 13:00</p>
-                        <a href="#politicas" className="text-white text-decoration-none d-block mt-2">Política de Privacidad</a>
+                        <a href="#politicas" className="text-dark text-decoration-none d-block mt-3 opacity-75">Política de Privacidad</a>
                     </Col>
 
                 </Row>
-                <Row className="mt-4 pt-3 border-top border-secondary">
+                <Row className="mt-4 pt-3 border-top"> 
                     <Col className="text-center">
                         <p className="m-0 opacity-75">&copy; {new Date().getFullYear()} RollingVet. Todos los derechos reservados.</p>
                     </Col>
