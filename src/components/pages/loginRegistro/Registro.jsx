@@ -4,20 +4,17 @@ import { useForm } from "react-hook-form";
 
 function Registro() {
   const [lgShow, setLgShow] = useState(false);
- 
+
   const {
-register,
-handleSubmit,
-reset,
-setError,
-setFocus,
-formState: { errors, isSubmitting },
-} = useForm();
+    register,
+    handleSubmit,
+    reset,
+    formState: { errors },
+  } = useForm();
 
-useEffect(() => {
-if (!lgShow) reset();
-}, [lgShow, reset]);
-
+  useEffect(() => {
+    if (!lgShow) reset();
+  }, [lgShow, reset]);
 
   return (
     <>
@@ -34,7 +31,7 @@ if (!lgShow) reset();
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Form noValidate validated={validated} onSubmit={handleSubmit}>
+          <Form noValidate onSubmit={handleSubmit(onSubmit, onError)}>
             <Row className="mb-3">
               <Form.Group as={Col} md="4" controlId="validationCustom01">
                 <Form.Label>Nombre completo</Form.Label>
@@ -43,10 +40,17 @@ if (!lgShow) reset();
               <Form.Group as={Col} md="4" controlId="validationCustom02">
                 <Form.Label>Contraseña</Form.Label>
                 <Form.Control
-                  required
                   type="password"
                   placeholder="123456789"
+                  {...register("password", {
+                    minLength: { value: 6, message: "Minimo 6 caracteres" },
+                    maxLength: { value: 12, message: "Maximo 12 caracteres" },
+                    required: "Campo Obligatorio",
+                  })}
                 />
+                <Form.Text id="formTextUsuario" className="text-danger">
+                  {errors.password?.message}
+              </Form.Text>
               </Form.Group>
               <Form.Group as={Col} md="4" controlId="validationCustomEmail">
                 <Form.Label>Email</Form.Label>
@@ -55,23 +59,50 @@ if (!lgShow) reset();
                     type="email"
                     placeholder="Email"
                     aria-describedby="inputGroupPrepend"
-                    required
+                    {...register("email", {
+                      pattern: {
+                        value: /^\S+@\S+$/i,
+                        message: "Email invalido",
+                      },
+                      required: "Este campo es Obligatorio",
+                    })}
                   />
+                  <Form.Text id="formTextUsuario" className="text-danger">
+                    {errors.email?.message}
+                  </Form.Text>
                 </InputGroup>
               </Form.Group>
             </Row>
             <Row className="mb-3">
               <Form.Group as={Col} md="6" controlId="validationCustom03">
                 <Form.Label>Provincia</Form.Label>
-                <Form.Control type="text" placeholder="Provincia" required />
+                <Form.Control
+                  type="text"
+                  placeholder="Provincia"
+                  {...register("provincia", {
+                    required: "Este campo es Obligatorio",
+                  })}
+                />
               </Form.Group>
               <Form.Group as={Col} md="3" controlId="validationCustom04">
                 <Form.Label>Localidad</Form.Label>
-                <Form.Control type="text" placeholder="Localidad" required />
+                <Form.Control
+                  type="text"
+                  placeholder="Localidad"
+                  {...register("localidad", {
+                    required: "Este campo es Obligatorio",
+                  })}
+                />
               </Form.Group>
               <Form.Group as={Col} md="3" controlId="validationCustom05">
                 <Form.Label>Codigo de area</Form.Label>
-                <Form.Control type="text" placeholder="1122" required />
+                <Form.Control
+                  type="text"
+                  placeholder="1122"
+                  {...register("codigoArea", {
+                    required: "Este campo es Obligatorio",
+                  })}
+                />
               </Form.Group>
             </Row>
             <Form.Group className="mb-3">
