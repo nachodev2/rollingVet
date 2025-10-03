@@ -1,3 +1,5 @@
+import "./error404.css";
+
 function Error404() {
   return (
     <>
