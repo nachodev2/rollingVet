@@ -13,10 +13,6 @@ function App() {
       <Menu />
       <main className="contenido-principal">
         <Inicio />
-        <SobreNosotros />
-        <Producto />
-        <Paciente />
-        <Error404 />
       </main>
       <Footer />
     </div>

@@ -1,19 +1,34 @@
-import './inicio.css'
-import { Container, Row, Col } from 'react-bootstrap'
+import React from 'react';
+import { Container, Image } from 'react-bootstrap';
+import './Inicio.css';
+import ImagenMascota from '../../../../public/images/ai-generated-8678181_640.webp'; 
 
-const SeccionTitulo = () => {
-    return (
-        <section className="seccion-titulo py-5">
-            <Container>
-                <Row className="align-items-center">
-                    <Col md={6} className="text-center text-md-start mb-4 mb-md-0">
-                        <h1 className="display-4 fw-bold">Cuidando de tus mascotas con amor y profesionalismo</h1>
-                        <p className="lead mt-3">En RollingVet, tu veterinaria móvil de confianza, ofrecemos atención veterinaria de alta calidad directamente en la puerta de tu hogar. Nuestro equipo de profesionales está dedicado a brindar el mejor cuidado para tus mascotas, con servicios que incluyen consultas, vacunaciones, desparasitaciones y más. ¡Confía en nosotros para mantener a tus amigos peludos saludables y felices!</p>
-                    </Col>
-                </Row>
-            </Container>
-        </section>
-    )
-}   
+function SeccionTitulo() {
+  return (
+    <Container className="my-5">
+      
+      <div className="vet-section-wrapper">
+        
 
-export default SeccionTitulo
+        <div className="vet-background-bar"></div>
+        <h1 className="text-center mb-4 vet-title position-relative z-1 display-1 text-black">
+          Bienestar y Amor
+        </h1>
+        
+
+        <div className="vet-image-frame position-relative z-1"> 
+          
+          <Image 
+            src={ImagenMascota} 
+            alt="Perro y gato asomándose" 
+            fluid 
+            className="vet-image-content"
+          />
+
+        </div>
+      </div>
+    </Container>
+  );
+}
+
+export default SeccionTitulo;
