@@ -17,7 +17,6 @@
     z-index: 0;
 }
 
-
 .vet-image-frame {
     width: 90%; 
     max-width: 800px; 
@@ -40,11 +39,8 @@
 }
 
 .logo-wrapper {
-    
     height: 80px;
     width: 100%;
-    
-
     display: flex;
     align-items: center;
     justify-content: center;
@@ -55,7 +51,6 @@
     max-width: 100%;
     object-fit: contain; 
 }
-
 
 .servicesSectionText {
     font-size: 1.2em;
@@ -83,7 +78,85 @@
     padding-top: 10px;
 }
 
-/* Mobile First (<576px) */
+.scroll-container {
+    display: flex;
+    flex-wrap: nowrap;
+    overflow-x: auto;
+    overflow-y: hidden;
+    gap: 20px;
+    scroll-behavior: auto;
+
+    cursor: grab;
+    user-select: none;
+
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+}
+
+.scroll-container.is-dragging {
+    cursor: grabbing;
+
+}
+
+.scroll-container::-webkit-scrollbar {
+    display: none;
+}
+
+.scroll-item {
+    flex: 0 0 280px;
+}
+
+/* Responsividad para scroll-item */
+@media (max-width: 575.98px) {
+    .scroll-item {
+        flex: 0 0 220px;
+    }
+}
+
+@media (min-width: 576px) and (max-width: 767.98px) {
+    .scroll-item {
+        flex: 0 0 240px;
+    }
+}
+
+@media (min-width: 768px) and (max-width: 991.98px) {
+    .scroll-item {
+        flex: 0 0 260px;
+    }
+}
+
+.scroll-container img {
+    -webkit-user-drag: none;
+    pointer-events: none;
+}
+
+.product-card {
+    min-height: 250px;
+    height: 100%;
+    text-align: center;
+    overflow: hidden;
+}
+
+.product-card-img {
+    height: 180px;
+    object-fit: cover;
+}
+
+.product-card-title {
+    font-size: 1.1rem;
+    font-weight: 600;
+    display: -webkit-box;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    max-width: 100%;
+}
+
+.product-card-price {
+    font-size: 1.3rem;
+    font-weight: bold;
+    color: #4CAF50;
+}
+
 @media (max-width: 575.98px) {
     .titulo {
         font-size: 1.5rem;
@@ -120,7 +193,7 @@
     }
 }
 
-/* Small (≥576px) */
+
 @media (min-width: 576px) and (max-width: 767.98px) {
     .titulo {
         font-size: 2rem;
@@ -132,7 +205,7 @@
 
     .vet-image-frame {
         width: 90%;
-        max-width: 600px; /* Ajuste para small screens */
+        max-width: 600px; 
     }
 
     .servicesSectionText {
@@ -148,7 +221,7 @@
     }
 }
 
-/* Medium (≥768px) */
+
 @media (min-width: 768px) and (max-width: 991.98px) {
     .titulo {
         font-size: 2.5rem;
@@ -156,7 +229,7 @@
 
     .vet-image-frame {
         width: 90%;
-        max-width: 700px; /* Ajuste para medium screens */
+        max-width: 700px; 
     }
 
     .vet-background-bar {
@@ -164,7 +237,7 @@
     }
 }
 
-/* Large (≥992px) */
+
 @media (min-width: 992px) {
     .titulo {
         font-size: 3rem;
