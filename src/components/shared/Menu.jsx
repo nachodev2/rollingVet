@@ -65,12 +65,9 @@ const Menu = () => {
               </Nav.Link>
             </Nav>
             <div className="nav-botones d-flex gap-3">
-              <Button className="btn-registro rounded-pill px-4">
-                <Registro />
-              </Button>
-              <Button className="btn-acceso rounded-pill px-4">
-                <Login />
-              </Button>
+              <Registro />
+
+              <Login />
             </div>
           </Navbar.Collapse>
         </Container>

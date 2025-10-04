@@ -1,6 +1,7 @@
 import { Button, Modal, Col, InputGroup, Form, Row } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useState, useEffect } from "react";
+import "./loginRegistro.css";
 
 function Registro() {
   const [lgShow, setLgShow] = useState(false);
@@ -27,7 +28,12 @@ function Registro() {
 
   return (
     <>
-      <Button onClick={() => setLgShow(true)}>Registro</Button>
+      <Button
+        className="btn-registro rounded-pill px-4"
+        onClick={() => setLgShow(true)}
+      >
+        Registro
+      </Button>
       <Modal
         size="lg"
         show={lgShow}
@@ -53,7 +59,7 @@ function Registro() {
                       value: /^[A-Za-zÑñÁáÉéÍíÓóÚúÜü\s]+$/i,
                       message: "Nombre invalido",
                       minLength: { value: 6, message: "Minimo 6 caracteres" },
-                      maxLength: { value: 30, message: "Maximo 30 caracteres" },
+                      maxLength: { value: 12, message: "Maximo 12 caracteres" },
                     },
                     required: "Este campo es Obligatorio",
                   })}

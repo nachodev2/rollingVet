@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import {Button, Modal, Form} from 'react-bootstrap';
+import "./loginRegistro.css";
 
 function Login() {
   const [show, setShow] = useState(false);
@@ -9,7 +10,7 @@ function Login() {
 
   return (
     <>
-      <Button variant="primary" onClick={handleShow}>
+      <Button className="btn-acceso rounded-pill px-4"  onClick={handleShow}>
         Iniciar sesión
       </Button>
 
