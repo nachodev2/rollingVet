@@ -55,3 +55,15 @@
     max-width: 100%;
     object-fit: contain; 
 }
+
+
+.servicesSectionText {
+    font-size: 1.2em;
+    font-family: 'Courier New', Courier, monospace;
+    color: #6a806a;
+}
+
+.service-title {
+    font-family: 'Courier New', Courier, monospace;
+    font-size: 1.1em;
+}
