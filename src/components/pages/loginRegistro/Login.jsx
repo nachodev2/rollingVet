@@ -44,7 +44,6 @@ function Login() {
               />
             </Form.Group>
        <div>
-        <p>Si aún no tenés una cuenta,registrate aquí</p>
        </div>
           </Form>
         </Modal.Body>
