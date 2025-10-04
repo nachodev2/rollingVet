@@ -7,7 +7,6 @@
 }
 
 .vet-background-bar {
-
     position: absolute;
     width: 100%;
     height: 70%;
@@ -22,11 +21,9 @@
 .vet-image-frame {
     width: 90%; 
     max-width: 800px; 
-    
     background-color: #6a806a; 
     padding: 3px; 
     border-radius: 10px;
-    
     z-index: 1;
 }
 
@@ -35,4 +32,26 @@
     height: auto;
     display: block;
     border-radius: 8px
+}
+
+.logo-row {
+    border-top: 1px solid #eee;
+    padding: 20px 0;
+}
+
+.logo-wrapper {
+    
+    height: 80px;
+    width: 100%;
+    
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.logo-img {
+    max-height: 100%; 
+    max-width: 100%;
+    object-fit: contain; 
 }
