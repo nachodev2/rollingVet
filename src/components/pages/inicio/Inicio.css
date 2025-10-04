@@ -130,17 +130,6 @@
     pointer-events: none;
 }
 
-.product-card {
-    min-height: 250px;
-    height: 100%;
-    text-align: center;
-    overflow: hidden;
-}
-
-.product-card-img {
-    height: 180px;
-    object-fit: cover;
-}
 
 .product-card-title {
     font-size: 1.1rem;
@@ -154,7 +143,7 @@
 .product-card-price {
     font-size: 1.3rem;
     font-weight: bold;
-    color: #4CAF50;
+    color: #6a806a;
 }
 
 @media (max-width: 575.98px) {
