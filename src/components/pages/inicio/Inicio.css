@@ -78,6 +78,35 @@
     padding-top: 10px;
 }
 
+.fade-wrapper {
+    position: relative;
+    overflow: hidden; /* CLAVE: Oculta cualquier parte del degradado que se salga de los bordes del Container */
+}
+
+.fade-wrapper::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0; /* CLAVE: Fíjalo a 0 para que empiece justo en el borde del Container */
+    width: 80px;
+    height: 100%;
+    background: linear-gradient(to right, rgba(255, 255, 255, 0.9), transparent);
+    pointer-events: none;
+    z-index: 10;
+}
+
+.fade-wrapper::after {
+    content: '';
+    position: absolute;
+    top: 0;
+    right: 0; /* CLAVE: Fíjalo a 0 para que termine justo en el borde del Container */
+    width: 80px;
+    height: 100%;
+    background: linear-gradient(to left, rgba(255, 255, 255, 0.9), transparent);
+    pointer-events: none;
+    z-index: 10;
+}
+
 .scroll-container {
     display: flex;
     flex-wrap: nowrap;
@@ -85,17 +114,21 @@
     overflow-y: hidden;
     gap: 20px;
     scroll-behavior: auto;
-
+    padding-bottom: 30px;
     cursor: grab;
     user-select: none;
-
     -ms-overflow-style: none;
     scrollbar-width: none;
+    position: relative;
+}
+
+.scroll-container::before,
+.scroll-container::after {
+    content: none;
 }
 
 .scroll-container.is-dragging {
     cursor: grabbing;
-
 }
 
 .scroll-container::-webkit-scrollbar {
@@ -104,9 +137,10 @@
 
 .scroll-item {
     flex: 0 0 280px;
+    position: relative;
+    z-index: 2;
 }
 
-/* Responsividad para scroll-item */
 @media (max-width: 575.98px) {
     .scroll-item {
         flex: 0 0 220px;
@@ -130,7 +164,6 @@
     pointer-events: none;
 }
 
-
 .product-card-title {
     font-size: 1.1rem;
     font-weight: 600;
@@ -143,7 +176,7 @@
 .product-card-price {
     font-size: 1.3rem;
     font-weight: bold;
-    color: #6a806a;
+    color: #4CAF50;
 }
 
 @media (max-width: 575.98px) {

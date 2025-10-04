@@ -20,7 +20,7 @@ function SeccionProductosRecomendados() {
     { id: 8, nombre: "Ropa de Invierno", imagen: "/images/ropa-perros.png", precio: "$7.200", alt: "Abrigo para perros", texto: "Ropa..." },
   ];
 
-  const productosLoop = productos.concat(productos);
+  const productosLoop = productos.concat(productos).concat(productos);
 
   const onMouseDown = (e) => {
     if (scrollRef.current) {
@@ -72,12 +72,22 @@ function SeccionProductosRecomendados() {
     const handleScroll = () => {
       if (isDragging) return;
 
-      const buffer = 100; // pixels before end
+      const totalWidth = container.scrollWidth;
+      const visibleWidth = container.clientWidth;
+      const currentScroll = container.scrollLeft;
 
-      if (container.scrollLeft >= container.scrollWidth - container.clientWidth - buffer) {
-        container.scrollLeft = container.scrollWidth / 2 - container.clientWidth / 2;
-      } else if (container.scrollLeft <= buffer) {
-        container.scrollLeft = container.scrollWidth / 2 - container.clientWidth / 2;
+      const singleSetWidth = totalWidth / 3;
+      
+      const buffer = 10;
+
+      if (currentScroll >= (totalWidth - visibleWidth - buffer)) {
+        container.scrollLeft = singleSetWidth;
+        return;
+      }
+      
+      if (currentScroll <= buffer) {
+        container.scrollLeft = singleSetWidth;
+        return;
       }
     };
 
@@ -86,7 +96,7 @@ function SeccionProductosRecomendados() {
   }, [isDragging]);
 
   return (
-    <Container className="my-5">
+    <Container className="my-5 fade-wrapper">
       <h3 className="mb-4 text-center">Productos Recomendados</h3>
       <div
         className={`scroll-container ${isDragging ? 'is-dragging' : ''}`}
