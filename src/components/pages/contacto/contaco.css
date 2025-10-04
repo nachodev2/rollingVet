@@ -1,0 +1,16 @@
+
+.subrayado {
+  display: inline-block;
+  position: relative;
+}
+
+.subrayado::after {
+  content: "";
+  position: absolute;
+  width: 100%;
+  height: 5px;
+  bottom: -8px;
+  left: 0;
+  background: linear-gradient(90deg, #78C2AD, #A7D8CB); 
+  border-radius: 3px;
+}
