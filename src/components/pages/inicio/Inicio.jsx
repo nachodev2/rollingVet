@@ -2,6 +2,7 @@ import SeccionTitulo from './SeccionTitulo'
 import SeccionMarcas from './SeccionMarcas'
 import SeccionServicios from './SeccionServicios'
 import SeccionProductosRecomendados from './SeccionProductosRecomendados'
+import SeccionTablaPlanes from './SeccionTablaPlanes'
 import './Inicio.css'
 
 
@@ -12,6 +13,7 @@ const Inicio = () => {
             <SeccionMarcas />
             <SeccionServicios />
             <SeccionProductosRecomendados />
+            <SeccionTablaPlanes />
         </div>
     )
 }

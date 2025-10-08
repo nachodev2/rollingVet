@@ -80,14 +80,14 @@
 
 .fade-wrapper {
     position: relative;
-    overflow: hidden; /* CLAVE: Oculta cualquier parte del degradado que se salga de los bordes del Container */
+    overflow: hidden;
 }
 
 .fade-wrapper::before {
     content: '';
     position: absolute;
     top: 0;
-    left: 0; /* CLAVE: Fíjalo a 0 para que empiece justo en el borde del Container */
+    left: 0;
     width: 80px;
     height: 100%;
     background: linear-gradient(to right, rgba(255, 255, 255, 0.9), transparent);
@@ -99,7 +99,7 @@
     content: '';
     position: absolute;
     top: 0;
-    right: 0; /* CLAVE: Fíjalo a 0 para que termine justo en el borde del Container */
+    right: 0;
     width: 80px;
     height: 100%;
     background: linear-gradient(to left, rgba(255, 255, 255, 0.9), transparent);
@@ -176,7 +176,7 @@
 .product-card-price {
     font-size: 1.3rem;
     font-weight: bold;
-    color: #4CAF50;
+    color: #3eb489;
 }
 
 @media (max-width: 575.98px) {
@@ -269,3 +269,139 @@
         height: 70%;
     }
 }
+
+
+/* --- NUEVA ESTRUCTURA DE TARJETAS DE PLANES (REEMPLAZA ESTILOS DE TABLA) --- */
+
+.plan-comparison-container {
+    display: grid;
+    /* Define 3 columnas de igual ancho para los planes */
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0; 
+    margin: 40px auto;
+    max-width: 900px; /* Ancho de Container estándar */
+    width: 95%;
+    background-color: #fff;
+    border-radius: 10px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    overflow: hidden;
+    position: relative;
+}
+
+.plan-card {
+    display: flex;
+    flex-direction: column;
+    text-align: center;
+    border-right: 1px solid #eee; /* Línea divisoria vertical sutil */
+}
+
+.plan-card:last-child {
+    border-right: none;
+}
+
+/* Columna especial de características (la primera) */
+.features-column {
+    text-align: left;
+    font-weight: 500;
+    color: #333;
+}
+
+/* Encabezado del Plan */
+.plan-header {
+    background-color: #f7f7f7;
+    padding: 20px 15px;
+    font-weight: 600;
+    border-bottom: 2px solid #eee;
+    height: 80px; /* Altura fija para alineación */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.features-column .plan-header {
+    justify-content: flex-start;
+}
+
+.plan-title {
+    font-size: 1.1em;
+    margin: 0;
+}
+
+/* Grupo de detalles (el cuerpo de la "tabla") */
+.plan-detail-group {
+    /* Clave: Usa Grid para que los ítems se alineen verticalmente entre las columnas */
+    display: grid;
+    grid-template-rows: repeat(4, 1fr); /* 4 filas, altura uniforme */
+    flex-grow: 1; /* Permite que este grupo ocupe el espacio restante */
+}
+
+.plan-detail-item {
+    padding: 15px;
+    border-bottom: 1px solid #eee;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.features-column .plan-detail-item {
+    justify-content: flex-start;
+}
+
+.plan-detail-group .plan-detail-item:last-child {
+    border-bottom: none;
+}
+
+/* Pie de Plan (Botón) */
+.plan-footer {
+    padding: 20px 15px;
+    border-top: 2px solid #eee;
+    min-height: 80px; /* Altura fija para alinear los botones */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.features-column .plan-footer {
+    /* El pie de la columna de características puede estar vacío */
+    padding: 0;
+    min-height: 0;
+    border-top: none;
+}
+
+
+.plan-button {
+    color: #212529;
+    width: 80%;
+    padding: 10px 0;
+    font-weight: 600;
+    border-radius: 5px;
+    background-color: #78c2ad;
+    border-color: #78c2ad;
+}
+
+.plan-button.btn-outline-dark {
+    border-color: #ccc;
+    color: #555;
+    background-color: #fff;
+}
+
+.plan-button.btn-outline-dark:hover {
+    background-color: #f0f0f0;
+    color: #333;
+}
+
+.icon-check {
+    color: #4CAF50;
+    font-size: 1.2em;
+    font-weight: bold;
+    margin-right: 5px;
+}
+
+.icon-cross {
+    color: #f44336;
+    font-size: 1.2em;
+    font-weight: bold;
+    margin-right: 5px;
+}
+
+

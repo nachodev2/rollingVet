@@ -28,7 +28,7 @@ function Producto({ data }) {
             <Card.Text className="product-card-price fs-4 fw-bold mb-2">
               {data.precio}
             </Card.Text>
-            <Button variant="success" className="w-100">Comprar</Button> 
+            <Button variant="primary text-black" className="w-100">Comprar</Button> 
         </div>
       </Card.Body>
     </Card>
