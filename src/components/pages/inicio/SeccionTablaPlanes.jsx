@@ -1,59 +1,96 @@
-import Button from 'react-bootstrap/Button';
+import Button from "react-bootstrap/Button";
 
-function PlanComparisonCards() {
+function SeccionTablaPlanes() {
   return (
+    <div>
+      <section>
+        <h2 className="text-center my-4 vet-title position-relative z-1 display-4 text-black">
+          Membresía para tus mascotas
+        </h2>
+      </section>
     <div className="plan-comparison-container">
-      
-      {/* Columna de Características (Fila 1 de la tabla original) */}
       <div className="plan-card features-column">
         <div className="plan-header">
           <h4 className="plan-title">Característica</h4>
         </div>
         <div className="plan-detail-group">
-          <div className="plan-detail-item">Ultra-fast browsing</div>
-          <div className="plan-detail-item">Advanced AI insights</div>
-          <div className="plan-detail-item">Seamless integration</div>
-          <div className="plan-detail-item">Full UTF-8 support</div>
-        </div>
-        <div className="plan-footer">
-          <Button variant="success" className="plan-button">Adquirir Plan</Button>
+          <div className="plan-detail-item">Consultas Anuales</div>
+          <div className="plan-detail-item">Vacunas Esenciales</div>
+          <div className="plan-detail-item">Análisis de Sangre y Orina</div>
+          <div className="plan-detail-item">Chequeo Dental</div>
         </div>
       </div>
-
-      {/* Columna del Plan 1: WebSurge (Fila 2 de la tabla original) */}
       <div className="plan-card">
         <div className="plan-header plan-web-surge">
-          <h4 className="plan-title">Plan: WebSurge</h4>
+          <h4 className="plan-title">Plan: Primeros Pasos (0-5 años)</h4>
         </div>
         <div className="plan-detail-group">
-          <div className="plan-detail-item"><span className="icon-check">&#10003;</span> Fast browsing</div>
-          <div className="plan-detail-item">Basic AI recommendations</div>
-          <div className="plan-detail-item">Restricts customization</div>
-          <div className="plan-detail-item"><span className="icon-cross">&#10007;</span> Potential display errors</div>
+          <div className="plan-detail-item">
+            <span className="icon-check">&#10003;</span> 2 por año
+          </div>
+          <div className="plan-detail-item">Básicas y Refuerzos</div>
+          <div className="plan-detail-item">Solo si es necesario</div>
+          <div className="plan-detail-item">
+            <span className="icon-cross">&#10007;</span> Chequeo visual básico
+          </div>
         </div>
         <div className="plan-footer">
-          <Button variant="success" className="plan-button">Adquirir Plan</Button>
+          <Button variant="success" className="plan-button text-dark">
+            Adquirir Plan
+          </Button>
         </div>
       </div>
-
-      {/* Columna del Plan 2: HyperView (Fila 3 de la tabla original) */}
       <div className="plan-card">
         <div className="plan-header plan-hyper-view">
-          <h4 className="plan-title">Plan: HyperView</h4>
+          <h4 className="plan-title">Plan: Madurando (5-10 años)</h4>
         </div>
         <div className="plan-detail-group">
-          <div className="plan-detail-item"><span className="icon-cross">&#10007;</span> Moderate speeds</div>
-          <div className="plan-detail-item"><span className="icon-cross">&#10007;</span> No AI assistance</div>
-          <div className="plan-detail-item"><span className="icon-cross">&#10007;</span> Steep learning curve</div>
-          <div className="plan-detail-item"><span className="icon-cross">&#10007;</span> Partial UTF-8 support</div>
+          <div className="plan-detail-item">
+            <span className="icon-cross">&#10007;</span> 1 por año
+          </div>
+          <div className="plan-detail-item">Refuerzos periódicos</div>
+          <div className="plan-detail-item">
+            <span className="icon-check">&#10003;</span> Hemograma completo
+          </div>
+          <div className="plan-detail-item">
+            <span className="cross">&#10007;</span> Limpieza con 10% de dto.
+          </div>
         </div>
         <div className="plan-footer">
-          <Button variant="outline-dark" className="plan-button">Ver Detalles</Button>
+          <Button variant="success" className="plan-button text-dark">
+            Adquirir Plan
+          </Button>
         </div>
       </div>
-      
+      <div className="plan-card plan-adultos">
+        <div className="plan-header">
+          <h4 className="plan-title">Plan: Adultos (10+ años)</h4>
+        </div>
+        <div className="plan-detail-group">
+          <div className="plan-detail-item">
+            <span className="icon-check">&#10003;</span> 3 por año
+          </div>
+          <div className="plan-detail-item">
+            <span className="icon-cross">&#10007;</span> Opcional (dto. extra)
+          </div>
+          <div className="plan-detail-item">
+            <span className="icon-check">&#10003;</span> Perfil Geriátrico
+            completo
+          </div>
+          <div className="plan-detail-item">
+            <span className="icon-check">&#10003;</span> Limpieza con 20% de
+            dto.
+          </div>
+        </div>
+        <div className="plan-footer">
+          <Button variant="success" className="plan-button text-dark">
+            Adquirir Plan
+          </Button>
+        </div>
+      </div>
+    </div>
     </div>
   );
 }
 
-export default PlanComparisonCards;
+export default SeccionTablaPlanes;
