@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { Navbar, Nav, Button, Container } from "react-bootstrap";
+import Registro from "../pages/loginRegistro/Registro";
+import Login from "../pages/loginRegistro/Login";
 import "./Menu.css";
 
 const Menu = () => {
@@ -63,12 +65,9 @@ const Menu = () => {
               </Nav.Link>
             </Nav>
             <div className="nav-botones d-flex gap-3">
-              <Button className="btn-registro rounded-pill px-4">
-                Registrarse
-              </Button>
-              <Button className="btn-acceso rounded-pill px-4">
-                Iniciar Sesión
-              </Button>
+              <Registro />
+
+              <Login />
             </div>
           </Navbar.Collapse>
         </Container>
