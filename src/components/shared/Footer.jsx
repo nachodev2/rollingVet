@@ -7,10 +7,10 @@ const Footer = () => {
         <footer className="footer bg-light text-dark py-5"> 
             <Container>
                 <Row className="g-4"> 
-                    <Col xs={12} md={3} className="text-center text-md-start">
-                        <div className="logo-alineado">
-                            <img src="../../../../public/images/logo.svg" alt="logo" className="logoFooter" />
-                            <h5 className="fw-bold display-6 mb-0 text-black">RollingVet</h5> 
+                    <Col xs={12} md={4} className="text-center">
+                        <div className="logo-alineado d-lg-flex align-items-center justify-content-center mx-auto">
+                            <img src="../../../../public/images/logo.svg" alt="logo" className="logoFooter d-block mx-auto me-lg-2" />
+                            <h5 className="fw-bold display-6 mt-2 mt-lg-0 text-black">RollingVet</h5> 
                         </div>
                     </Col>
                     <Col xs={12} md={3} className="text-center text-md-start">
@@ -19,7 +19,7 @@ const Footer = () => {
                         <p className="mb-1">📞 Teléfono: +54 9 381 123-4567</p>
                         <p className="mb-0">📍 Dirección: Av. Siempre Viva 742</p>
                     </Col>
-                    <Col xs={12} md={3} className="text-center text-md-start">
+                    <Col xs={12} md={2} className="text-center text-md-start">
                         <h5 className="mb-3 text-dark">Síguenos</h5>
                         <ul className="list-unstyled">
                             <li><a href="#facebook" className="text-dark text-decoration-none">Facebook</a></li>
