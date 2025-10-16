@@ -2,15 +2,52 @@ import { useState } from 'react';
 import { Button, Modal, Form } from 'react-bootstrap';
 import "./loginRegistro.css";
 
-function Login() { 
+// IMPORTANTE: Asegúrate de que Menu.jsx le pase la prop handleLogin.
+// Si no la pasas, descomenta las líneas que definen la prop abajo y usa la versión del Menu.jsx
+// que te pasé con handleLogin y localStorage para fines de la presentación.
+function Login({ handleLogin }) { 
     const [show, setShow] = useState(false);
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
     
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
+    const ADMIN_EMAIL = process.env.REACT_APP_ADMIN_EMAIL;
+    const ADMIN_PASS = process.env.REACT_APP_ADMIN_PASSWORD_SIMULATION;
+
     const handleSubmit = (e) => {
         e.preventDefault();
-        console.log("LOGIN: Formulario listo para enviar al Backend.");
+        
+        let role = 'user';
+        let userName = 'Usuario';
+        
+        if (email === ADMIN_EMAIL && password === ADMIN_PASS) {
+            role = 'admin';
+            userName = 'AdminName';
+            console.log("Simulación de Login: Administrador exitoso.");
+            
+            // Llama a la función del Navbar para actualizar el estado
+            if (handleLogin) {
+                 handleLogin(role, userName);
+            }
+            
+            handleClose();
+        } else {
+            console.log("Simulación de Login: Usuario o Credenciales Inválidas.");
+            // Aquí en un proyecto real harías el fetch al backend.
+            
+            // Para la presentación, puedes simular un usuario normal si no coincide con admin:
+            if (email && password) {
+                 if (handleLogin) {
+                    handleLogin(role, userName);
+                 }
+                 handleClose();
+            }
+        }
+
+        setEmail('');
+        setPassword('');
     };
 
     return (
@@ -37,6 +74,8 @@ function Login() {
                                 placeholder="Ejemplo@gmail.com"
                                 required
                                 autoFocus
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
                             />
                         </Form.Group>
                         <Form.Group className="mb-3" controlId="ControlInput2">
@@ -45,6 +84,8 @@ function Login() {
                                 type="password"
                                 placeholder="********"
                                 required
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
                             />
                         </Form.Group>
                         <div className='d-grid'>
