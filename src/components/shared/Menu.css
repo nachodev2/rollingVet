@@ -109,6 +109,28 @@
   background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%2855, 65, 81, 0.75%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
 }
 
+/* Estilos para el mensaje de bienvenida y botón de Logout */
+.mensaje-bienvenida {
+    color: var(--nav-color-texto);
+    font-weight: 500;
+    white-space: nowrap;
+    font-size: 1rem;
+}
+
+.btn-icono-logout {
+    background-color: transparent;
+    border: 2px solid var(--nav-color-hover);
+    color: var(--nav-color-hover);
+    padding: 0.35rem 0.75rem;
+    border-radius: 0.3rem;
+    transition: all 0.2s ease;
+}
+
+.btn-icono-logout:hover {
+    background-color: var(--nav-color-hover);
+    color: white;
+}
+
 @media (max-width: 991px) {
   .enlaces-centrales {
     margin: 1rem 0;
@@ -123,10 +145,22 @@
     flex-direction: column;
     width: 100%;
     margin-top: 1rem;
+    align-items: stretch !important;
   }
 
+  /* Asegura que los botones de Login/Registro se estiren en móvil */
   .nav-botones .btn-registro,
   .nav-botones .btn-acceso {
+    width: 100%;
+  }
+  
+  /* Asegura que los botones de Autenticación se estiren en móvil */
+  .nav-botones .mensaje-bienvenida {
+    text-align: center;
+    padding: 0.5rem 0;
+  }
+  
+  .nav-botones .btn-icono-logout {
     width: 100%;
   }
 }
