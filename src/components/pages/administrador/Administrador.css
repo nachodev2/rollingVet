@@ -1,216 +1,177 @@
-/* Administrador.css - Estilos Completos */
-
-/* --------------------------------------------------------------------- */
-/* Variables de Color (Ajustables según tu tema exacto) */
-/* --------------------------------------------------------------------- */
 :root {
-    --color-principal: #6c9a72; /* Un verde oliva similar al del fondo de la imagen */
-    --color-texto: #333333;
-    --color-fondo-claro: #f4f4f4;
-    --color-secundario: #507b56; /* Un verde más oscuro para hover/activos */
-    --color-registro: #6bc08b; /* Color del botón "Registro" */
-    --color-iniciar-sesion: #8be0a6; /* Color del botón "Iniciar sesión" */
+  --color-principal: #6c9a72;
+  --color-texto: #333333;
+  --color-fondo-claro: #f4f4f4;
+  --color-secundario: #507b56;
+  --color-registro: #6bc08b;
+  --color-iniciar-sesion: #8be0a6;
 }
-
-/* --------------------------------------------------------------------- */
-/* Estilos Generales de la Sección de Administración */
-/* --------------------------------------------------------------------- */
 
 .seccion-principal-admin {
-    padding: 40px 0;
-    min-height: 80vh; 
-    background-color: white; 
+  padding: 40px 0;
+  min-height: 80vh;
+  background-color: white;
 }
 
-/* --------------------------------------------------------------------- */
-/* Título Principal */
-/* --------------------------------------------------------------------- */
-
 .titulo-administracion {
-    font-size: 2.5rem;
-    font-weight: 700;
-    color: var(--color-principal);
-    text-align: center;
-    margin-bottom: 5px;
-    /* Efecto visual simple: sombra de texto */
-    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
-    letter-spacing: 1px;
+  font-size: 2.5rem;
+  font-weight: 700;
+  color: var(--color-principal);
+  text-align: center;
+  margin-bottom: 5px;
+
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+  letter-spacing: 1px;
 }
 
 .linea-division {
-    width: 100px;
-    height: 3px;
-    background-color: var(--color-principal);
-    border: none;
-    margin: 10px auto 30px auto;
+  width: 100px;
+  height: 3px;
+  background-color: var(--color-principal);
+  border: none;
+  margin: 10px auto 30px auto;
 }
 
-/* --------------------------------------------------------------------- */
-/* Pestañas de Navegación (Sub-secciones) */
-/* --------------------------------------------------------------------- */
-
 .pestanas-crud {
-    justify-content: center; /* Centra las pestañas */
-    border-bottom: 1px solid #ddd; /* Línea base inferior */
+  justify-content: center;
+  border-bottom: 1px solid #ddd;
 }
 
 .pestanas-crud .nav-link {
-    font-size: 1.1rem;
-    font-weight: 600;
-    color: var(--color-texto);
-    border: none !important;
-    border-bottom: 3px solid transparent !important; /* Base transparente */
-    padding: 10px 15px;
-    margin-right: 5px;
-    transition: all 0.3s ease;
+  font-size: 1.1rem;
+  font-weight: 600;
+  color: var(--color-texto);
+  border: none !important;
+  border-bottom: 3px solid transparent !important;
+  padding: 10px 15px;
+  margin-right: 5px;
+  transition: all 0.3s ease;
 }
 
 .pestanas-crud .nav-link:hover {
-    color: var(--color-secundario);
-    border-bottom: 3px solid var(--color-secundario) !important;
+  color: var(--color-secundario);
+  border-bottom: 3px solid var(--color-secundario) !important;
 }
 
-/* Estilo para la pestaña ACTIVA (el subrayado del mockup) */
 .pestanas-crud .nav-link.active {
-    color: var(--color-principal);
-    background-color: transparent !important;
-    border-bottom: 3px solid var(--color-principal) !important;
+  color: var(--color-principal);
+  background-color: transparent !important;
+  border-bottom: 3px solid var(--color-principal) !important;
 }
-
-/* --------------------------------------------------------------------- */
-/* Contenido de las Pestañas (Tablas y Botón Agregar) */
-/* --------------------------------------------------------------------- */
 
 .subtitulo-seccion {
-    font-size: 1.5rem;
-    color: var(--color-secundario);
-    margin-bottom: 15px;
+  font-size: 1.5rem;
+  color: var(--color-secundario);
+  margin-bottom: 15px;
 }
 
 .btn-crear-container {
-    text-align: right;
-    margin-bottom: 15px;
+  text-align: right;
+  margin-bottom: 15px;
 }
 
 .btn-crear-elemento {
-    background-color: var(--color-registro);
-    color: white;
-    border: none;
-    padding: 8px 15px;
-    border-radius: 5px;
-    font-weight: 500;
-    transition: background-color 0.3s ease;
+  background-color: var(--color-registro);
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 5px;
+  font-weight: 500;
+  transition: background-color 0.3s ease;
 }
 
 .btn-crear-elemento:hover {
-    background-color: var(--color-secundario);
+  background-color: var(--color-secundario);
 }
 
-/* Estilos de la Tabla */
 .contenedor-tabla {
-    /* Fondo para que la tabla se destaque, similar al área de contenido del mockup */
-    background-color: var(--color-fondo-claro); 
-    padding: 15px;
-    border-radius: 8px;
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+  background-color: var(--color-fondo-claro);
+  padding: 15px;
+  border-radius: 8px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
 }
 
 .contenedor-tabla table {
-    margin-bottom: 0;
-    /* Estilo para que las tablas de bootstrap se vean planas */
-    --bs-table-bg: white;
-    --bs-table-striped-bg: #f9f9f9;
+  margin-bottom: 0;
+  --bs-table-bg: white;
+  --bs-table-striped-bg: #f9f9f9;
 }
 
 .contenedor-tabla thead th {
-    background-color: var(--color-principal);
-    color: white;
-    font-weight: 600;
-    border-color: var(--color-principal);
+  background-color: var(--color-principal);
+  color: white;
+  font-weight: 600;
+  border-color: var(--color-principal);
 }
 
-
-/* --------------------------------------------------------------------- */
-/* Estilos de Botones de Acción (Editar/Eliminar) */
-/* --------------------------------------------------------------------- */
-
 .acciones-botones-contenedor {
-    text-align: center;
-    width: 150px; 
+  text-align: center;
+  width: 150px;
 }
 
 .contenedor-iconos-accion {
-    display: flex;
-    justify-content: center;
-    gap: 8px; /* Espacio entre los dos botones */
+  display: flex;
+  justify-content: center;
+  gap: 8px;
 }
 
 .btn-icono-accion {
-    /* Hacemos el botón cuadrado */
-    width: 35px; 
-    height: 35px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    
-    border-radius: 4px;
-    border: 1px solid transparent;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    padding: 0;
+  width: 35px;
+  height: 35px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  border-radius: 4px;
+  border: 1px solid transparent;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  padding: 0;
 }
 
 .btn-icono-accion.editar {
-    background-color: transparent;
-    color: var(--color-secundario); /* Color del lápiz */
-    border-color: var(--color-secundario);
+  background-color: transparent;
+  color: var(--color-secundario);
+  border-color: var(--color-secundario);
 }
 
 .btn-icono-accion.editar:hover {
-    background-color: var(--color-secundario);
-    color: white;
+  background-color: var(--color-secundario);
+  color: white;
 }
 
 .btn-icono-accion.eliminar {
-    background-color: transparent;
-    color: #dc3545; /* Rojo para la basura */
-    border-color: #dc3545;
+  background-color: transparent;
+  color: #dc3545;
+  border-color: #dc3545;
 }
 
 .btn-icono-accion.eliminar:hover {
-    background-color: #dc3545;
-    color: white;
+  background-color: #dc3545;
+  color: white;
 }
 
-/* --------------------------------------------------------------------- */
-/* Paginación */
-/* --------------------------------------------------------------------- */
-
-/* Estilo para los links de paginación (fondo blanco, texto verde) */
 .pagination .page-link {
-    color: var(--color-principal); /* Color del número de página */
-    background-color: white;
-    border: 1px solid #dee2e6; /* Borde estándar */
-    margin: 0 2px;
-    transition: all 0.2s ease;
+  background-color: white;
+  border: 1px solid #dee2e6;
+  margin: 0 2px;
+  transition: all 0.2s ease;
 }
 
 .pagination .page-link:hover {
-    color: var(--color-secundario);
-    border-color: var(--color-secundario);
-    background-color: #f0f0f0; /* Un ligero hover */
+  color: var(--color-secundario);
+  border-color: var(--color-secundario);
+  background-color: #f0f0f0;
 }
 
-/* Estilo para el item activo (fondo blanco, texto verde, borde verde) */
 .pagination .page-item.active .page-link {
-    background-color: white; /* Fondo blanco */
-    color: var(--color-principal); /* Texto verde */
-    border: 2px solid var(--color-principal); /* Borde verde para marcar el activo */
-    font-weight: bold;
-    z-index: 1; 
+  background-color: white;
+  color: var(--color-principal);
+  border: 2px solid var(--color-principal);
+  font-weight: bold;
+  z-index: 1;
 }
 
-/* Asegurar que el focus no cambie el estilo active */
 .pagination .page-item.active .page-link:focus {
-    box-shadow: 0 0 0 0.25rem rgba(108, 154, 114, 0.25); /* Sombra suave verde */
+  box-shadow: 0 0 0 0.25rem rgba(108, 154, 114, 0.25);
 }
