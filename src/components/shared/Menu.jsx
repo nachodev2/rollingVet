@@ -26,8 +26,9 @@ const AuthButtons = ({ isLoggedIn, userRole, userName, handleLogout, handleLogin
 
   return (
     <div className="nav-botones d-flex gap-3">
-      <Registro /> 
-      <Login />
+      {/* SE PASA handleLogin AHORA */}
+      <Registro handleLogin={handleLogin} /> 
+      <Login handleLogin={handleLogin} />
     </div>
   );
 };
@@ -36,7 +37,6 @@ const AuthButtons = ({ isLoggedIn, userRole, userName, handleLogout, handleLogin
 const Menu = () => {
   const [estaEnScroll, setEstaEnScroll] = useState(false);
   
-  // Estados iniciales fijos (no hay sesión al inicio)
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userRole, setUserRole] = useState('visitante');
   const [userName, setUserName] = useState('');
@@ -51,14 +51,12 @@ const Menu = () => {
     return () => window.removeEventListener("scroll", manejarScroll);
   }, []);
 
-  // Esta función DEBE ser llamada desde la respuesta exitosa del Login/Registro al backend
   const handleLogin = (role = 'user', name = 'Usuario') => {
     setIsLoggedIn(true);
     setUserRole(role);
     setUserName(name);
   };
 
-  // Esta función DEBE ser llamada después de que el backend valide el cierre de sesión
   const handleLogout = () => {
     setIsLoggedIn(false);
     setUserRole('visitante');
