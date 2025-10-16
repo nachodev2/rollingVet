@@ -2,37 +2,15 @@ import { useState } from 'react';
 import { Button, Modal, Form } from 'react-bootstrap';
 import "./loginRegistro.css";
 
-function Login({ handleLogin }) { 
+function Login() { 
     const [show, setShow] = useState(false);
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
     
     const handleClose = () => setShow(false);
     const handleShow = () => setShow(true);
 
     const handleSubmit = (e) => {
         e.preventDefault();
-        
-        let role = 'user';
-        let userName = 'Usuario';
-
-        if (email.toLowerCase() === 'admin@rollingvet.com' && password === '123456') {
-            role = 'admin';
-            userName = 'AdminName';
-        } else if (!email || !password) {
-            console.log("Faltan datos de login");
-            return;
-        } else {
-            role = 'user';
-            userName = 'John Doe';
-        }
-
-        handleLogin(role, userName);
-        
-        handleClose();
-        
-        setEmail('');
-        setPassword('');
+        console.log("LOGIN: Formulario listo para enviar al Backend.");
     };
 
     return (
@@ -59,8 +37,6 @@ function Login({ handleLogin }) {
                                 placeholder="Ejemplo@gmail.com"
                                 required
                                 autoFocus
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
                             />
                         </Form.Group>
                         <Form.Group className="mb-3" controlId="ControlInput2">
@@ -69,8 +45,6 @@ function Login({ handleLogin }) {
                                 type="password"
                                 placeholder="********"
                                 required
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
                             />
                         </Form.Group>
                         <div className='d-grid'>

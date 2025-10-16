@@ -3,7 +3,7 @@ import { useForm } from "react-hook-form";
 import { useState, useEffect } from "react";
 import "./loginRegistro.css";
 
-function Registro({ handleLogin }) { 
+function Registro() { 
     const [lgShow, setLgShow] = useState(false);
 
     const {
@@ -14,20 +14,12 @@ function Registro({ handleLogin }) {
     } = useForm();
 
     const onSubmit = (data) => {
-        console.log("Datos de registro:", data);
-        
-        const role = 'user';
-        const userName = data.nombreCompleto.split(' ')[0]; 
-
-        handleLogin(role, userName);
-        
-        setLgShow(false);
-
-        reset();
+        console.log(data); 
+        setLgShow(false); 
     };
 
     const onError = (errors) => {
-        console.log("Errores de registro:", errors);
+        console.log(errors);
     };
 
     useEffect(() => {
