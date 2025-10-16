@@ -5,6 +5,7 @@ import Footer from "./components/shared/Footer.jsx";
 import SobreNosotros from "./components/pages/sobre-nosotros/SobreNosotros.jsx";
 import Producto from "./components/pages/producto/Producto.jsx";
 import Inicio from "./components/pages/inicio/Inicio.jsx";
+import Administrador from "./components/pages/administrador/Administrador.jsx";
 import "./index.css";
 
 function App() {
@@ -12,7 +13,7 @@ function App() {
     <div className="layout-contenedor">
       <Menu />
       <main className="contenido-principal">
-        <Inicio />
+        <Administrador />
       </main>
       <Footer />
     </div>
