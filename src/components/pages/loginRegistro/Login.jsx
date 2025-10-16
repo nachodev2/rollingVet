@@ -1,61 +1,93 @@
 import { useState } from 'react';
-import {Button, Modal, Form} from 'react-bootstrap';
+import { Button, Modal, Form } from 'react-bootstrap';
 import "./loginRegistro.css";
 
-function Login() {
-  const [show, setShow] = useState(false);
+function Login({ handleLogin }) { 
+    const [show, setShow] = useState(false);
+    const [email, setEmail] = useState('');
+    const [password, setPassword] = useState('');
+    
+    const handleClose = () => setShow(false);
+    const handleShow = () => setShow(true);
 
-  const handleClose = () => setShow(false);
-  const handleShow = () => setShow(true);
+    const handleSubmit = (e) => {
+        e.preventDefault();
+        
+        let role = 'user';
+        let userName = 'Usuario';
 
-  return (
-    <>
-      <Button className="btn-acceso rounded-pill px-4"  onClick={handleShow}>
-        Iniciar sesión
-      </Button>
+        if (email.toLowerCase() === 'admin@rollingvet.com' && password === '123456') {
+            role = 'admin';
+            userName = 'AdminName';
+        } else if (!email || !password) {
+            console.log("Faltan datos de login");
+            return;
+        } else {
+            role = 'user';
+            userName = 'John Doe';
+        }
 
-      <Modal
-        show={show}
-        onHide={handleClose}
-        backdrop="static"
-        keyboard={false}
-      >
-        <Modal.Header closeButton>
-          <Modal.Title>Iniciar sesión</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Form>
-            <Form.Group className="mb-3" controlId="ControlInput1">
-              <Form.Label>Email</Form.Label>
-              <Form.Control
-                type="email"
-                placeholder="Ejemplo@gmail.com"
-                required
-                autoFocus
-              />
-            </Form.Group>
-            <Form.Group className="mb-3" controlId="ControlInput2">
-              <Form.Label>Contraseña</Form.Label>
-              <Form.Control
-                type="password"
-                placeholder="********"
-                required
-                autoFocus
-              />
-            </Form.Group>
-       <div>
-       </div>
-          </Form>
-        </Modal.Body>
-        <Modal.Footer className='d-flex justify-content-start'>
-          <Button variant="secondary" onClick={handleClose}>
-            Cerrar
-          </Button>
-          <Button variant="primary">Ingresar</Button>
-        </Modal.Footer>
-      </Modal>
-    </>
-  );
+        handleLogin(role, userName);
+        
+        handleClose();
+        
+        setEmail('');
+        setPassword('');
+    };
+
+    return (
+        <>
+            <Button className="btn-acceso rounded-pill px-4" onClick={handleShow}>
+                Iniciar sesión
+            </Button>
+
+            <Modal
+                show={show}
+                onHide={handleClose}
+                backdrop="static"
+                keyboard={false}
+            >
+                <Modal.Header closeButton>
+                    <Modal.Title>Iniciar sesión</Modal.Title>
+                </Modal.Header>
+                <Modal.Body>
+                    <Form onSubmit={handleSubmit}>
+                        <Form.Group className="mb-3" controlId="ControlInput1">
+                            <Form.Label>Email</Form.Label>
+                            <Form.Control
+                                type="email"
+                                placeholder="Ejemplo@gmail.com"
+                                required
+                                autoFocus
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                            />
+                        </Form.Group>
+                        <Form.Group className="mb-3" controlId="ControlInput2">
+                            <Form.Label>Contraseña</Form.Label>
+                            <Form.Control
+                                type="password"
+                                placeholder="********"
+                                required
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                            />
+                        </Form.Group>
+                        <div className='d-grid'>
+                           <Button variant="primary" type="submit" className='mt-3'>
+                                Ingresar
+                            </Button>
+                        </div>
+                    </Form>
+                </Modal.Body>
+                <Modal.Footer className='d-flex justify-content-start'>
+                    <Button variant="secondary" onClick={handleClose}>
+                        Cerrar
+                    </Button>
+                </Modal.Footer>
+            </Modal>
+        </>
+    );
 }
 
 export default Login;
