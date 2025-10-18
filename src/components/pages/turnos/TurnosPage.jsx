@@ -1,5 +1,8 @@
 import React, { useState } from 'react';
 import { Container, Row, Col, Card, Button } from 'react-bootstrap';
+import Paso2Horario from './Paso1Detalle';
+import Paso1Detalle from './Paso2Horario';
+import Paso3Confirmacion from './Paso3Confirmacion';
 // Importa los componentes de cada paso
 
 const TurnosPage = () => {
@@ -23,7 +26,7 @@ const TurnosPage = () => {
                 // Se pasa la lógica de los veterinarios al Paso 2
                 return <Paso2Horario datos={datosTurno} setDatos={setDatosTurno} siguiente={siguientePaso} anterior={anteriorPaso} />;
             case 3:
-                // Se pasa la función de envío final al Paso 3
+                
                 return <Paso3Confirmacion datos={datosTurno} confirmar={handleConfirmarTurno} anterior={anteriorPaso} />;
             default:
                 return <h2>Error: Paso no encontrado.</h2>;
@@ -32,7 +35,7 @@ const TurnosPage = () => {
 
     const handleConfirmarTurno = () => {
         console.log("Datos finales listos para enviar al Backend:", datosTurno);
-        // Aquí iría el fetch/axios para guardar el turno en la base de datos.
+        
     };
 
     return (
