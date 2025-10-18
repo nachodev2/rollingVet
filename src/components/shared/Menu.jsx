@@ -2,20 +2,25 @@ import React, { useState, useEffect } from "react";
 import { Navbar, Nav, Button, Container } from "react-bootstrap";
 import { BoxArrowRight } from "react-bootstrap-icons";
 import Registro from "../pages/loginRegistro/Registro";
+import { NavLink } from "react-router";
 import Login from "../pages/loginRegistro/Login";
 import "./Menu.css";
 
-const AuthButtons = ({ isLoggedIn, userRole, userName, handleLogout, handleLogin }) => {
+const AuthButtons = ({
+  isLoggedIn,
+  userRole,
+  userName,
+  handleLogout,
+  handleLogin,
+}) => {
   if (isLoggedIn) {
-    const saludo = userRole === 'admin' ? `Administrador` : userName;
+    const saludo = userRole === "admin" ? `Administrador` : userName;
     return (
       <div className="nav-botones d-flex align-items-center gap-3">
-        <span className="mensaje-bienvenida">
-          ¡Bienvenido, {saludo}!
-        </span>
-        <Button 
-          className="btn-icono-logout" 
-          onClick={handleLogout} 
+        <span className="mensaje-bienvenida">¡Bienvenido, {saludo}!</span>
+        <Button
+          className="btn-icono-logout"
+          onClick={handleLogout}
           title="Cerrar Sesión"
         >
           <BoxArrowRight size={22} />
@@ -27,19 +32,18 @@ const AuthButtons = ({ isLoggedIn, userRole, userName, handleLogout, handleLogin
   return (
     <div className="nav-botones d-flex gap-3">
       {/* SE PASA handleLogin AHORA */}
-      <Registro handleLogin={handleLogin} /> 
+      <Registro handleLogin={handleLogin} />
       <Login handleLogin={handleLogin} />
     </div>
   );
 };
 
-
 const Menu = () => {
   const [estaEnScroll, setEstaEnScroll] = useState(false);
-  
+
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [userRole, setUserRole] = useState('visitante');
-  const [userName, setUserName] = useState('');
+  const [userRole, setUserRole] = useState("visitante");
+  const [userName, setUserName] = useState("");
 
   useEffect(() => {
     const manejarScroll = () => {
@@ -51,7 +55,7 @@ const Menu = () => {
     return () => window.removeEventListener("scroll", manejarScroll);
   }, []);
 
-  const handleLogin = (role = 'user', name = 'Usuario') => {
+  const handleLogin = (role = "user", name = "Usuario") => {
     setIsLoggedIn(true);
     setUserRole(role);
     setUserName(name);
@@ -59,28 +63,28 @@ const Menu = () => {
 
   const handleLogout = () => {
     setIsLoggedIn(false);
-    setUserRole('visitante');
-    setUserName('');
+    setUserRole("visitante");
+    setUserName("");
   };
 
   const getNavLinks = (role) => {
     const links = [
-      { href: "#productos", text: "Productos" },
-      { href: "#contacto", text: "Contacto" },
-      { href: "#nosotros", text: "Sobre nosotros" },
+      { href: "/productos", text: "Productos" },
+      { href: "/contacto", text: "Contacto" },
+      { href: "/nosotros", text: "Sobre nosotros" },
     ];
 
-    if (role === 'user' || role === 'admin') {
-      links.splice(1, 0, { href: "/turnos", text: "Turnos" }); 
+    if (role === "user" || role === "admin") {
+      links.splice(1, 0, { href: "/turnos", text: "Turnos" });
     }
-    
-    if (role === 'admin') {
+
+    if (role === "admin") {
       links.push({ href: "/administracion", text: "Administración" });
     }
 
     return links;
   };
-  
+
   const navLinks = getNavLinks(userRole);
 
   return (
@@ -89,20 +93,24 @@ const Menu = () => {
         <div className="nav-cristal">
           <Nav className="justify-content-center">
             {navLinks.map((link, index) => (
-                <Nav.Link key={index} href={link.href} className="link-scroll mx-3">
-                    {link.text}
-                </Nav.Link>
+              <Nav.Link
+                as={NavLink}
+                to={link.href}
+                className="link-inicial mx-3"
+              >
+                {link.text}
+              </Nav.Link>
             ))}
           </Nav>
         </div>
       </div>
-      
+
       <Navbar
         expand="lg"
         className={`nav-inicial ${estaEnScroll ? "oculto" : "visible"}`}
       >
         <Container>
-          <Navbar.Brand href="#home" className="logo fw-bold fs-3">
+          <Navbar.Brand href="/" className="logo fw-bold fs-3">
             RollingVet
           </Navbar.Brand>
           <Navbar.Toggle
@@ -111,18 +119,22 @@ const Menu = () => {
           />
           <Navbar.Collapse id="navbar-nav-collapse">
             <Nav className="mx-auto enlaces-centrales">
-                {navLinks.map((link, index) => (
-                    <Nav.Link key={index} href={link.href} className="link-inicial mx-3">
-                        {link.text}
-                    </Nav.Link>
-                ))}
+              {navLinks.map((link, index) => (
+                <Nav.Link
+                  as={NavLink}
+                  to={link.href}
+                  className="link-inicial mx-3"
+                >
+                  {link.text}
+                </Nav.Link>
+              ))}
             </Nav>
-            <AuthButtons 
-                isLoggedIn={isLoggedIn}
-                userRole={userRole}
-                userName={userName}
-                handleLogout={handleLogout}
-                handleLogin={handleLogin}
+            <AuthButtons
+              isLoggedIn={isLoggedIn}
+              userRole={userRole}
+              userName={userName}
+              handleLogout={handleLogout}
+              handleLogin={handleLogin}
             />
           </Navbar.Collapse>
         </Container>
