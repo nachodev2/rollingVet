@@ -84,10 +84,11 @@
 }
 
 .contenedor-tabla {
-    background-color: var(--color-fondo-claro);
-    padding: 15px;
+    background-color: var(--color-principal);
+    border: #507b56 2px solid;
     border-radius: 8px;
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
 }
 
 .contenedor-tabla table {
@@ -129,12 +130,12 @@
 
 .btn-icono-accion.editar {
     background-color: transparent;
-    color: var(--color-secundario);
-    border-color: var(--color-secundario);
+    color: #F6BB06;
+    border-color: #F6BB06;
 }
 
 .btn-icono-accion.editar:hover {
-    background-color: var(--color-secundario);
+    background-color: #F6BB06;
     color: white;
 }
 

@@ -7,11 +7,12 @@ import {
   Tab,
   Table,
   Pagination,
+  Modal,
 } from "react-bootstrap";
 import { PencilSquare, Trash } from "react-bootstrap-icons";
-import "./Administrador.css";
+import { v4 as uuidv4 } from "uuid";
 import Paciente from "../paciente/Paciente.jsx";
-import { Modal } from "react-bootstrap";
+import "./Administrador.css";
 
 const generarDatosSimulados = (prefijo, cantidad) => {
   const datos = [];
@@ -27,7 +28,6 @@ const generarDatosSimulados = (prefijo, cantidad) => {
 };
 
 const datosServicios = generarDatosSimulados("Servicio de Peluquería", 23);
-const datosPacientes = generarDatosSimulados("Paciente Max", 48);
 const datosTurnos = generarDatosSimulados("Turno Agendado", 31);
 
 const encabezados = {
@@ -38,7 +38,6 @@ const encabezados = {
 
 const Administrador = () => {
   const [key, setKey] = useState("servicios");
-
   const [paginaActual, setPaginaActual] = useState({
     servicios: 1,
     pacientes: 1,
@@ -46,147 +45,85 @@ const Administrador = () => {
   });
 
   const [mostrarModalPaciente, setMostrarModalPaciente] = useState(false);
-
-  const handleCrear = () => {
-    switch (key) {
-      case "pacientes":
-        setMostrarModalPaciente(true);
-        break;
-      case "turnos":
-        console.log("Crear turno");
-        break;
-      case "servicios":
-        console.log("Crear servicio");
-        break;
-      default:
-        console.warn("Sección no reconocida:", key);
-    }
-  };
+  const [pacientes, setPacientes] = useState([]);
 
   const elementosPorPagina = 10;
-
-  const datosMapeados = useMemo(
-    () => ({
-      servicios: {
-        data: datosServicios,
-        header: encabezados.servicios,
-        boton: "Agregar Servicio",
-      },
-      pacientes: {
-        data: datosPacientes,
-        header: encabezados.pacientes,
-        boton: "Dar de Alta Paciente",
-      },
-      turnos: {
-        data: datosTurnos,
-        header: encabezados.turnos,
-        boton: "Cargar Turno",
-      },
-    }),
-    []
-  );
-
-  const {
-    data: datosCompletos,
-    header: encabezadosTabla,
-    boton,
-  } = datosMapeados[key];
   const pagina = paginaActual[key];
-  const totalElementos = datosCompletos.length;
 
+  const datosMapeados = useMemo(() => ({
+    servicios: {
+      data: datosServicios,
+      header: encabezados.servicios,
+      boton: "Agregar Servicio",
+    },
+    pacientes: {
+      data: pacientes,
+      header: encabezados.pacientes,
+      boton: "Dar de Alta Paciente",
+    },
+    turnos: {
+      data: datosTurnos,
+      header: encabezados.turnos,
+      boton: "Cargar Turno",
+    },
+  }), [pacientes]);
+
+  const { data: datosCompletos, header: encabezadosTabla, boton } = datosMapeados[key];
   const indiceFinal = pagina * elementosPorPagina;
   const indiceInicial = indiceFinal - elementosPorPagina;
-
   const datosMostrados = datosCompletos.slice(indiceInicial, indiceFinal);
 
   const handleCambioPagina = (numeroDePagina) => {
-    setPaginaActual((prev) => ({
-      ...prev,
-      [key]: numeroDePagina,
-    }));
+    setPaginaActual((prev) => ({ ...prev, [key]: numeroDePagina }));
   };
 
   const handleCambioPestana = (nuevaKey) => {
     setKey(nuevaKey);
   };
 
-  const PaginacionTabla = ({
-    totalElementos,
-    elementosPorPagina,
-    paginaActual,
-    onPageChange,
-  }) => {
-    const totalPaginas = Math.ceil(totalElementos / elementosPorPagina);
-    const items = [];
-
-    items.push(
-      <Pagination.Prev
-        key="prev"
-        onClick={() => onPageChange(paginaActual - 1)}
-        disabled={paginaActual === 1}
-      />
-    );
-
-    for (let number = 1; number <= totalPaginas; number++) {
-      items.push(
-        <Pagination.Item
-          key={number}
-          active={number === paginaActual}
-          onClick={() => onPageChange(number)}
-        >
-          {number}
-        </Pagination.Item>
-      );
+  const handleCrear = () => {
+    if (key === "pacientes") {
+      setMostrarModalPaciente(true);
     }
+  };
 
-    items.push(
-      <Pagination.Next
-        key="next"
-        onClick={() => onPageChange(paginaActual + 1)}
-        disabled={paginaActual === totalPaginas}
-      />
-    );
-
-    if (totalPaginas <= 1) return null;
-
-    return (
-      <div className="d-flex justify-content-center">
-        <Pagination size="sm">{items}</Pagination>
-      </div>
-    );
+  const handleGuardarPaciente = (nuevoPaciente) => {
+    const pacienteFormateado = {
+      id: uuidv4(),
+      campo1: `${nuevoPaciente.dueno.Nombre} ${nuevoPaciente.dueno.Apellido}`,
+      campo2: nuevoPaciente.paciente.Nombre,
+      campo3: nuevoPaciente.paciente.Especie,
+      campo4: nuevoPaciente.paciente.Raza,
+    };
+    setPacientes((prev) => [...prev, pacienteFormateado]);
+    setMostrarModalPaciente(false);
   };
 
   const TablaCRUD = ({ encabezadosTabla, datosMostrados }) => (
-    <div className="contenedor-tabla">
+    <div className="mt-4 contenedor-tabla">
       <Table striped bordered hover responsive>
         <thead>
-          <tr>
+          <tr className="text-center">
             {encabezadosTabla.map((encabezado, index) => (
               <th key={index}>{encabezado}</th>
             ))}
             <th className="columna-acciones">Acciones</th>
           </tr>
         </thead>
-        <tbody>
+        <tbody className="text-center">
           {datosMostrados.length > 0 ? (
-            datosMostrados.map((item, index) => (
-              <tr key={index}>
+            datosMostrados.map((item) => (
+              <tr key={item.id}>
                 <td>{item.campo1}</td>
                 <td>{item.campo2}</td>
-
                 {encabezadosTabla.length > 2 && <td>{item.campo3}</td>}
-
-                {encabezadosTabla.length > 3 && <td>{`Extra ${item.id}`}</td>}
-
+                {encabezadosTabla.length > 3 && <td>{item.campo4}</td>}
                 <td className="acciones-botones-contenedor">
                   <div className="contenedor-iconos-accion">
                     <button className="btn-icono-accion editar" title="Editar">
                       <PencilSquare size={18} />
                     </button>
-                    <button
-                      className="btn-icono-accion eliminar"
-                      title="Eliminar"
-                    >
+                    <button className="btn-icono-accion eliminar" title="Eliminar">
                       <Trash size={18} />
                     </button>
                   </div>
@@ -230,15 +167,11 @@ const Administrador = () => {
                   key={tabKey}
                 >
                   <h2 className="subtitulo-seccion">
-                    Gestión de{" "}
-                    {tabKey.charAt(0).toUpperCase() + tabKey.slice(1)}
+                    Gestión de {tabKey.charAt(0).toUpperCase() + tabKey.slice(1)}
                   </h2>
 
                   <div className="btn-crear-container">
-                    <button
-                      className="btn-crear-elemento"
-                      onClick={handleCrear}
-                    >
+                    <button className="btn-crear-elemento" onClick={handleCrear}>
                       {datosMapeados[tabKey].boton}
                     </button>
                   </div>
@@ -248,37 +181,25 @@ const Administrador = () => {
                     datosMostrados={tabKey === key ? datosMostrados : []}
                   />
 
-                  <PaginacionTabla
-                    totalElementos={datosMapeados[tabKey].data.length}
-                    elementosPorPagina={elementosPorPagina}
-                    paginaActual={paginaActual[tabKey]}
-                    onPageChange={handleCambioPagina}
-                  />
+                  <Pagination className="justify-content-center">
+                    {/* Paginación opcional */}
+                  </Pagination>
                 </Tab>
               ))}
             </Tabs>
           </Col>
         </Row>
       </Container>
-      <Modal
-        show={mostrarModalPaciente}
-        onHide={() => setMostrarModalPaciente(false)}
-        size="lg"
-        centered
-      >
+
+      <Modal show={mostrarModalPaciente} onHide={() => setMostrarModalPaciente(false)} size="lg" centered>
         <Modal.Header closeButton>
-          <Modal.Title className="text-center w-100 ms-3">
-            Alta de Paciente
-          </Modal.Title>
+          <Modal.Title>Alta de Paciente</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Paciente
             modo="modal"
             onClose={() => setMostrarModalPaciente(false)}
-            onGuardar={(nuevoPaciente) => {
-              console.log("Paciente guardado:", nuevoPaciente);
-              setMostrarModalPaciente(false);
-            }}
+            onGuardar={handleGuardarPaciente}
           />
         </Modal.Body>
       </Modal>
