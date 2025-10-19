@@ -1,4 +1,4 @@
-import React, { useState, useMemo } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import {
   Container,
   Row,
@@ -14,6 +14,7 @@ import { v4 as uuidv4 } from "uuid";
 import Paciente from "../paciente/Paciente.jsx";
 import "./Administrador.css";
 
+// Simulación local (servicios y turnos)
 const generarDatosSimulados = (prefijo, cantidad) => {
   const datos = [];
   for (let i = 1; i <= cantidad; i++) {
@@ -49,6 +50,13 @@ const Administrador = () => {
 
   const elementosPorPagina = 10;
   const pagina = paginaActual[key];
+
+  // 🔗 Preparado para cargar pacientes desde backend
+  useEffect(() => {
+    // fetch("/api/pacientes")
+    //   .then(res => res.json())
+    //   .then(data => setPacientes(data));
+  }, []);
 
   const datosMapeados = useMemo(() => ({
     servicios: {
@@ -89,12 +97,22 @@ const Administrador = () => {
 
   const handleGuardarPaciente = (nuevoPaciente) => {
     const pacienteFormateado = {
-      id: uuidv4(),
+      id: uuidv4(), // 🔄 Reemplazar por ID del backend si se usa POST
       campo1: `${nuevoPaciente.dueno.Nombre} ${nuevoPaciente.dueno.Apellido}`,
       campo2: nuevoPaciente.paciente.Nombre,
       campo3: nuevoPaciente.paciente.Especie,
       campo4: nuevoPaciente.paciente.Raza,
     };
+
+    // 🔗 Preparado para enviar al backend
+    // fetch("/api/pacientes", {
+    //   method: "POST",
+    //   headers: { "Content-Type": "application/json" },
+    //   body: JSON.stringify(nuevoPaciente),
+    // }).then(() => {
+    //   setPacientes((prev) => [...prev, pacienteFormateado]);
+    // });
+
     setPacientes((prev) => [...prev, pacienteFormateado]);
     setMostrarModalPaciente(false);
   };
@@ -193,7 +211,7 @@ const Administrador = () => {
 
       <Modal show={mostrarModalPaciente} onHide={() => setMostrarModalPaciente(false)} size="lg" centered>
         <Modal.Header closeButton>
-          <Modal.Title>Alta de Paciente</Modal.Title>
+          <Modal.Title className="w-100 text-center fs-3 ms-4">Alta de Paciente</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Paciente

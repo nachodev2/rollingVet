@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Container, Row, Col } from "react-bootstrap";
 
 function Paciente({ onGuardar, onClose, modo = "pantalla" }) {
@@ -23,6 +23,50 @@ function Paciente({ onGuardar, onClose, modo = "pantalla" }) {
     Teléfono: "",
     Dirección: "",
   });
+
+  const [razas, setRazas] = useState([]);
+
+  const opcionesPredefinidas = {
+    Sexo: ["Macho", "Hembra"],
+    Especie: ["Perro", "Gato", "Conejo", "Ave", "Otro"],
+  };
+
+  const razasPorEspecie = {
+    Perro: [
+      "Labrador Retriever", "Bulldog", "Caniche", "Pastor Alemán", "Beagle",
+      "Boxer", "Chihuahua", "Dálmata", "Golden Retriever", "Pomerania", "Otro"
+    ],
+    Gato: [
+      "Siames", "Persa", "Maine Coon", "Azul Ruso", "Bengalí",
+      "Angora Turco", "British Shorthair", "Sphynx", "Bombay", "Otro"
+    ],
+    Conejo: ["Mini Rex", "Holandés", "Cabeza de León", "Otro"],
+    Ave: ["Canario", "Loro", "Cacatúa", "Otro"],
+    Otro: ["Sin especificar"]
+  };
+
+  const placeholders = {
+    Nombre: "Ej: Candy",
+    NombreDueno: "Ej: Laura",
+    Sexo: "Ej: Hembra",
+    Edad: "Ej: 3",
+    Peso: "Ej: 12.5",
+    Especie: "Ej: Perro",
+    Raza: "Ej: Caniche",
+    Apellido: "Ej: González",
+    Email: "Ej: ejemplo@mail.com",
+    Teléfono: "Ej: 3815123456",
+    Dirección: "Ej: Av. Siempreviva 742"
+  };
+
+  useEffect(() => {
+    const especie = datosPaciente.Especie;
+    if (especie && razasPorEspecie[especie]) {
+      setRazas(razasPorEspecie[especie]);
+    } else {
+      setRazas([]);
+    }
+  }, [datosPaciente.Especie]);
 
   const handleChangePaciente = (e) => {
     const { name, value } = e.target;
@@ -57,14 +101,52 @@ function Paciente({ onGuardar, onClose, modo = "pantalla" }) {
                 <label className="form-label text-dark mb-0">{campo}:</label>
               </div>
               <div className="col-8">
-                <input
-                  type="text"
-                  name={campo}
-                  value={datos[campo]}
-                  onChange={handleChange}
-                  className="form-control"
-                  required
-                />
+                {campo === "Raza" ? (
+                  <>
+                    <input
+                      type="text"
+                      name={campo}
+                      value={datos[campo]}
+                      onChange={handleChange}
+                      className="form-control"
+                      list="razas-list"
+                      placeholder={placeholders[campo]}
+                      required
+                    />
+                    <datalist id="razas-list">
+                      {razas.map((raza) => (
+                        <option key={raza} value={raza} />
+                      ))}
+                    </datalist>
+                  </>
+                ) : opcionesPredefinidas[campo] ? (
+                  <select
+                    name={campo}
+                    value={datos[campo]}
+                    onChange={handleChange}
+                    className="form-control"
+                    required
+                  >
+                    <option value="">{placeholders[campo]}</option>
+                    {opcionesPredefinidas[campo].map((opcion) => (
+                      <option key={opcion} value={opcion}>{opcion}</option>
+                    ))}
+                  </select>
+                ) : (
+                  <input
+                    type="text"
+                    name={campo}
+                    value={datos[campo]}
+                    onChange={handleChange}
+                    className="form-control"
+                    placeholder={
+                      campo === "Nombre" && handleChange === handleChangeDueno
+                        ? placeholders["NombreDueno"]
+                        : placeholders[campo]
+                    }
+                    required
+                  />
+                )}
               </div>
             </div>
           </div>
