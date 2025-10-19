@@ -55,7 +55,16 @@ const Menu = () => {
     return () => window.removeEventListener("scroll", manejarScroll);
   }, []);
 
+  const adminPage = JSON.parse(localStorage.getItem("usuario"));
+    if (adminPage?.isLoggedIn) {
+      setIsLoggedIn(true);
+      setUserRole(adminPage.role);
+      setUserName(adminPage.name);
+    }
+
   const handleLogin = (role = "user", name = "Usuario") => {
+    const userData = { role, name, isLoggedIn: true };
+  localStorage.setItem("usuario", JSON.stringify(userData))
     setIsLoggedIn(true);
     setUserRole(role);
     setUserName(name);

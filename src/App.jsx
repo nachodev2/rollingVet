@@ -9,6 +9,7 @@ import CarroCompras from "./components/pages/carro-compras/CarroCompras.jsx";
 import Paciente from "./components/pages/paciente/Paciente.jsx";
 import Producto from "./components/pages/producto/Producto.jsx";
 import Error404 from "./components/pages/error404/Error404.jsx";
+import RutasAdmin from './routes/RutasAdmin.jsx';
 import "./index.css";
 
 function App() {
@@ -20,7 +21,9 @@ function App() {
           <Route path="/" element={<Inicio />} />
           <Route path="/contacto" element={<Contacto />} />
           <Route path="/nosotros" element={<SobreNosotros />} />
-          <Route path="/administracion" element={<Administrador />} />
+           <Route element={<RutasAdmin />}>
+            <Route path="/administracion" element={<Administrador />} />
+          </Route>
           <Route path="/carro" element={<CarroCompras />} />
           <Route path="/paciente" element={<Paciente />} />
           <Route path="/producto/:id" element={<Producto />} />

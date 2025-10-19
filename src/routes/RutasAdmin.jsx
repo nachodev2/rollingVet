@@ -2,9 +2,9 @@
 import { Navigate, Outlet } from 'react-router';
 
 const RutasAdmin = () => {
-    const usuario = { rol: 'admin' }; 
+   const adminPage = JSON.parse(localStorage.getItem("usuario"));
 
-    if (!usuario || usuario.rol !== 'admin') {
+    if (!adminPage || adminPage.role !== 'admin') {
         return <Navigate to="/" />;
     }
 
