@@ -25,7 +25,11 @@
     "react-router": "^7.9.3",
     "react-select": "^5.10.2",
     "react-spinners": "^0.17.0",
+<<<<<<< HEAD
     "sweetalert2": "^11.26.3",
+=======
+    "sweetalert2": "^11.23.0",
+>>>>>>> 9c10eb73bb28ea61a97c9929b6a9d3f969def744
     "swiper": "^12.0.2",
     "uuid": "^13.0.0"
   },

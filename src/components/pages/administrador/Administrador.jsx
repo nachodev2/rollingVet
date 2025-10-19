@@ -14,7 +14,6 @@ import { v4 as uuidv4 } from "uuid";
 import Paciente from "../paciente/Paciente.jsx";
 import "./Administrador.css";
 
-// Simulación local (servicios y turnos)
 const generarDatosSimulados = (prefijo, cantidad) => {
   const datos = [];
   for (let i = 1; i <= cantidad; i++) {
@@ -29,6 +28,7 @@ const generarDatosSimulados = (prefijo, cantidad) => {
 };
 
 const datosServicios = generarDatosSimulados("Servicio de Peluquería", 23);
+const datosPacientes = generarDatosSimulados("Paciente Max", 48);
 const datosTurnos = generarDatosSimulados("Turno Agendado", 31);
 
 const encabezados = {
@@ -44,6 +44,7 @@ const Administrador = () => {
     pacientes: 1,
     turnos: 1,
   });
+
 
   const [mostrarModalPaciente, setMostrarModalPaciente] = useState(false);
   const [pacientes, setPacientes] = useState([]);
@@ -218,9 +219,12 @@ const Administrador = () => {
                     datosMostrados={tabKey === key ? datosMostrados : []}
                   />
 
-                  <Pagination className="justify-content-center">
-                    {/* Paginación opcional */}
-                  </Pagination>
+                  <PaginacionTabla
+                    totalElementos={datosMapeados[tabKey].data.length}
+                    elementosPorPagina={elementosPorPagina}
+                    paginaActual={paginaActual[tabKey]}
+                    onPageChange={handleCambioPagina}
+                  />
                 </Tab>
               ))}
             </Tabs>
