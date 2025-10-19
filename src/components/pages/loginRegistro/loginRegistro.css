@@ -1,0 +1,22 @@
+.btn-registro,
+.btn-acceso {
+  background-color: var(--btn-principal-fondo);
+  border-color: var(--btn-principal-fondo);
+  color: var(--btn-principal-texto);
+  font-weight: 600;
+  transition: all 0.2s ease;
+  width: 168px;
+}
+
+.btn-registro:hover,
+.btn-acceso:hover,
+.btn-registro:focus,
+.btn-acceso:focus,
+.btn-registro:active,
+.btn-acceso:active {
+  background-color: var(--btn-principal-hover);
+  border-color: var(--btn-principal-hover);
+  color: var(--btn-principal-texto);
+  box-shadow: 0 4px 12px rgba(120, 194, 173, 0.4);
+}
+

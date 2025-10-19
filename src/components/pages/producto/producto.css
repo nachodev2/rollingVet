@@ -1,0 +1,14 @@
+.product-card-img {
+    width: 100%;
+    height: 400px !important;
+    object-fit: cover;
+    padding: 15px;
+}
+
+.product-card {
+    min-height: 480px;
+    max-height: 480px; 
+    height: 480px;
+    display: flex;
+    flex-direction: column;
+}
