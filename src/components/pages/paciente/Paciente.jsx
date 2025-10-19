@@ -1,8 +1,9 @@
 import React, { useState, useEffect } from "react";
 import { Container, Row, Col } from "react-bootstrap";
 
-function Paciente({ onGuardar, onClose, modo = "pantalla" }) {
+function Paciente({ onGuardar, onClose, modo = "pantalla", datos }) {
   const esModal = modo === "modal";
+  const esDetalle = modo === "detalle";
 
   const camposPaciente = ["Nombre", "Sexo", "Edad", "Peso", "Especie", "Raza"];
   const camposDueno = ["Nombre", "Apellido", "Email", "Teléfono", "Dirección"];
@@ -155,12 +156,48 @@ function Paciente({ onGuardar, onClose, modo = "pantalla" }) {
     </Row>
   );
 
+  const renderDetalle = (campos, datos) => (
+    <Row xs={1} md={2} lg={3} className="justify-content-center">
+      {campos.map((campo, index) => (
+        <Col key={index} className="p-2 d-flex justify-content-center">
+          <div
+            className="py-2 px-3 border border-info bg-info-subtle rounded"
+            style={{ width: "100%" }}
+          >
+            <div className="row align-items-center">
+              <div className="col-4">
+                <label className="form-label text-dark mb-0">{campo}:</label>
+              </div>
+              <div className="col-8">
+                <input
+                  type="text"
+                  readOnly
+                  value={datos?.[campo] || "-"}
+                  title={datos?.[campo] || "-"}
+                  className="form-control bg-white"
+                />
+              </div>
+            </div>
+          </div>
+        </Col>
+      ))}
+    </Row>
+  );
+
+  if (esDetalle && datos) {
+    return (
+      <Container className="my-4">
+        <h5 className="text-center mb-3">Datos del Paciente</h5>
+        {renderDetalle(camposPaciente, datos.paciente)}
+
+        <h5 className="text-center mt-4 mb-3">Datos del Dueño</h5>
+        {renderDetalle(camposDueno, datos.dueno)}
+      </Container>
+    );
+  }
+
   return (
     <form onSubmit={handleSubmit}>
-      {!esModal && (
-        <h1 className="text-center my-4 titulo text-info">Historia Clínica</h1>
-      )}
-
       <Container className={esModal ? "" : "my-4"}>
         <h5 className="text-center mb-3">Datos del Paciente</h5>
         {renderCampos(camposPaciente, datosPaciente, handleChangePaciente)}

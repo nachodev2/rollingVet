@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useMemo } from "react";
+import React, { useState, useMemo } from "react";
 import {
   Container,
   Row,
@@ -10,7 +10,6 @@ import {
   Modal,
 } from "react-bootstrap";
 import { PencilSquare, Trash, Eye } from "react-bootstrap-icons";
-import { v4 as uuidv4 } from "uuid";
 import Paciente from "../paciente/Paciente.jsx";
 import "./Administrador.css";
 
@@ -27,9 +26,8 @@ const generarDatosSimulados = (prefijo, cantidad) => {
   return datos;
 };
 
-const datosServicios = generarDatosSimulados("Servicio de Peluquería", 23);
-const datosPacientes = generarDatosSimulados("Paciente Max", 48);
-const datosTurnos = generarDatosSimulados("Turno Agendado", 31);
+const datosServicios = generarDatosSimulados("Servicio de Peluquería", 10);
+const datosTurnos = generarDatosSimulados("Turno Agendado", 15);
 
 const encabezados = {
   servicios: ["Nombre", "Descripción", "Costo"],
@@ -38,26 +36,20 @@ const encabezados = {
 };
 
 const Administrador = () => {
-  const [key, setKey] = useState("servicios");
+  const [key, setKey] = useState("pacientes");
   const [paginaActual, setPaginaActual] = useState({
     servicios: 1,
     pacientes: 1,
     turnos: 1,
   });
 
-
   const [mostrarModalPaciente, setMostrarModalPaciente] = useState(false);
+  const [mostrarDetallePaciente, setMostrarDetallePaciente] = useState(false);
   const [pacientes, setPacientes] = useState([]);
+  const [pacienteSeleccionado, setPacienteSeleccionado] = useState(null);
 
   const elementosPorPagina = 10;
   const pagina = paginaActual[key];
-
-  // 🔗 Preparado para cargar pacientes desde backend
-  useEffect(() => {
-    // fetch("/api/pacientes")
-    //   .then(res => res.json())
-    //   .then(data => setPacientes(data));
-  }, []);
 
   const datosMapeados = useMemo(
     () => ({
@@ -80,11 +72,7 @@ const Administrador = () => {
     [pacientes]
   );
 
-  const {
-    data: datosCompletos,
-    header: encabezadosTabla,
-    boton,
-  } = datosMapeados[key];
+  const { data: datosCompletos, header: encabezadosTabla, boton } = datosMapeados[key];
   const indiceFinal = pagina * elementosPorPagina;
   const indiceInicial = indiceFinal - elementosPorPagina;
   const datosMostrados = datosCompletos.slice(indiceInicial, indiceFinal);
@@ -105,24 +93,28 @@ const Administrador = () => {
 
   const handleGuardarPaciente = (nuevoPaciente) => {
     const pacienteFormateado = {
-      id: uuidv4(), // 🔄 Reemplazar por ID del backend si se usa POST
+      id: crypto.randomUUID(),
       campo1: `${nuevoPaciente.dueno.Nombre} ${nuevoPaciente.dueno.Apellido}`,
       campo2: nuevoPaciente.paciente.Nombre,
       campo3: nuevoPaciente.paciente.Especie,
       campo4: nuevoPaciente.paciente.Raza,
+      datosCompletos: nuevoPaciente,
     };
-
-    // 🔗 Preparado para enviar al backend
-    // fetch("/api/pacientes", {
-    //   method: "POST",
-    //   headers: { "Content-Type": "application/json" },
-    //   body: JSON.stringify(nuevoPaciente),
-    // }).then(() => {
-    //   setPacientes((prev) => [...prev, pacienteFormateado]);
-    // });
 
     setPacientes((prev) => [...prev, pacienteFormateado]);
     setMostrarModalPaciente(false);
+  };
+
+  const handleEliminarPaciente = (id) => {
+    setPacientes((prev) => prev.filter((p) => p.id !== id));
+  };
+
+  const handleVerDetallePaciente = (id) => {
+    const paciente = pacientes.find((p) => p.id === id);
+    if (paciente) {
+      setPacienteSeleccionado(paciente.datosCompletos);
+      setMostrarDetallePaciente(true);
+    }
   };
 
   const TablaCRUD = ({ encabezadosTabla, datosMostrados }) => (
@@ -146,17 +138,22 @@ const Administrador = () => {
                 {encabezadosTabla.length > 3 && <td>{item.campo4}</td>}
                 <td className="acciones-botones-contenedor">
                   <div className="contenedor-iconos-accion">
-                    <button
-                      className="btn-icono-accion ver"
-                      title="Ver Detalle">
-                      <Eye size={18}/>
-                    </button>
+                    {key === "pacientes" && (
+                      <button
+                        className="btn-icono-accion ver"
+                        title="Ver Detalle"
+                        onClick={() => handleVerDetallePaciente(item.id)}
+                      >
+                        <Eye size={18} />
+                      </button>
+                    )}
                     <button className="btn-icono-accion editar" title="Editar">
                       <PencilSquare size={18} />
                     </button>
                     <button
                       className="btn-icono-accion eliminar"
                       title="Eliminar"
+                      onClick={() => handleEliminarPaciente(item.id)}
                     >
                       <Trash size={18} />
                     </button>
@@ -201,15 +198,11 @@ const Administrador = () => {
                   key={tabKey}
                 >
                   <h2 className="subtitulo-seccion">
-                    Gestión de{" "}
-                    {tabKey.charAt(0).toUpperCase() + tabKey.slice(1)}
+                    Gestión de {tabKey.charAt(0).toUpperCase() + tabKey.slice(1)}
                   </h2>
 
                   <div className="btn-crear-container">
-                    <button
-                      className="btn-crear-elemento"
-                      onClick={handleCrear}
-                    >
+                    <button className="btn-crear-elemento" onClick={handleCrear}>
                       {datosMapeados[tabKey].boton}
                     </button>
                   </div>
@@ -218,6 +211,20 @@ const Administrador = () => {
                     encabezadosTabla={datosMapeados[tabKey].header}
                     datosMostrados={tabKey === key ? datosMostrados : []}
                   />
+
+                  <Pagination className="justify-content-center mt-3">
+                    {Array.from({
+                      length: Math.ceil(datosCompletos.length / elementosPorPagina),
+                    }).map((_, index) => (
+                      <Pagination.Item
+                        key={index + 1}
+                        active={index + 1 === pagina}
+                        onClick={() => handleCambioPagina(index + 1)}
+                      >
+                        {index + 1}
+                      </Pagination.Item>
+                    ))}
+                  </Pagination>
                 </Tab>
               ))}
             </Tabs>
@@ -244,8 +251,28 @@ const Administrador = () => {
           />
         </Modal.Body>
       </Modal>
+
+      <Modal
+        show={mostrarDetallePaciente}
+        onHide={() => setMostrarDetallePaciente(false)}
+        size="lg"
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title className="w-100 text-center fs-3 ms-4">
+            Historia Clínica del Paciente
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Paciente
+            modo="detalle"
+            datos={pacienteSeleccionado}
+            onClose={() => setMostrarDetallePaciente(false)}
+          />
+        </Modal.Body>
+      </Modal>
     </main>
   );
 };
 
-export default Administrador;
+export default Administrador
