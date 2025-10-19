@@ -142,6 +142,17 @@ input.form-control:-webkit-autofill {
   padding: 0;
 }
 
+.btn-icono-accion.ver {
+  background-color: transparent;
+  color: rgb(60, 177, 217);
+  border-color: rgb(60, 177, 217);
+}
+
+.btn-icono-accion.ver:hover {
+  background-color: rgb(60, 177, 217);
+  color: white;
+}
+
 .btn-icono-accion.editar {
   background-color: transparent;
   color: #f6bb06;

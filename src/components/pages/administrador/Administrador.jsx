@@ -9,7 +9,7 @@ import {
   Pagination,
   Modal,
 } from "react-bootstrap";
-import { PencilSquare, Trash } from "react-bootstrap-icons";
+import { PencilSquare, Trash, Eye } from "react-bootstrap-icons";
 import { v4 as uuidv4 } from "uuid";
 import Paciente from "../paciente/Paciente.jsx";
 import "./Administrador.css";
@@ -58,25 +58,32 @@ const Administrador = () => {
     //   .then(data => setPacientes(data));
   }, []);
 
-  const datosMapeados = useMemo(() => ({
-    servicios: {
-      data: datosServicios,
-      header: encabezados.servicios,
-      boton: "Agregar Servicio",
-    },
-    pacientes: {
-      data: pacientes,
-      header: encabezados.pacientes,
-      boton: "Dar de Alta Paciente",
-    },
-    turnos: {
-      data: datosTurnos,
-      header: encabezados.turnos,
-      boton: "Cargar Turno",
-    },
-  }), [pacientes]);
+  const datosMapeados = useMemo(
+    () => ({
+      servicios: {
+        data: datosServicios,
+        header: encabezados.servicios,
+        boton: "Agregar Servicio",
+      },
+      pacientes: {
+        data: pacientes,
+        header: encabezados.pacientes,
+        boton: "Dar de Alta Paciente",
+      },
+      turnos: {
+        data: datosTurnos,
+        header: encabezados.turnos,
+        boton: "Cargar Turno",
+      },
+    }),
+    [pacientes]
+  );
 
-  const { data: datosCompletos, header: encabezadosTabla, boton } = datosMapeados[key];
+  const {
+    data: datosCompletos,
+    header: encabezadosTabla,
+    boton,
+  } = datosMapeados[key];
   const indiceFinal = pagina * elementosPorPagina;
   const indiceInicial = indiceFinal - elementosPorPagina;
   const datosMostrados = datosCompletos.slice(indiceInicial, indiceFinal);
@@ -138,10 +145,18 @@ const Administrador = () => {
                 {encabezadosTabla.length > 3 && <td>{item.campo4}</td>}
                 <td className="acciones-botones-contenedor">
                   <div className="contenedor-iconos-accion">
+                    <button
+                      className="btn-icono-accion ver"
+                      title="Ver Detalle">
+                      <Eye size={18}/>
+                    </button>
                     <button className="btn-icono-accion editar" title="Editar">
                       <PencilSquare size={18} />
                     </button>
-                    <button className="btn-icono-accion eliminar" title="Eliminar">
+                    <button
+                      className="btn-icono-accion eliminar"
+                      title="Eliminar"
+                    >
                       <Trash size={18} />
                     </button>
                   </div>
@@ -185,11 +200,15 @@ const Administrador = () => {
                   key={tabKey}
                 >
                   <h2 className="subtitulo-seccion">
-                    Gestión de {tabKey.charAt(0).toUpperCase() + tabKey.slice(1)}
+                    Gestión de{" "}
+                    {tabKey.charAt(0).toUpperCase() + tabKey.slice(1)}
                   </h2>
 
                   <div className="btn-crear-container">
-                    <button className="btn-crear-elemento" onClick={handleCrear}>
+                    <button
+                      className="btn-crear-elemento"
+                      onClick={handleCrear}
+                    >
                       {datosMapeados[tabKey].boton}
                     </button>
                   </div>
@@ -209,9 +228,16 @@ const Administrador = () => {
         </Row>
       </Container>
 
-      <Modal show={mostrarModalPaciente} onHide={() => setMostrarModalPaciente(false)} size="lg" centered>
+      <Modal
+        show={mostrarModalPaciente}
+        onHide={() => setMostrarModalPaciente(false)}
+        size="lg"
+        centered
+      >
         <Modal.Header closeButton>
-          <Modal.Title className="w-100 text-center fs-3 ms-4">Alta de Paciente</Modal.Title>
+          <Modal.Title className="w-100 text-center fs-3 ms-4">
+            Alta de Paciente
+          </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <Paciente
