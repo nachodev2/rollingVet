@@ -2,47 +2,30 @@ import { useState } from 'react';
 import { Button, Modal, Form } from 'react-bootstrap';
 import "./loginRegistro.css";
 
-function Login({ handleLogin }) { 
-    const [show, setShow] = useState(false);
-    const [email, setEmail] = useState('');
-    const [password, setPassword] = useState('');
-    
-    const handleClose = () => setShow(false);
-    const handleShow = () => setShow(true);
+function Login({ handleLogin }) { // ✅ Recibir handleLogin desde Menu
+  const [show, setShow] = useState(false);
+  const [email, setEmail] = useState('');
+  const [password, setPassword] = useState('');
+
+  const handleClose = () => setShow(false);
+  const handleShow = () => setShow(true);
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
 
     const ADMIN_EMAIL = import.meta.env.VITE_ADMIN_EMAIL;
     const ADMIN_PASS = import.meta.env.VITE_ADMIN_PASSWORD_SIMULATION;
 
-    const handleSubmit = (e) => {
-        e.preventDefault();
-        
-        let role = 'user';
-        let userName = 'Usuario';
-        
-        if (email === ADMIN_EMAIL && password === ADMIN_PASS) {
-            role = 'admin';
-            userName = 'AdminName';
-            console.log("Simulación de Login: Administrador exitoso.");
-            
-            if (handleLogin) {
-                 handleLogin(role, userName);
-            }
-            
-            handleClose();
-        } else {
-            console.log("Simulación de Login: Usuario o Credenciales Inválidas.");
-            
-            if (email && password) {
-                 if (handleLogin) {
-                    handleLogin(role, userName);
-                 }
-                 handleClose();
-            }
-        }
+    if (handleLogin) {
+      if (email === ADMIN_EMAIL && password === ADMIN_PASS) {
+        handleLogin('admin', 'Administrador'); // ✅ Llama a handleLogin
+      } else {
+        handleLogin('user', 'Usuario');
+      }
+    }
 
-        setEmail('');
-        setPassword('');
-    };
+    handleClose(); // Cierra la modal
+  };
 
     return (
         <>
