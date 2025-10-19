@@ -2,19 +2,13 @@ import React, { useState, useEffect } from "react";
 import { Navbar, Nav, Button, Container } from "react-bootstrap";
 import { BoxArrowRight } from "react-bootstrap-icons";
 import Registro from "../pages/loginRegistro/Registro";
-import { NavLink } from "react-router";
 import Login from "../pages/loginRegistro/Login";
+import { NavLink } from "react-router-dom";
 import "./Menu.css";
 
-const AuthButtons = ({
-  isLoggedIn,
-  userRole,
-  userName,
-  handleLogout,
-  handleLogin,
-}) => {
+const AuthButtons = ({ isLoggedIn, userRole, userName, handleLogout, handleLogin }) => {
   if (isLoggedIn) {
-    const saludo = userRole === "admin" ? `Administrador` : userName;
+    const saludo = userRole === "admin" ? "Administrador" : userName;
     return (
       <div className="nav-botones d-flex align-items-center gap-3">
         <span className="mensaje-bienvenida">¡Bienvenido, {saludo}!</span>
@@ -31,7 +25,6 @@ const AuthButtons = ({
 
   return (
     <div className="nav-botones d-flex gap-3">
-      {/* SE PASA handleLogin AHORA */}
       <Registro handleLogin={handleLogin} />
       <Login handleLogin={handleLogin} />
     </div>
@@ -40,10 +33,9 @@ const AuthButtons = ({
 
 const Menu = () => {
   const [estaEnScroll, setEstaEnScroll] = useState(false);
-  
   const [isLoggedIn, setIsLoggedIn] = useState(false);
-  const [userRole, setUserRole] = useState('visitante');
-  const [userName, setUserName] = useState('');
+  const [userRole, setUserRole] = useState("visitante");
+  const [userName, setUserName] = useState("");
 
   useEffect(() => {
     const manejarScroll = () => {
@@ -84,6 +76,7 @@ const Menu = () => {
 
     return links;
   };
+
   const navLinks = getNavLinks(userRole);
 
   return (
@@ -91,11 +84,12 @@ const Menu = () => {
       <div className={`nav-flotante ${estaEnScroll ? "visible" : "oculto"}`}>
         <div className="nav-cristal">
           <Nav className="justify-content-center">
-            {navLinks.map((link, index) => (
+            {navLinks.map((link) => (
               <Nav.Link
+                key={`flotante-${link.href}`}
                 as={NavLink}
                 to={link.href}
-                className="link-inicial mx-3"
+                className="link-scroll mx-3"
               >
                 {link.text}
               </Nav.Link>
@@ -103,6 +97,7 @@ const Menu = () => {
           </Nav>
         </div>
       </div>
+
       <Navbar
         expand="lg"
         className={`nav-inicial ${estaEnScroll ? "oculto" : "visible"}`}
@@ -117,8 +112,9 @@ const Menu = () => {
           />
           <Navbar.Collapse id="navbar-nav-collapse">
             <Nav className="mx-auto enlaces-centrales">
-              {navLinks.map((link, index) => (
+              {navLinks.map((link) => (
                 <Nav.Link
+                  key={`principal-${link.href}`}
                   as={NavLink}
                   to={link.href}
                   className="link-inicial mx-3"

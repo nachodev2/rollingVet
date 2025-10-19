@@ -218,13 +218,6 @@ const Administrador = () => {
                     encabezadosTabla={datosMapeados[tabKey].header}
                     datosMostrados={tabKey === key ? datosMostrados : []}
                   />
-
-                  <PaginacionTabla
-                    totalElementos={datosMapeados[tabKey].data.length}
-                    elementosPorPagina={elementosPorPagina}
-                    paginaActual={paginaActual[tabKey]}
-                    onPageChange={handleCambioPagina}
-                  />
                 </Tab>
               ))}
             </Tabs>
