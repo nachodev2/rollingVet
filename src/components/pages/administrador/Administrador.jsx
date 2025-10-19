@@ -45,8 +45,11 @@ const Administrador = () => {
 
   const [mostrarModalPaciente, setMostrarModalPaciente] = useState(false);
   const [mostrarDetallePaciente, setMostrarDetallePaciente] = useState(false);
+  const [mostrarEditarPaciente, setMostrarEditarPaciente] = useState(false);
+
   const [pacientes, setPacientes] = useState([]);
   const [pacienteSeleccionado, setPacienteSeleccionado] = useState(null);
+  const [pacienteEnEdicion, setPacienteEnEdicion] = useState(null);
 
   const elementosPorPagina = 10;
   const pagina = paginaActual[key];
@@ -117,6 +120,33 @@ const Administrador = () => {
     }
   };
 
+  const handleEditarPaciente = (id) => {
+    const paciente = pacientes.find((p) => p.id === id);
+    if (paciente) {
+      setPacienteEnEdicion({ ...paciente.datosCompletos, id: paciente.id });
+      setMostrarEditarPaciente(true);
+    }
+  };
+
+  const handleActualizarPaciente = (pacienteActualizado) => {
+    setPacientes((prev) =>
+      prev.map((p) =>
+        p.id === pacienteEnEdicion.id
+          ? {
+              ...p,
+              campo1: `${pacienteActualizado.dueno.Nombre} ${pacienteActualizado.dueno.Apellido}`,
+              campo2: pacienteActualizado.paciente.Nombre,
+              campo3: pacienteActualizado.paciente.Especie,
+              campo4: pacienteActualizado.paciente.Raza,
+              datosCompletos: pacienteActualizado,
+            }
+          : p
+      )
+    );
+    setMostrarEditarPaciente(false);
+    setPacienteEnEdicion(null);
+  };
+
   const TablaCRUD = ({ encabezadosTabla, datosMostrados }) => (
     <div className="mt-4 contenedor-tabla">
       <Table striped bordered hover responsive>
@@ -139,24 +169,30 @@ const Administrador = () => {
                 <td className="acciones-botones-contenedor">
                   <div className="contenedor-iconos-accion">
                     {key === "pacientes" && (
-                      <button
-                        className="btn-icono-accion ver"
-                        title="Ver Detalle"
-                        onClick={() => handleVerDetallePaciente(item.id)}
-                      >
-                        <Eye size={18} />
-                      </button>
+                      <>
+                        <button
+                          className="btn-icono-accion ver"
+                          title="Ver Detalle"
+                          onClick={() => handleVerDetallePaciente(item.id)}
+                        >
+                          <Eye size={18} />
+                        </button>
+                        <button
+                          className="btn-icono-accion editar"
+                          title="Editar"
+                          onClick={() => handleEditarPaciente(item.id)}
+                        >
+                          <PencilSquare size={18} />
+                        </button>
+                        <button
+                          className="btn-icono-accion eliminar"
+                          title="Eliminar"
+                          onClick={() => handleEliminarPaciente(item.id)}
+                        >
+                          <Trash size={18} />
+                        </button>
+                      </>
                     )}
-                    <button className="btn-icono-accion editar" title="Editar">
-                      <PencilSquare size={18} />
-                    </button>
-                    <button
-                      className="btn-icono-accion eliminar"
-                      title="Eliminar"
-                      onClick={() => handleEliminarPaciente(item.id)}
-                    >
-                      <Trash size={18} />
-                    </button>
                   </div>
                 </td>
               </tr>
@@ -218,11 +254,9 @@ const Administrador = () => {
                     }).map((_, index) => (
                       <Pagination.Item
                         key={index + 1}
-                        active={index + 1 === pagina}
+                        active={index + 1  === pagina}
                         onClick={() => handleCambioPagina(index + 1)}
-                      >
-                        {index + 1}
-                      </Pagination.Item>
+                      > {index + 1}</Pagination.Item>
                     ))}
                   </Pagination>
                 </Tab>
@@ -232,6 +266,7 @@ const Administrador = () => {
         </Row>
       </Container>
 
+      {/* Modal Alta */}
       <Modal
         show={mostrarModalPaciente}
         onHide={() => setMostrarModalPaciente(false)}
@@ -252,6 +287,7 @@ const Administrador = () => {
         </Modal.Body>
       </Modal>
 
+      {/* Modal Detalle */}
       <Modal
         show={mostrarDetallePaciente}
         onHide={() => setMostrarDetallePaciente(false)}
@@ -260,7 +296,7 @@ const Administrador = () => {
       >
         <Modal.Header closeButton>
           <Modal.Title className="w-100 text-center fs-3 ms-4">
-            Historia Clínica del Paciente
+            Ficha del Paciente
           </Modal.Title>
         </Modal.Header>
         <Modal.Body>
@@ -271,8 +307,30 @@ const Administrador = () => {
           />
         </Modal.Body>
       </Modal>
+
+      {/* Modal Edición */}
+      <Modal
+        show={mostrarEditarPaciente}
+        onHide={() => setMostrarEditarPaciente(false)}
+        size="lg"
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title className="w-100 text-center fs-3 ms-4">
+            Editar Paciente
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Paciente
+            modo="editar"
+            datos={pacienteEnEdicion}
+            onClose={() => setMostrarEditarPaciente(false)}
+            onGuardar={handleActualizarPaciente}
+          />
+        </Modal.Body>
+      </Modal>
     </main>
   );
 };
 
-export default Administrador
+export default Administrador;
