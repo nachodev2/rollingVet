@@ -1,25 +1,72 @@
-import Container from "react-bootstrap/Container";
-import Row from "react-bootstrap/Row";
-import Col from "react-bootstrap/Col";
-import "./paciente.css";
+import React, { useState } from "react";
+import { Container, Row, Col } from "react-bootstrap";
 
-function Paciente() {
+function Paciente({ onGuardar, onClose, modo = "pantalla" }) {
+  const esModal = modo === "modal";
+
   const camposPaciente = ["Nombre", "Sexo", "Edad", "Peso", "Especie", "Raza"];
   const camposDueno = ["Nombre", "Apellido", "Email", "Teléfono", "Dirección"];
 
-  const renderCampos = (campos) => (
+  const [datosPaciente, setDatosPaciente] = useState({
+    Nombre: "",
+    Sexo: "",
+    Edad: "",
+    Peso: "",
+    Especie: "",
+    Raza: "",
+  });
+
+  const [datosDueno, setDatosDueno] = useState({
+    Nombre: "",
+    Apellido: "",
+    Email: "",
+    Teléfono: "",
+    Dirección: "",
+  });
+
+  const handleChangePaciente = (e) => {
+    const { name, value } = e.target;
+    setDatosPaciente((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleChangeDueno = (e) => {
+    const { name, value } = e.target;
+    setDatosDueno((prev) => ({ ...prev, [name]: value }));
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    const nuevoPaciente = {
+      paciente: datosPaciente,
+      dueno: datosDueno,
+    };
+    if (onGuardar) onGuardar(nuevoPaciente);
+    if (onClose) onClose();
+  };
+
+  const renderCampos = (campos, datos, handleChange) => (
     <Row xs={1} md={2} lg={3} className="justify-content-center">
       {campos.map((campo, index) => (
         <Col key={index} className="p-2 d-flex justify-content-center">
           <div
-            className="border border-info bg-info-subtle py-3 px-4 rounded d-flex align-items-center"
-            style={{ maxWidth: "400px", width: "100%" }}
+            className="py-2 px-3 border border-info bg-info-subtle rounded"
+            style={{ width: "100%" }}
           >
-            <label className="text-dark me-3 mb-0 w-25">{campo}:</label>
-            <input
-              type="text"
-              className="bg-light rounded-2 border border-2 input-paciente flex-grow-1"
-            />
+            <div className="row align-items-center">
+              <div className="col-4">
+                <label className="form-label text-dark mb-0">{campo}:</label>
+              </div>
+              <div className="col-8">
+                <input
+                  type="text"
+                  name={campo}
+                  value={datos[campo]}
+                  onChange={handleChange}
+                  className="form-control"
+                  required
+                />
+              </div>
+            </div>
           </div>
         </Col>
       ))}
@@ -27,16 +74,28 @@ function Paciente() {
   );
 
   return (
-    <>
-      <h1 className="text-center my-4 titulo text-info">Historia Clínica</h1>
-      <div className="container my-4 border border-dark rounded-3 p-3 contenedor-paciente">
-        <h4 className="text-center my-3">Datos del Paciente</h4>
-        <Container className="mb-5">{renderCampos(camposPaciente)}</Container>
+    <form onSubmit={handleSubmit}>
+      {!esModal && (
+        <h1 className="text-center my-4 titulo text-info">Historia Clínica</h1>
+      )}
 
-        <h4 className="text-center my-3">Datos del Dueño</h4>
-        <Container className="mb-5">{renderCampos(camposDueno)}</Container>
-      </div>
-    </>
+      <Container className={esModal ? "" : "my-4"}>
+        <h5 className="text-center mb-3">Datos del Paciente</h5>
+        {renderCampos(camposPaciente, datosPaciente, handleChangePaciente)}
+
+        <h5 className="text-center mt-4 mb-3">Datos del Dueño</h5>
+        {renderCampos(camposDueno, datosDueno, handleChangeDueno)}
+
+        <div className="text-center mt-4">
+          <button type="submit" className="btn btn-info me-3">
+            Guardar
+          </button>
+          <button type="button" className="btn btn-secondary" onClick={onClose}>
+            Cancelar
+          </button>
+        </div>
+      </Container>
+    </form>
   );
 }
 

@@ -1,4 +1,3 @@
-// Administrador.jsx
 import React, { useState, useMemo } from "react";
 import {
   Container,
@@ -11,6 +10,8 @@ import {
 } from "react-bootstrap";
 import { PencilSquare, Trash } from "react-bootstrap-icons";
 import "./Administrador.css";
+import Paciente from "../paciente/Paciente.jsx";
+import { Modal } from "react-bootstrap";
 
 const generarDatosSimulados = (prefijo, cantidad) => {
   const datos = [];
@@ -43,6 +44,24 @@ const Administrador = () => {
     pacientes: 1,
     turnos: 1,
   });
+
+  const [mostrarModalPaciente, setMostrarModalPaciente] = useState(false);
+
+  const handleCrear = () => {
+    switch (key) {
+      case "pacientes":
+        setMostrarModalPaciente(true);
+        break;
+      case "turnos":
+        console.log("Crear turno");
+        break;
+      case "servicios":
+        console.log("Crear servicio");
+        break;
+      default:
+        console.warn("Sección no reconocida:", key);
+    }
+  };
 
   const elementosPorPagina = 10;
 
@@ -216,7 +235,10 @@ const Administrador = () => {
                   </h2>
 
                   <div className="btn-crear-container">
-                    <button className="btn-crear-elemento">
+                    <button
+                      className="btn-crear-elemento"
+                      onClick={handleCrear}
+                    >
                       {datosMapeados[tabKey].boton}
                     </button>
                   </div>
@@ -238,6 +260,28 @@ const Administrador = () => {
           </Col>
         </Row>
       </Container>
+      <Modal
+        show={mostrarModalPaciente}
+        onHide={() => setMostrarModalPaciente(false)}
+        size="lg"
+        centered
+      >
+        <Modal.Header closeButton>
+          <Modal.Title className="text-center w-100 ms-3">
+            Alta de Paciente
+          </Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Paciente
+            modo="modal"
+            onClose={() => setMostrarModalPaciente(false)}
+            onGuardar={(nuevoPaciente) => {
+              console.log("Paciente guardado:", nuevoPaciente);
+              setMostrarModalPaciente(false);
+            }}
+          />
+        </Modal.Body>
+      </Modal>
     </main>
   );
 };
