@@ -1,59 +1,70 @@
-import React, { useState, useEffect } from "react";
-import { Table, Button, Modal, Form } from "react-bootstrap";
+import  { useState, useEffect } from "react";
+import { Modal, Button, Table } from "react-bootstrap";
 import { PencilSquare, Trash } from "react-bootstrap-icons";
 
-const ServiciosCRUD = () => {
-  const [servicios, setServicios] = useState([]);
+const CRUDServicios = () => {
   const [showModal, setShowModal] = useState(false);
-  const [nuevoServicio, setNuevoServicio] = useState({ nombre: "", descripcion: "", costo: "" });
-  const [editando, setEditando] = useState(null);
+  const abrirModal = () => setShowModal(true);
+  const cerrarModal = () => setShowModal(false);
 
- 
-  useEffect(() => {
-    const guardados = JSON.parse(localStorage.getItem("servicios")) || [];
-    setServicios(guardados);
-  }, []);
+  const [servicios, setServicios] = useState(() => {
+    const saved = localStorage.getItem("servicios");
+    try {
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
 
- 
+  const [nuevoServicio, setNuevoServicio] = useState({
+    nombre: "",
+    descripcion: "",
+    costo: "",
+  });
+  const [editIndex, setEditIndex] = useState(null);
+
   useEffect(() => {
     localStorage.setItem("servicios", JSON.stringify(servicios));
   }, [servicios]);
 
- 
-  const handleGuardar = () => {
-    if (editando !== null) {
-      const actualizados = servicios.map((s, i) =>
-        i === editando ? nuevoServicio : s
-      );
-      setServicios(actualizados);
-      setEditando(null);
+  const handleAgregar = () => {
+    if (!nuevoServicio.nombre) return alert("El nombre es obligatorio");
+    if (editIndex !== null) {
+      const updated = [...servicios];
+      updated[editIndex] = nuevoServicio;
+      setServicios(updated);
+      setEditIndex(null);
     } else {
-      setServicios([...servicios, nuevoServicio]);
+      setServicios([...servicios, { ...nuevoServicio, id: Date.now() }]);
     }
-    setShowModal(false);
     setNuevoServicio({ nombre: "", descripcion: "", costo: "" });
+    cerrarModal();
   };
 
+  const handleEditar = (index) => {
+    setNuevoServicio(servicios[index]);
+    setEditIndex(index);
+    abrirModal();
+  };
 
   const handleEliminar = (index) => {
-    const filtrados = servicios.filter((_, i) => i !== index);
-    setServicios(filtrados);
-  };
-
-  
-  const handleEditar = (index) => {
-    setEditando(index);
-    setNuevoServicio(servicios[index]);
-    setShowModal(true);
+    if (window.confirm("¿Eliminar este servicio?")) {
+      const updated = servicios.filter((_, i) => i !== index);
+      setServicios(updated);
+    }
   };
 
   return (
-    <div>
-      <Button className="mb-3" onClick={() => setShowModal(true)}>
-        Agregar Servicio
-      </Button>
+    <div className="crud-servicios">
+      
+      <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: "1rem" }}>
+        <Button variant="primary" onClick={abrirModal}>
+          Agregar Servicio
+        </Button>
+      </div>
 
-      <Table striped bordered hover>
+      
+      <Table striped bordered hover responsive>
         <thead>
           <tr>
             <th>Nombre</th>
@@ -64,25 +75,21 @@ const ServiciosCRUD = () => {
         </thead>
         <tbody>
           {servicios.length > 0 ? (
-            servicios.map((serv, index) => (
-              <tr key={index}>
-                <td>{serv.nombre}</td>
-                <td>{serv.descripcion}</td>
-                <td>{serv.costo}</td>
+            servicios.map((item, index) => (
+              <tr key={item.id || index}>
+                <td>{item.nombre}</td>
+                <td>{item.descripcion}</td>
+                <td>{item.costo}</td>
                 <td>
                   <Button
-                    variant="outline-primary"
                     size="sm"
+                    variant="warning"
                     onClick={() => handleEditar(index)}
-                    className="me-2"
+                    style={{ marginRight: "0.3rem" }}
                   >
                     <PencilSquare />
                   </Button>
-                  <Button
-                    variant="outline-danger"
-                    size="sm"
-                    onClick={() => handleEliminar(index)}
-                  >
+                  <Button size="sm" variant="danger" onClick={() => handleEliminar(index)}>
                     <Trash />
                   </Button>
                 </td>
@@ -90,8 +97,8 @@ const ServiciosCRUD = () => {
             ))
           ) : (
             <tr>
-              <td colSpan="4" className="text-center">
-                No hay servicios cargados.
+              <td colSpan={4} className="text-center">
+                No hay servicios.
               </td>
             </tr>
           )}
@@ -99,53 +106,40 @@ const ServiciosCRUD = () => {
       </Table>
 
       
-      <Modal show={showModal} onHide={() => setShowModal(false)}>
+      <Modal show={showModal} onHide={cerrarModal} size="lg">
         <Modal.Header closeButton>
-          <Modal.Title>
-            {editando !== null ? "Editar Servicio" : "Agregar Servicio"}
-          </Modal.Title>
+          <Modal.Title>{editIndex !== null ? "Editar Servicio" : "Agregar Servicio"}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <Form>
-            <Form.Group>
-              <Form.Label>Nombre</Form.Label>
-              <Form.Control
-                value={nuevoServicio.nombre}
-                onChange={(e) =>
-                  setNuevoServicio({ ...nuevoServicio, nombre: e.target.value })
-                }
-              />
-            </Form.Group>
-            <Form.Group>
-              <Form.Label>Descripción</Form.Label>
-              <Form.Control
-                value={nuevoServicio.descripcion}
-                onChange={(e) =>
-                  setNuevoServicio({
-                    ...nuevoServicio,
-                    descripcion: e.target.value,
-                  })
-                }
-              />
-            </Form.Group>
-            <Form.Group>
-              <Form.Label>Costo</Form.Label>
-              <Form.Control
-                type="number"
-                value={nuevoServicio.costo}
-                onChange={(e) =>
-                  setNuevoServicio({ ...nuevoServicio, costo: e.target.value })
-                }
-              />
-            </Form.Group>
-          </Form>
+          <div style={{ marginBottom: "1rem", display: "flex", gap: "0.5rem" }}>
+            <input
+              type="text"
+              placeholder="Nombre"
+              value={nuevoServicio.nombre}
+              onChange={(e) => setNuevoServicio({ ...nuevoServicio, nombre: e.target.value })}
+            />
+            <input
+              type="text"
+              placeholder="Descripción"
+              value={nuevoServicio.descripcion}
+              onChange={(e) =>
+                setNuevoServicio({ ...nuevoServicio, descripcion: e.target.value })
+              }
+            />
+            <input
+              type="number"
+              placeholder="Costo"
+              value={nuevoServicio.costo}
+              onChange={(e) => setNuevoServicio({ ...nuevoServicio, costo: e.target.value })}
+            />
+            <Button variant="success" onClick={handleAgregar}>
+              {editIndex !== null ? "Guardar" : "Agregar"}
+            </Button>
+          </div>
         </Modal.Body>
         <Modal.Footer>
-          <Button variant="secondary" onClick={() => setShowModal(false)}>
-            Cancelar
-          </Button>
-          <Button variant="success" onClick={handleGuardar}>
-            Guardar
+          <Button variant="secondary" onClick={cerrarModal}>
+            Cerrar
           </Button>
         </Modal.Footer>
       </Modal>
@@ -153,4 +147,4 @@ const ServiciosCRUD = () => {
   );
 };
 
-export default ServiciosCRUD;
+export default CRUDServicios;
