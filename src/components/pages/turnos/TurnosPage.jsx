@@ -1,48 +1,62 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { Container, Row, Col, Card, Button } from 'react-bootstrap';
-import Paso2Horario from './Paso1Detalle';
-import Paso1Detalle from './Paso2Horario';
-import Paso3Confirmacion from './Paso3Confirmacion';
-// Importa los componentes de cada paso
+
+// Componentes Placeholder para maquetado
+const Paso1Detalle = () => (
+    <div>
+        <h3>Paso 1: Detalles de la Cita y Mascota</h3>
+        <p>Aquí irán los campos para el Detalle de la Cita, Nombre, Especie, Raza y Edad de la Mascota.</p>
+        <div className="d-flex justify-content-end mt-4">
+            <Button variant="primary">Siguiente</Button>
+        </div>
+    </div>
+);
+
+const Paso2Horario = () => (
+    <div>
+        <h3>Paso 2: Horario y Veterinario</h3>
+        <p>Aquí irán los selectores de Fecha y Hora, con la lógica de asignación del Veterinario.</p>
+        <div className="d-flex justify-content-between mt-4">
+            <Button variant="secondary">Anterior</Button>
+            <Button variant="primary">Siguiente</Button>
+        </div>
+    </div>
+);
+
+const Paso3Confirmacion = () => (
+    <div>
+        <h3>Paso 3: Confirmación de Turno</h3>
+        <p>Aquí se mostrará el resumen de todos los datos recolectados antes de enviar la solicitud.</p>
+        <div className="d-flex justify-content-between mt-4">
+            <Button variant="secondary">Anterior</Button>
+            <Button variant="success">Confirmar Turno</Button>
+        </div>
+    </div>
+);
+
 
 const TurnosPage = () => {
-    const [pasoActual, setPasoActual] = useState(1);
-    const [datosTurno, setDatosTurno] = useState({
-        detalleCita: '',
-        veterinario: null,
-        fecha: null,
-        hora: null,
-        mascota: { nombre: '', especie: '', raza: '', edad: '' }
-    });
-
-    const siguientePaso = () => setPasoActual(pasoActual + 1);
-    const anteriorPaso = () => setPasoActual(pasoActual - 1);
+    // Definimos un paso estático (ej. 1) solo para ver el maquetado inicial
+    const pasoActual = 1; 
 
     const renderPaso = () => {
         switch (pasoActual) {
             case 1:
-                return <Paso1Detalle datos={datosTurno} setDatos={setDatosTurno} siguiente={siguientePaso} />;
+                return <Paso1Detalle />;
             case 2:
-                // Se pasa la lógica de los veterinarios al Paso 2
-                return <Paso2Horario datos={datosTurno} setDatos={setDatosTurno} siguiente={siguientePaso} anterior={anteriorPaso} />;
+                return <Paso2Horario />;
             case 3:
-                
-                return <Paso3Confirmacion datos={datosTurno} confirmar={handleConfirmarTurno} anterior={anteriorPaso} />;
+                return <Paso3Confirmacion />;
             default:
-                return <h2>Error: Paso no encontrado.</h2>;
+                return <h2>Error en la navegación.</h2>;
         }
-    };
-
-    const handleConfirmarTurno = () => {
-        console.log("Datos finales listos para enviar al Backend:", datosTurno);
-        
     };
 
     return (
         <Container className="my-5">
             <Row>
                 <Col md={{ span: 8, offset: 2 }}>
-                    <h1 className="mb-4 text-center">Gestión de Turnos</h1>
+                    <h1 className="mb-4 text-center">Solicitar Nuevo Turno</h1>
                     <Card>
                         <Card.Header>
                             Paso {pasoActual} de 3
