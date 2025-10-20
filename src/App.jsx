@@ -11,6 +11,7 @@ import Producto from "./components/pages/producto/Producto.jsx";
 import Error404 from "./components/pages/error404/Error404.jsx";
 import RutasAdmin from './routes/RutasAdmin.jsx';
 import RutasUsuario from './routes/RutasUsuario.jsx';
+import TurnosPage from './components/pages/turnos/TurnosPage.jsx';
 import "./index.css";
 
 function App() {
@@ -25,11 +26,13 @@ function App() {
           <Route element={<RutasUsuario />}>
             <Route path="/paciente" element={<Paciente />} />
             <Route path="/carro" element={<CarroCompras />} />
+            <Route path="/turnos" element={<TurnosPage />} />
           </Route>
            <Route element={<RutasAdmin />}>
             <Route path="/administracion" element={<Administrador />} />
           </Route>
           <Route path="/producto/:id" element={<Producto />} />
+          
           <Route path="*" element={<Error404 />} />
         </Routes>
       </main>
