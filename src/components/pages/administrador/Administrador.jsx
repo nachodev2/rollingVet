@@ -130,7 +130,38 @@ const Administrador = () => {
   };
 
   const handleEliminarPaciente = (id) => {
-    setPacientes((prev) => prev.filter((p) => p.id !== id));
+    const paciente = pacientes.find((p) => p.id === id);
+    if (!paciente) return;
+
+    Swal.fire({
+      title: "¿Eliminar paciente?",
+      text: `Estás por eliminar a ${paciente.campo2}. Esta acción no se puede deshacer.`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Sí, eliminar",
+      cancelButtonText: "Cancelar",
+      confirmButtonColor: "#dc3545",
+      cancelButtonColor: "#6c757d",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        try {
+          setPacientes((prev) => prev.filter((p) => p.id !== id));
+          Swal.fire({
+            icon: "success",
+            title: "Paciente eliminado",
+            text: "El paciente fue eliminado correctamente.",
+            confirmButtonColor: "#0d6efd",
+          });
+        } catch (error) {
+          Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: "Ocurrió un error al eliminar el paciente.",
+            confirmButtonColor: "#dc3545",
+          });
+        }
+      }
+    });
   };
 
   const handleVerDetallePaciente = (id) => {
