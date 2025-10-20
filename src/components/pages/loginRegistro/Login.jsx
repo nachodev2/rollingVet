@@ -2,7 +2,7 @@ import { useState } from 'react';
 import { Button, Modal, Form } from 'react-bootstrap';
 import "./loginRegistro.css";
 
-function Login({ handleLogin }) { // ✅ Recibir handleLogin desde Menu
+function Login({ handleLogin }) { 
   const [show, setShow] = useState(false);
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -18,13 +18,13 @@ function Login({ handleLogin }) { // ✅ Recibir handleLogin desde Menu
 
     if (handleLogin) {
       if (email === ADMIN_EMAIL && password === ADMIN_PASS) {
-        handleLogin('admin', 'Administrador'); // ✅ Llama a handleLogin
+        handleLogin('admin', 'Administrador'); 
       } else {
         handleLogin('user', 'Usuario');
       }
     }
 
-    handleClose(); // Cierra la modal
+    handleClose(); 
   };
 
     return (

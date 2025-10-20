@@ -6,7 +6,7 @@ import Login from "../pages/loginRegistro/Login";
 import { NavLink } from "react-router";
 import "./Menu.css";
 
-// Botones de autenticación
+
 const AuthButtons = ({ isLoggedIn, userRole, userName, handleLogout, handleLogin }) => {
   if (isLoggedIn) {
     const saludo = userRole === 'admin' ? 'Administrador' : userName;
@@ -41,7 +41,7 @@ const Menu = () => {
     return () => window.removeEventListener('scroll', manejarScroll);
   }, []);
 
-  // Leer usuario desde localStorage al iniciar
+  
   useEffect(() => {
     const adminPage = JSON.parse(localStorage.getItem("usuario"));
     if (adminPage?.isLoggedIn) {
@@ -51,7 +51,7 @@ const Menu = () => {
     }
   }, []);
 
-  // Funciones de login y logout
+  
   const handleLogin = (role = "user", name = "Usuario") => {
     const userData = { role, name, isLoggedIn: true };
     localStorage.setItem("usuario", JSON.stringify(userData));
@@ -67,7 +67,7 @@ const Menu = () => {
     setUserName("");
   };
 
-  // Links de navegación según rol
+  
   const getNavLinks = (role) => {
     const links = [
       { href: "/productos", text: "Productos" },
