@@ -1,17 +1,9 @@
-import  { useState, useMemo } from "react";
-import CRUDServicios from "../CRUD/CRUDServicios.jsx";
-import {
-  Container,
-  Row,
-  Col,
-  Tabs,
-  Tab,
-  Table,
-  Pagination,
-} from "react-bootstrap";
-import { PencilSquare, Trash } from "react-bootstrap-icons";
+import { useState, useMemo } from "react";
+import { Container, Row, Col, Tabs, Tab } from "react-bootstrap";
+import SeccionCRUD from "./SeccionCRUD.jsx";
+import ModalPaciente from "./ModalPaciente.jsx";
+import { usePacientes } from "/src/hooks/usePacientes.js";
 import "./Administrador.css";
-
 
 const generarDatosSimulados = (prefijo, cantidad) => {
   const datos = [];
@@ -26,8 +18,8 @@ const generarDatosSimulados = (prefijo, cantidad) => {
   return datos;
 };
 
-const datosPacientes = generarDatosSimulados("Paciente Max", 48);
-const datosTurnos = generarDatosSimulados("Turno Agendado", 31);
+const datosServicios = generarDatosSimulados("Servicio de Peluquería", 10);
+const datosTurnos = generarDatosSimulados("Turno Agendado", 15);
 
 const encabezados = {
   servicios: ["Nombre", "Descripción", "Costo"],
@@ -36,146 +28,67 @@ const encabezados = {
 };
 
 const Administrador = () => {
-  const [key, setKey] = useState("servicios"); 
-
+  const [key, setKey] = useState("pacientes");
   const [paginaActual, setPaginaActual] = useState({
     servicios: 1,
     pacientes: 1,
     turnos: 1,
   });
 
+  const {
+    pacientes,
+    mostrarModal,
+    mostrarDetalle,
+    mostrarEditar,
+    pacienteSeleccionado,
+    pacienteEnEdicion,
+    abrirModalAlta,
+    cerrarModalAlta,
+    cerrarDetalle,
+    cerrarEditar,
+    guardarPaciente,
+    eliminarPaciente,
+    verDetallePaciente,
+    editarPaciente,
+    actualizarPaciente,
+  } = usePacientes();
+
   const elementosPorPagina = 10;
-
-  
-  const datosMapeados = useMemo(
-    () => ({
-      pacientes: {
-        data: datosPacientes,
-        header: encabezados.pacientes,
-        boton: "Dar de Alta Paciente",
-      },
-      turnos: {
-        data: datosTurnos,
-        header: encabezados.turnos,
-        boton: "Cargar Turno",
-      },
-    }),
-    []
-  );
-
-  const datosSeleccionados = datosMapeados[key] || {};
-  const { data: datosCompletos = [], header: encabezadosTabla = [], boton = "" } =
-    datosSeleccionados;
-
   const pagina = paginaActual[key];
-  const totalElementos = datosCompletos.length;
+
+  const datosMapeados = useMemo(() => ({
+    servicios: {
+      data: datosServicios,
+      header: encabezados.servicios,
+      boton: "Agregar Servicio",
+    },
+    pacientes: {
+      data: pacientes,
+      header: encabezados.pacientes,
+      boton: "Dar de Alta Paciente",
+    },
+    turnos: {
+      data: datosTurnos,
+      header: encabezados.turnos,
+      boton: "Cargar Turno",
+    },
+  }), [pacientes]);
+
+  const datosCompletos = datosMapeados[key].data;
+  const encabezadosTabla = datosMapeados[key].header;
+  const boton = datosMapeados[key].boton;
 
   const indiceFinal = pagina * elementosPorPagina;
   const indiceInicial = indiceFinal - elementosPorPagina;
-
   const datosMostrados = datosCompletos.slice(indiceInicial, indiceFinal);
 
   const handleCambioPagina = (numeroDePagina) => {
-    setPaginaActual((prev) => ({
-      ...prev,
-      [key]: numeroDePagina,
-    }));
+    setPaginaActual((prev) => ({ ...prev, [key]: numeroDePagina }));
   };
 
   const handleCambioPestana = (nuevaKey) => {
     setKey(nuevaKey);
   };
-
-  
-  const PaginacionTabla = ({
-    totalElementos,
-    elementosPorPagina,
-    paginaActual,
-    onPageChange,
-  }) => {
-    const totalPaginas = Math.ceil(totalElementos / elementosPorPagina);
-    const items = [];
-
-    items.push(
-      <Pagination.Prev
-        key="prev"
-        onClick={() => onPageChange(paginaActual - 1)}
-        disabled={paginaActual === 1}
-      />
-    );
-
-    for (let number = 1; number <= totalPaginas; number++) {
-      items.push(
-        <Pagination.Item
-          key={number}
-          active={number === paginaActual}
-          onClick={() => onPageChange(number)}
-        >
-          {number}
-        </Pagination.Item>
-      );
-    }
-
-    items.push(
-      <Pagination.Next
-        key="next"
-        onClick={() => onPageChange(paginaActual + 1)}
-        disabled={paginaActual === totalPaginas}
-      />
-    );
-
-    if (totalPaginas <= 1) return null;
-
-    return (
-      <div className="d-flex justify-content-center">
-        <Pagination size="sm">{items}</Pagination>
-      </div>
-    );
-  };
-
-  
-  const TablaCRUD = ({ encabezadosTabla, datosMostrados }) => (
-    <div className="contenedor-tabla">
-      <Table striped bordered hover responsive>
-        <thead>
-          <tr>
-            {encabezadosTabla.map((encabezado, index) => (
-              <th key={index}>{encabezado}</th>
-            ))}
-            <th className="columna-acciones">Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          {datosMostrados.length > 0 ? (
-            datosMostrados.map((item, index) => (
-              <tr key={item.id || index}>
-                <td>{item.campo1}</td>
-                <td>{item.campo2}</td>
-                {encabezadosTabla.length > 2 && <td>{item.campo3}</td>}
-                {encabezadosTabla.length > 3 && <td>{`Extra ${item.id}`}</td>}
-                <td className="acciones-botones-contenedor">
-                  <div className="contenedor-iconos-accion">
-                    <button className="btn-icono-accion editar" title="Editar">
-                      <PencilSquare size={18} />
-                    </button>
-                    <button className="btn-icono-accion eliminar" title="Eliminar">
-                      <Trash size={18} />
-                    </button>
-                  </div>
-                </td>
-              </tr>
-            ))
-          ) : (
-            <tr>
-              <td colSpan={encabezadosTabla.length + 1} className="text-center">
-                No hay elementos para mostrar en esta sección.
-              </td>
-            </tr>
-          )}
-        </tbody>
-      </Table>
-    </div>
-  );
 
   return (
     <main className="seccion-principal-admin">
@@ -194,37 +107,54 @@ const Administrador = () => {
               activeKey={key}
               onSelect={handleCambioPestana}
               className="pestanas-crud mb-3"
+              mountOnEnter
+              unmountOnExit
             >
-              <Tab eventKey="servicios" title="Servicios">
-                <CRUDServicios />
-              </Tab>
-              {Object.keys(datosMapeados).map((tabKey) => (
+              {Object.entries(datosMapeados).map(([tabKey, config]) => (
                 <Tab
-                  key={tabKey}
+                  key={`tab-${tabKey}`}
                   eventKey={tabKey}
                   title={tabKey.charAt(0).toUpperCase() + tabKey.slice(1)}
                 >
-                  <>
-                    <h2 className="subtitulo-seccion">
-                      Gestión de {tabKey.charAt(0).toUpperCase() + tabKey.slice(1)}
-                    </h2>
-                    <TablaCRUD
-                      encabezadosTabla={datosMapeados[tabKey].header}
-                      datosMostrados={tabKey === key ? datosMostrados : []}
-                    />
-                    <PaginacionTabla
-                      totalElementos={datosMapeados[tabKey].data.length}
-                      elementosPorPagina={elementosPorPagina}
-                      paginaActual={paginaActual[tabKey]}
-                      onPageChange={handleCambioPagina}
-                    />
-                  </>
+                  <SeccionCRUD
+                    tabKey={tabKey}
+                    encabezados={config.header}
+                    datos={tabKey === key ? datosMostrados : []}
+                    botonTexto={config.boton}
+                    pagina={pagina}
+                    total={config.data.length / elementosPorPagina}
+                    onCrear={abrirModalAlta}
+                    onVer={verDetallePaciente}
+                    onEditar={editarPaciente}
+                    onEliminar={eliminarPaciente}
+                    onPaginar={handleCambioPagina}
+                  />
                 </Tab>
               ))}
             </Tabs>
           </Col>
         </Row>
       </Container>
+
+      <ModalPaciente
+        tipo="modal"
+        visible={mostrarModal}
+        onClose={cerrarModalAlta}
+        onGuardar={guardarPaciente}
+      />
+      <ModalPaciente
+        tipo="detalle"
+        visible={mostrarDetalle}
+        onClose={cerrarDetalle}
+        datos={pacienteSeleccionado}
+      />
+      <ModalPaciente
+        tipo="editar"
+        visible={mostrarEditar}
+        onClose={cerrarEditar}
+        datos={pacienteEnEdicion}
+        onGuardar={actualizarPaciente}
+      />
     </main>
   );
 };
