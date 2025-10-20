@@ -1,5 +1,5 @@
-// Administrador.jsx
-import React, { useState, useMemo } from "react";
+import  { useState, useMemo } from "react";
+import CRUDServicios from "../CRUD/CRUDServicios.jsx";
 import {
   Container,
   Row,
@@ -11,6 +11,7 @@ import {
 } from "react-bootstrap";
 import { PencilSquare, Trash } from "react-bootstrap-icons";
 import "./Administrador.css";
+
 
 const generarDatosSimulados = (prefijo, cantidad) => {
   const datos = [];
@@ -25,7 +26,6 @@ const generarDatosSimulados = (prefijo, cantidad) => {
   return datos;
 };
 
-const datosServicios = generarDatosSimulados("Servicio de Peluquería", 23);
 const datosPacientes = generarDatosSimulados("Paciente Max", 48);
 const datosTurnos = generarDatosSimulados("Turno Agendado", 31);
 
@@ -36,7 +36,7 @@ const encabezados = {
 };
 
 const Administrador = () => {
-  const [key, setKey] = useState("servicios");
+  const [key, setKey] = useState("servicios"); 
 
   const [paginaActual, setPaginaActual] = useState({
     servicios: 1,
@@ -46,13 +46,9 @@ const Administrador = () => {
 
   const elementosPorPagina = 10;
 
+  
   const datosMapeados = useMemo(
     () => ({
-      servicios: {
-        data: datosServicios,
-        header: encabezados.servicios,
-        boton: "Agregar Servicio",
-      },
       pacientes: {
         data: datosPacientes,
         header: encabezados.pacientes,
@@ -67,11 +63,10 @@ const Administrador = () => {
     []
   );
 
-  const {
-    data: datosCompletos,
-    header: encabezadosTabla,
-    boton,
-  } = datosMapeados[key];
+  const datosSeleccionados = datosMapeados[key] || {};
+  const { data: datosCompletos = [], header: encabezadosTabla = [], boton = "" } =
+    datosSeleccionados;
+
   const pagina = paginaActual[key];
   const totalElementos = datosCompletos.length;
 
@@ -91,6 +86,7 @@ const Administrador = () => {
     setKey(nuevaKey);
   };
 
+  
   const PaginacionTabla = ({
     totalElementos,
     elementosPorPagina,
@@ -137,6 +133,7 @@ const Administrador = () => {
     );
   };
 
+  
   const TablaCRUD = ({ encabezadosTabla, datosMostrados }) => (
     <div className="contenedor-tabla">
       <Table striped bordered hover responsive>
@@ -151,23 +148,17 @@ const Administrador = () => {
         <tbody>
           {datosMostrados.length > 0 ? (
             datosMostrados.map((item, index) => (
-              <tr key={index}>
+              <tr key={item.id || index}>
                 <td>{item.campo1}</td>
                 <td>{item.campo2}</td>
-
                 {encabezadosTabla.length > 2 && <td>{item.campo3}</td>}
-
                 {encabezadosTabla.length > 3 && <td>{`Extra ${item.id}`}</td>}
-
                 <td className="acciones-botones-contenedor">
                   <div className="contenedor-iconos-accion">
                     <button className="btn-icono-accion editar" title="Editar">
                       <PencilSquare size={18} />
                     </button>
-                    <button
-                      className="btn-icono-accion eliminar"
-                      title="Eliminar"
-                    >
+                    <button className="btn-icono-accion eliminar" title="Eliminar">
                       <Trash size={18} />
                     </button>
                   </div>
@@ -204,34 +195,30 @@ const Administrador = () => {
               onSelect={handleCambioPestana}
               className="pestanas-crud mb-3"
             >
+              <Tab eventKey="servicios" title="Servicios">
+                <CRUDServicios />
+              </Tab>
               {Object.keys(datosMapeados).map((tabKey) => (
                 <Tab
+                  key={tabKey}
                   eventKey={tabKey}
                   title={tabKey.charAt(0).toUpperCase() + tabKey.slice(1)}
-                  key={tabKey}
                 >
-                  <h2 className="subtitulo-seccion">
-                    Gestión de{" "}
-                    {tabKey.charAt(0).toUpperCase() + tabKey.slice(1)}
-                  </h2>
-
-                  <div className="btn-crear-container">
-                    <button className="btn-crear-elemento">
-                      {datosMapeados[tabKey].boton}
-                    </button>
-                  </div>
-
-                  <TablaCRUD
-                    encabezadosTabla={datosMapeados[tabKey].header}
-                    datosMostrados={tabKey === key ? datosMostrados : []}
-                  />
-
-                  <PaginacionTabla
-                    totalElementos={datosMapeados[tabKey].data.length}
-                    elementosPorPagina={elementosPorPagina}
-                    paginaActual={paginaActual[tabKey]}
-                    onPageChange={handleCambioPagina}
-                  />
+                  <>
+                    <h2 className="subtitulo-seccion">
+                      Gestión de {tabKey.charAt(0).toUpperCase() + tabKey.slice(1)}
+                    </h2>
+                    <TablaCRUD
+                      encabezadosTabla={datosMapeados[tabKey].header}
+                      datosMostrados={tabKey === key ? datosMostrados : []}
+                    />
+                    <PaginacionTabla
+                      totalElementos={datosMapeados[tabKey].data.length}
+                      elementosPorPagina={elementosPorPagina}
+                      paginaActual={paginaActual[tabKey]}
+                      onPageChange={handleCambioPagina}
+                    />
+                  </>
                 </Tab>
               ))}
             </Tabs>
