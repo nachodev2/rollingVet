@@ -10,6 +10,7 @@ import {
   Modal,
 } from "react-bootstrap";
 import { PencilSquare, Trash, Eye } from "react-bootstrap-icons";
+import Swal from "sweetalert2";
 import Paciente from "../paciente/Paciente.jsx";
 import "./Administrador.css";
 
@@ -75,7 +76,11 @@ const Administrador = () => {
     [pacientes]
   );
 
-  const { data: datosCompletos, header: encabezadosTabla, boton } = datosMapeados[key];
+  const {
+    data: datosCompletos,
+    header: encabezadosTabla,
+    boton,
+  } = datosMapeados[key];
   const indiceFinal = pagina * elementosPorPagina;
   const indiceInicial = indiceFinal - elementosPorPagina;
   const datosMostrados = datosCompletos.slice(indiceInicial, indiceFinal);
@@ -95,17 +100,33 @@ const Administrador = () => {
   };
 
   const handleGuardarPaciente = (nuevoPaciente) => {
-    const pacienteFormateado = {
-      id: crypto.randomUUID(),
-      campo1: `${nuevoPaciente.dueno.Nombre} ${nuevoPaciente.dueno.Apellido}`,
-      campo2: nuevoPaciente.paciente.Nombre,
-      campo3: nuevoPaciente.paciente.Especie,
-      campo4: nuevoPaciente.paciente.Raza,
-      datosCompletos: nuevoPaciente,
-    };
+    try {
+      const pacienteFormateado = {
+        id: crypto.randomUUID(),
+        campo1: `${nuevoPaciente.dueno.Nombre} ${nuevoPaciente.dueno.Apellido}`,
+        campo2: nuevoPaciente.paciente.Nombre,
+        campo3: nuevoPaciente.paciente.Especie,
+        campo4: nuevoPaciente.paciente.Raza,
+        datosCompletos: nuevoPaciente,
+      };
 
-    setPacientes((prev) => [...prev, pacienteFormateado]);
-    setMostrarModalPaciente(false);
+      setPacientes((prev) => [...prev, pacienteFormateado]);
+      setMostrarModalPaciente(false);
+
+      Swal.fire({
+        icon: "success",
+        title: "Paciente creado",
+        text: "El paciente fue dado de alta correctamente.",
+        confirmButtonColor: "#0d6efd",
+      });
+    } catch (error) {
+      Swal.fire({
+        icon: "error",
+        title: "Error",
+        text: "Ocurrió un error al guardar el paciente.",
+        confirmButtonColor: "#dc3545",
+      });
+    }
   };
 
   const handleEliminarPaciente = (id) => {
@@ -129,22 +150,51 @@ const Administrador = () => {
   };
 
   const handleActualizarPaciente = (pacienteActualizado) => {
-    setPacientes((prev) =>
-      prev.map((p) =>
-        p.id === pacienteEnEdicion.id
-          ? {
-              ...p,
-              campo1: `${pacienteActualizado.dueno.Nombre} ${pacienteActualizado.dueno.Apellido}`,
-              campo2: pacienteActualizado.paciente.Nombre,
-              campo3: pacienteActualizado.paciente.Especie,
-              campo4: pacienteActualizado.paciente.Raza,
-              datosCompletos: pacienteActualizado,
-            }
-          : p
-      )
-    );
-    setMostrarEditarPaciente(false);
-    setPacienteEnEdicion(null);
+    Swal.fire({
+      title: "¿Confirmar edición?",
+      text: "Estás por modificar los datos del paciente.",
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Sí, guardar cambios",
+      cancelButtonText: "Cancelar",
+      confirmButtonColor: "#0d6efd",
+      cancelButtonColor: "#6c757d",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        try {
+          setPacientes((prev) =>
+            prev.map((p) =>
+              p.id === pacienteEnEdicion.id
+                ? {
+                    ...p,
+                    campo1: `${pacienteActualizado.dueno.Nombre} ${pacienteActualizado.dueno.Apellido}`,
+                    campo2: pacienteActualizado.paciente.Nombre,
+                    campo3: pacienteActualizado.paciente.Especie,
+                    campo4: pacienteActualizado.paciente.Raza,
+                    datosCompletos: pacienteActualizado,
+                  }
+                : p
+            )
+          );
+          setMostrarEditarPaciente(false);
+          setPacienteEnEdicion(null);
+
+          Swal.fire({
+            icon: "success",
+            title: "Paciente actualizado",
+            text: "Los datos fueron modificados correctamente.",
+            confirmButtonColor: "#0d6efd",
+          });
+        } catch (error) {
+          Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: "Ocurrió un error al actualizar el paciente.",
+            confirmButtonColor: "#dc3545",
+          });
+        }
+      }
+    });
   };
 
   const TablaCRUD = ({ encabezadosTabla, datosMostrados }) => (
@@ -234,11 +284,15 @@ const Administrador = () => {
                   key={tabKey}
                 >
                   <h2 className="subtitulo-seccion">
-                    Gestión de {tabKey.charAt(0).toUpperCase() + tabKey.slice(1)}
+                    Gestión de{" "}
+                    {tabKey.charAt(0).toUpperCase() + tabKey.slice(1)}
                   </h2>
 
                   <div className="btn-crear-container">
-                    <button className="btn-crear-elemento" onClick={handleCrear}>
+                    <button
+                      className="btn-crear-elemento"
+                      onClick={handleCrear}
+                    >
                       {datosMapeados[tabKey].boton}
                     </button>
                   </div>
@@ -250,13 +304,17 @@ const Administrador = () => {
 
                   <Pagination className="justify-content-center mt-3">
                     {Array.from({
-                      length: Math.ceil(datosCompletos.length / elementosPorPagina),
+                      length: Math.ceil(
+                        datosCompletos.length / elementosPorPagina
+                      ),
                     }).map((_, index) => (
                       <Pagination.Item
                         key={index + 1}
-                        active={index + 1  === pagina}
+                        active={index + 1 === pagina}
                         onClick={() => handleCambioPagina(index + 1)}
-                      > {index + 1}</Pagination.Item>
+                      >
+                        {index + 1}
+                      </Pagination.Item>
                     ))}
                   </Pagination>
                 </Tab>
