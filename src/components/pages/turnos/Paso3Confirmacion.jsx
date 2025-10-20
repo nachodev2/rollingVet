@@ -3,10 +3,10 @@ import { Card, Button, Row, Col } from 'react-bootstrap';
 
 const Paso3Confirmacion = ({ datos, confirmar, anterior }) => {
     
-    // Desestructuración para acceder a los datos
+    
     const { detalleCita, veterinario, fecha, hora, mascota } = datos;
 
-    // Función auxiliar para formatear la fecha
+    
     const formatDate = (dateString) => {
         if (!dateString) return 'No seleccionada';
         const date = new Date(dateString + 'T00:00:00'); 
@@ -23,7 +23,7 @@ const Paso3Confirmacion = ({ datos, confirmar, anterior }) => {
             <h3>Paso 3: Confirmación de Turno</h3>
             <p className="lead text-muted">Por favor, revisa todos los detalles antes de confirmar la solicitud de turno.</p>
 
-            {/* Tarjeta de Detalles de la Cita */}
+            
             <Card className="mb-4 shadow-sm">
                 <Card.Header as="h5" className="bg-primary text-white">Detalles de la Cita</Card.Header>
                 <Card.Body>
@@ -32,7 +32,7 @@ const Paso3Confirmacion = ({ datos, confirmar, anterior }) => {
                 </Card.Body>
             </Card>
 
-            {/* Tarjeta de Mascota */}
+            
             <Card className="mb-4 shadow-sm">
                 <Card.Header as="h5">Información de la Mascota</Card.Header>
                 <Card.Body>
@@ -45,7 +45,7 @@ const Paso3Confirmacion = ({ datos, confirmar, anterior }) => {
                 </Card.Body>
             </Card>
 
-            {/* Tarjeta de Fecha y Profesional */}
+            
             <Card className="mb-4 shadow-sm">
                 <Card.Header as="h5">Fecha y Profesional</Card.Header>
                 <Card.Body>
@@ -63,7 +63,7 @@ const Paso3Confirmacion = ({ datos, confirmar, anterior }) => {
                 </Card.Body>
             </Card>
 
-            {/* Botones de Navegación y Confirmación */}
+            
             <div className="d-flex justify-content-between mt-4">
                 <Button variant="secondary" onClick={anterior}>
                     Volver y Modificar

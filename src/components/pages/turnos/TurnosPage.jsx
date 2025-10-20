@@ -1,11 +1,13 @@
 import React, { useState } from "react";
 import { Container, Row, Col, Card } from "react-bootstrap";
+import Swal from "sweetalert2";
+
 import Paso1Detalle from "./Paso1Detalle.jsx";
 import Paso2Horario from "./Paso2Horario.jsx";
+import Paso3Confirmacion from "./Paso3Confirmacion.jsx";
 
 const TurnosPage = () => {
   const [pasoActual, setPasoActual] = useState(1);
-
   const [datosTurno, setDatosTurno] = useState({
     detalleCita: "",
     veterinario: null,
@@ -17,9 +19,37 @@ const TurnosPage = () => {
   const siguientePaso = () => setPasoActual(pasoActual + 1);
   const anteriorPaso = () => setPasoActual(pasoActual - 1);
 
+  const handlePagarConMercadoPago = () => {
+    console.log("Iniciando redirección a Mercado Pago...");
+    alert("Simulación: Redireccionando a la pasarela de Mercado Pago.");
+  };
+
+  const handlePagarEnLocal = () => {
+    console.log("Pago registrado como pendiente/en local.");
+    alert(
+      "Pago registrado como pendiente. Puedes pagar al momento de la consulta."
+    );
+  };
+
   const handleConfirmarTurno = () => {
-    console.log("Turno a enviar al servidor:", datosTurno);
-    alert("¡Turno solicitado con éxito!");
+    console.log("Turno enviado al servidor:", datosTurno);
+
+    Swal.fire({
+      title: "¡Turno Confirmado con Éxito!",
+      html: `Tu cita con el ${datosTurno.veterinario.nombre} para el ${datosTurno.fecha} a las ${datosTurno.hora} ha sido reservada.`,
+      icon: "success",
+      showCancelButton: true,
+      confirmButtonText: "Pagar con Mercado Pago",
+      cancelButtonText: "Pagar en el Local",
+      confirmButtonColor: "#009ee3",
+      cancelButtonColor: "#3085d6",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        handlePagarConMercadoPago();
+      } else if (result.dismiss === Swal.DismissReason.cancel) {
+        handlePagarEnLocal();
+      }
+    });
   };
 
   const renderPaso = () => {
