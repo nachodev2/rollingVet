@@ -9,8 +9,12 @@ import CarroCompras from "./components/pages/carro-compras/CarroCompras.jsx";
 import Paciente from "./components/pages/paciente/Paciente.jsx";
 import Producto from "./components/pages/producto/Producto.jsx";
 import Error404 from "./components/pages/error404/Error404.jsx";
+<<<<<<< HEAD
 import RutasAdmin from './routes/RutasAdmin.jsx';
 import RutasUsuario from './routes/RutasUsuario.jsx';
+=======
+import TurnosPage from './components/pages/turnos/TurnosPage.jsx';
+>>>>>>> ef29bfb (Agregue la ruta a la pagina de turnos y corregi errores visuales)
 import "./index.css";
 
 function App() {
@@ -30,6 +34,7 @@ function App() {
             <Route path="/administracion" element={<Administrador />} />
           </Route>
           <Route path="/producto/:id" element={<Producto />} />
+          <Route path="/turnos" element={<TurnosPage />} />
           <Route path="*" element={<Error404 />} />
         </Routes>
       </main>
