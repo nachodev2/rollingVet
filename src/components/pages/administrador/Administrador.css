@@ -70,13 +70,14 @@
 }
 
 .btn-crear-elemento {
-  background-color: var(--color-registro);
-  color: white;
-  border: none;
-  padding: 8px 15px;
-  border-radius: 5px;
-  font-weight: 500;
-  transition: background-color 0.3s ease;
+
+    background-color: var(--color-registro);
+    color: white;
+    border: none;
+    padding: 8px 15px;
+    border-radius: 5px;
+    font-weight: 500;   
+    transition: background-color 0.3s ease;
 }
 
 .btn-crear-elemento:hover {
@@ -89,6 +90,8 @@
   overflow: hidden;
   border-radius: 8px;
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
 }
 
 .contenedor-tabla table {
