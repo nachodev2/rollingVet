@@ -1,4 +1,4 @@
-import  { useState, useMemo } from "react";
+import { useState, useMemo } from "react";
 import CRUDServicios from "../CRUD/CRUDServicios.jsx";
 import {
   Container,
@@ -12,22 +12,7 @@ import {
 import { PencilSquare, Trash } from "react-bootstrap-icons";
 import "./Administrador.css";
 
-
-const generarDatosSimulados = (prefijo, cantidad) => {
-  const datos = [];
-  for (let i = 1; i <= cantidad; i++) {
-    datos.push({
-      id: i,
-      campo1: `${prefijo} ${i}`,
-      campo2: `Detalle ${i}`,
-      campo3: `Valor ${Math.floor(Math.random() * 100)}`,
-    });
-  }
-  return datos;
-};
-
 const datosPacientes = generarDatosSimulados("Paciente Max", 48);
-const datosTurnos = generarDatosSimulados("Turno Agendado", 31);
 
 const encabezados = {
   servicios: ["Nombre", "Descripción", "Costo"],
@@ -36,17 +21,48 @@ const encabezados = {
 };
 
 const Administrador = () => {
-  const [key, setKey] = useState("servicios"); 
-
+  const [key, setKey] = useState("servicios");
+  const [turnosReales, setTurnosReales] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [paginaActual, setPaginaActual] = useState({
     servicios: 1,
     pacientes: 1,
     turnos: 1,
   });
 
+  useEffect(() => {
+    const fetchTurnos = async () => {
+      try {
+        const response = await fetch("http://localhost:5000/api/turnos");
+        const data = await response.json();
+
+        if (response.ok && data.success) {
+          const turnosMapeados = data.data.map((turno) => ({
+            id: turno._id,
+            campo1: turno.fecha,
+            campo2: turno.hora,
+            campo3: turno.mascota.nombre,
+            campo4: turno.veterinario.nombre,
+          }));
+
+          setTurnosReales(turnosMapeados);
+        } else {
+          console.error("Error al obtener turnos:", data.msg || data.error);
+          setTurnosReales([]);
+        }
+      } catch (error) {
+        console.error("Error de conexión con el backend:", error);
+        setTurnosReales([]);
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchTurnos();
+  }, []);
+
   const elementosPorPagina = 10;
 
-  
   const datosMapeados = useMemo(
     () => ({
       pacientes: {
@@ -60,12 +76,15 @@ const Administrador = () => {
         boton: "Cargar Turno",
       },
     }),
-    []
+    [turnosReales]
   );
 
   const datosSeleccionados = datosMapeados[key] || {};
-  const { data: datosCompletos = [], header: encabezadosTabla = [], boton = "" } =
-    datosSeleccionados;
+  const {
+    data: datosCompletos = [],
+    header: encabezadosTabla = [],
+    boton = "",
+  } = datosSeleccionados;
 
   const pagina = paginaActual[key];
   const totalElementos = datosCompletos.length;
@@ -86,7 +105,6 @@ const Administrador = () => {
     setKey(nuevaKey);
   };
 
-  
   const PaginacionTabla = ({
     totalElementos,
     elementosPorPagina,
@@ -133,8 +151,13 @@ const Administrador = () => {
     );
   };
 
-  
-  const TablaCRUD = ({ encabezadosTabla, datosMostrados }) => (
+  const TablaCRUD = ({
+    encabezadosTabla,
+    datosMostrados,
+    isLoading,
+    onEdit,
+    onDelete,
+  }) => (
     <div className="contenedor-tabla">
       <Table striped bordered hover responsive>
         <thead>
@@ -146,19 +169,34 @@ const Administrador = () => {
           </tr>
         </thead>
         <tbody>
-          {datosMostrados.length > 0 ? (
+          {isLoading ? (
+            <tr>
+              <td colSpan={encabezadosTabla.length + 1} className="text-center">
+                Cargando datos...
+              </td>
+            </tr>
+          ) : datosMostrados.length > 0 ? (
             datosMostrados.map((item, index) => (
               <tr key={item.id || index}>
                 <td>{item.campo1}</td>
                 <td>{item.campo2}</td>
-                {encabezadosTabla.length > 2 && <td>{item.campo3}</td>}
-                {encabezadosTabla.length > 3 && <td>{`Extra ${item.id}`}</td>}
+                <td>{item.campo3}</td>
+                <td>{item.campo4}</td>
                 <td className="acciones-botones-contenedor">
                   <div className="contenedor-iconos-accion">
-                    <button className="btn-icono-accion editar" title="Editar">
+                    <button
+                      className="btn-icono-accion editar"
+                      title="Editar"
+                      onClick={() => onEdit && onEdit(item)}
+                    >
                       <PencilSquare size={18} />
                     </button>
-                    <button className="btn-icono-accion eliminar" title="Eliminar">
+
+                    <button
+                      className="btn-icono-accion eliminar"
+                      title="Eliminar"
+                      onClick={() => onDelete && onDelete(item.id)}
+                    >
                       <Trash size={18} />
                     </button>
                   </div>
@@ -206,11 +244,13 @@ const Administrador = () => {
                 >
                   <>
                     <h2 className="subtitulo-seccion">
-                      Gestión de {tabKey.charAt(0).toUpperCase() + tabKey.slice(1)}
+                      Gestión de{" "}
+                      {tabKey.charAt(0).toUpperCase() + tabKey.slice(1)}
                     </h2>
                     <TablaCRUD
                       encabezadosTabla={datosMapeados[tabKey].header}
                       datosMostrados={tabKey === key ? datosMostrados : []}
+                      isLoading={isLoading &&tabKey === 'turnos'}
                     />
                     <PaginacionTabla
                       totalElementos={datosMapeados[tabKey].data.length}

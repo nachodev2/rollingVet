@@ -22,35 +22,74 @@ const TurnosPage = () => {
   const handlePagarConMercadoPago = () => {
     console.log("Iniciando redirección a Mercado Pago...");
     alert("Simulación: Redireccionando a la pasarela de Mercado Pago.");
-  };
+};
 
-  const handlePagarEnLocal = () => {
+const handlePagarEnLocal = () => {
     console.log("Pago registrado como pendiente/en local.");
-    alert(
-      "Pago registrado como pendiente. Puedes pagar al momento de la consulta."
-    );
-  };
+    alert("Pago registrado como pendiente. Puedes pagar al momento de la consulta.");
+};
 
-  const handleConfirmarTurno = () => {
-    console.log("Turno enviado al servidor:", datosTurno);
+const handleConfirmarTurno = async () => { 
+    
+    const datosParaEnvio = {
+        fecha: datosTurno.fecha,
+        hora: datosTurno.hora,
+        detalleCita: datosTurno.detalleCita,
+        veterinario: datosTurno.veterinario,
+        mascota: datosTurno.mascota
+    };
 
-    Swal.fire({
-      title: "¡Turno Confirmado con Éxito!",
-      html: `Tu cita con el ${datosTurno.veterinario.nombre} para el ${datosTurno.fecha} a las ${datosTurno.hora} ha sido reservada.`,
-      icon: "success",
-      showCancelButton: true,
-      confirmButtonText: "Pagar con Mercado Pago",
-      cancelButtonText: "Pagar en el Local",
-      confirmButtonColor: "#009ee3",
-      cancelButtonColor: "#3085d6",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        handlePagarConMercadoPago();
-      } else if (result.dismiss === Swal.DismissReason.cancel) {
-        handlePagarEnLocal();
-      }
-    });
-  };
+    try {
+        const response = await fetch('http://localhost:5000/api/turnos', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(datosParaEnvio),
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+            
+            Swal.fire({
+                title: '¡Turno Confirmado con Éxito!',
+                html: `Tu turno ha sido reservado. Código de la cita: <b>${data.data._id}</b>`,
+                icon: 'success',
+                showCancelButton: true,
+                confirmButtonText: 'Pagar con Mercado Pago (Ficticio)',
+                cancelButtonText: 'Pagar en el Local',
+                confirmButtonColor: '#009ee3',
+                cancelButtonColor: '#3085d6',
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    handlePagarConMercadoPago();
+                } else if (result.dismiss === Swal.DismissReason.cancel) {
+                    handlePagarEnLocal();
+                }
+            });
+            
+            
+
+        } else {
+            
+            Swal.fire({
+                title: 'Error al Reservar',
+                text: data.msg || data.error || 'Hubo un problema de validación en el servidor.',
+                icon: 'error',
+                confirmButtonText: 'Entendido'
+            });
+        }
+    } catch (error) {
+        console.error('Error de conexión:', error);
+        Swal.fire({
+            title: 'Error de Red',
+            text: 'No se pudo conectar con el servidor de RollingVet. Asegúrate que el backend esté encendido.',
+            icon: 'error',
+            confirmButtonText: 'Reintentar'
+        });
+    }
+};
 
   const renderPaso = () => {
     switch (pasoActual) {
