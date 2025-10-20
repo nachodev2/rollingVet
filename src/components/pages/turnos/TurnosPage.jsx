@@ -1,5 +1,6 @@
 import React from 'react';
 import { Container, Row, Col, Card, Button } from 'react-bootstrap';
+import Paso1Detalle from './Paso1Detalle.jsx';
 
 // Componentes Placeholder para maquetado
 const Paso1Detalle = () => (
@@ -42,7 +43,7 @@ const TurnosPage = () => {
     const renderPaso = () => {
         switch (pasoActual) {
             case 1:
-                return <Paso1Detalle />;
+                return <Paso1Detalle datos={datosTurnos} setDatos={setDatosTurnos} siguiente={siguientePaso}/>;
             case 2:
                 return <Paso2Horario />;
             case 3:
