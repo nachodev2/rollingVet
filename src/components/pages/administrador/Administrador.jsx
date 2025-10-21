@@ -90,6 +90,14 @@ const Administrador = () => {
     setKey(nuevaKey);
   };
 
+  const handleCrear = () => {
+    if (key === "pacientes") {
+      abrirModalAlta();
+    } else {
+      alert(`Función de creación para "${key}" aún no está implementada.`);
+    }
+  };
+
   return (
     <main className="seccion-principal-admin">
       <Container>
@@ -123,7 +131,7 @@ const Administrador = () => {
                     botonTexto={config.boton}
                     pagina={pagina}
                     total={config.data.length / elementosPorPagina}
-                    onCrear={abrirModalAlta}
+                    onCrear={handleCrear}
                     onVer={verDetallePaciente}
                     onEditar={editarPaciente}
                     onEliminar={eliminarPaciente}

@@ -128,14 +128,25 @@
   padding: 0;
 }
 
+.btn-icono-accion.ver {
+  background-color: transparent;
+  color: rgb(39, 162, 203);
+  border-color: rgb(39, 162, 203);
+}
+
+.btn-icono-accion.ver:hover {
+  background-color: rgb(39, 162, 203);
+  color: white;
+}
+
 .btn-icono-accion.editar {
   background-color: transparent;
-  color: var(--color-secundario);
-  border-color: var(--color-secundario);
+  color: #F6BB06;
+  border-color: #F6BB06;
 }
 
 .btn-icono-accion.editar:hover {
-  background-color: var(--color-secundario);
+  background-color: #F6BB06;
   color: white;
 }
 
