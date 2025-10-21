@@ -141,12 +141,12 @@
 
 .btn-icono-accion.editar {
   background-color: transparent;
-  color: #F6BB06;
-  border-color: #F6BB06;
+  color: #f6bb06;
+  border-color: #f6bb06;
 }
 
 .btn-icono-accion.editar:hover {
-  background-color: #F6BB06;
+  background-color: #f6bb06;
   color: white;
 }
 
@@ -185,4 +185,9 @@
 
 .pagination .page-item.active .page-link:focus {
   box-shadow: 0 0 0 0.25rem rgba(108, 154, 114, 0.25);
+}
+
+input:-webkit-autofill {
+  box-shadow: 0 0 0px 1000px white inset !important;
+  -webkit-text-fill-color: #000 !important;
 }
