@@ -2,27 +2,18 @@ import React, { useState, useEffect } from "react";
 import { Navbar, Nav, Button, Container } from "react-bootstrap";
 import { BoxArrowRight } from "react-bootstrap-icons";
 import Registro from "../pages/loginRegistro/Registro";
-import { NavLink } from "react-router";
 import Login from "../pages/loginRegistro/Login";
+import { NavLink } from "react-router";
 import "./Menu.css";
 
-const AuthButtons = ({
-  isLoggedIn,
-  userRole,
-  userName,
-  handleLogout,
-  handleLogin,
-}) => {
+
+const AuthButtons = ({ isLoggedIn, userRole, userName, handleLogout, handleLogin }) => {
   if (isLoggedIn) {
-    const saludo = userRole === "admin" ? `Administrador` : userName;
+    const saludo = userRole === 'admin' ? 'Administrador' : userName;
     return (
       <div className="nav-botones d-flex align-items-center gap-3">
         <span className="mensaje-bienvenida">¡Bienvenido, {saludo}!</span>
-        <Button
-          className="btn-icono-logout"
-          onClick={handleLogout}
-          title="Cerrar Sesión"
-        >
+        <Button className="btn-icono-logout" onClick={handleLogout} title="Cerrar Sesión">
           <BoxArrowRight size={22} />
         </Button>
       </div>
@@ -31,7 +22,6 @@ const AuthButtons = ({
 
   return (
     <div className="nav-botones d-flex gap-3">
-      {/* SE PASA handleLogin AHORA */}
       <Registro handleLogin={handleLogin} />
       <Login handleLogin={handleLogin} />
     </div>
@@ -40,33 +30,44 @@ const AuthButtons = ({
 
 const Menu = () => {
   const [estaEnScroll, setEstaEnScroll] = useState(false);
-
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userRole, setUserRole] = useState("visitante");
   const [userName, setUserName] = useState("");
 
+  // Detectar scroll
   useEffect(() => {
-    const manejarScroll = () => {
-      const posicionScroll = window.scrollY;
-      setEstaEnScroll(posicionScroll > 50);
-    };
-
-    window.addEventListener("scroll", manejarScroll);
-    return () => window.removeEventListener("scroll", manejarScroll);
+    const manejarScroll = () => setEstaEnScroll(window.scrollY > 50);
+    window.addEventListener('scroll', manejarScroll);
+    return () => window.removeEventListener('scroll', manejarScroll);
   }, []);
 
+  
+  useEffect(() => {
+    const adminPage = JSON.parse(localStorage.getItem("usuario"));
+    if (adminPage?.isLoggedIn) {
+      setIsLoggedIn(true);
+      setUserRole(adminPage.role);
+      setUserName(adminPage.name);
+    }
+  }, []);
+
+  
   const handleLogin = (role = "user", name = "Usuario") => {
+    const userData = { role, name, isLoggedIn: true };
+    localStorage.setItem("usuario", JSON.stringify(userData));
     setIsLoggedIn(true);
     setUserRole(role);
     setUserName(name);
   };
 
   const handleLogout = () => {
+    localStorage.removeItem("usuario");
     setIsLoggedIn(false);
     setUserRole("visitante");
     setUserName("");
   };
 
+  
   const getNavLinks = (role) => {
     const links = [
       { href: "/productos", text: "Productos" },
@@ -86,7 +87,6 @@ const Menu = () => {
   };
 
   const navLinks = getNavLinks(userRole);
-
   return (
     <>
       <div className={`nav-flotante ${estaEnScroll ? "visible" : "oculto"}`}>
