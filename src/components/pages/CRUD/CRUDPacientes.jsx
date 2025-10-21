@@ -323,7 +323,7 @@ const CRUDPacientes = () => {
                     name="petNombre"
                     value={nuevoPaciente.petNombre}
                     onChange={handleChange}
-                    placeholder="ej. Max"
+                    placeholder="Ej: Max"
                   />
                   <Form.Control.Feedback type="invalid">
                     {errors.petNombre}
@@ -350,7 +350,7 @@ const CRUDPacientes = () => {
                     name="petEdad"
                     value={nuevoPaciente.petEdad}
                     onChange={handleChange}
-                    placeholder=" 3 años"
+                    placeholder="Ej: 3 años"
                     type="number"
                   />
                   <Form.Control.Feedback type="invalid">

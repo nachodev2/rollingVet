@@ -10,29 +10,31 @@ textarea:-webkit-autofill {
 
 .modal-content {
   background-color: white;
-  border-radius: 12px;
+  border: 3px solid #6c9a72;
+  border-radius: 15px;
   padding: 1rem;
 }
 
 .modal-title {
   font-size: 1.75rem;
   font-weight: 600;
-  color: #1976d2;
+  color: #6c9a72;
 }
 
 .form-section {
-  background-color: #e3f2fd;
+  background-color: rgba(107, 192, 139, 0.15);
   padding: 1rem;
   border-radius: 8px;
   margin-bottom: 1.5rem;
-  box-shadow: 0 0 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 2px 4px rgba(107, 192, 139, 0.2);
+  border: 1px solid #6c9a72;
 }
 
 .form-section h5 {
   text-align: center;
   margin-bottom: 1rem;
   font-weight: 600;
-  color: #1976d2;
+  color: #507b56;
 }
 
 .form-control {
@@ -40,14 +42,32 @@ textarea:-webkit-autofill {
   border: 1px solid #ced4da;
   border-radius: 4px;
   font-size: 1rem;
+  transition: border-color 0.3s ease;
+}
+
+.form-control:focus {
+  border-color: #6c9a72;
+  box-shadow: 0 0 0 0.2rem rgba(108, 154, 114, 0.25);
 }
 
 .modal-footer .btn {
   min-width: 120px;
   font-weight: 500;
+  transition: background-color 0.3s ease;
+}
+
+.modal-footer .btn-primary {
+  background-color: #6c9a72;
+  border-color: #6c9a72;
+}
+
+.modal-footer .btn-primary:hover {
+  background-color: #507b56;
+  border-color: #507b56;
 }
 
 .verde-redondeado {
-  border: 2px solid green;
+  border: 3px solid #6c9a72;
   border-radius: 15px;
+  box-shadow: 0 2px 8px rgba(108, 154, 114, 0.2);
 }
