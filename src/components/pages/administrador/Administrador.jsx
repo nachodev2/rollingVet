@@ -1,5 +1,6 @@
 import  { useState, useMemo } from "react";
 import CRUDServicios from "../CRUD/CRUDServicios.jsx";
+import CRUDPacientes from "../CRUD/CRUDPacientes.jsx";
 import {
   Container,
   Row,
@@ -26,12 +27,10 @@ const generarDatosSimulados = (prefijo, cantidad) => {
   return datos;
 };
 
-const datosPacientes = generarDatosSimulados("Paciente Max", 48);
 const datosTurnos = generarDatosSimulados("Turno Agendado", 31);
 
 const encabezados = {
   servicios: ["Nombre", "Descripción", "Costo"],
-  pacientes: ["Dueño", "Mascota", "Especie", "Raza"],
   turnos: ["Fecha", "Hora", "Paciente", "Servicio"],
 };
 
@@ -39,8 +38,6 @@ const Administrador = () => {
   const [key, setKey] = useState("servicios"); 
 
   const [paginaActual, setPaginaActual] = useState({
-    servicios: 1,
-    pacientes: 1,
     turnos: 1,
   });
 
@@ -49,11 +46,6 @@ const Administrador = () => {
   
   const datosMapeados = useMemo(
     () => ({
-      pacientes: {
-        data: datosPacientes,
-        header: encabezados.pacientes,
-        boton: "Dar de Alta Paciente",
-      },
       turnos: {
         data: datosTurnos,
         header: encabezados.turnos,
@@ -197,6 +189,9 @@ const Administrador = () => {
             >
               <Tab eventKey="servicios" title="Servicios">
                 <CRUDServicios />
+              </Tab>
+              <Tab eventKey="pacientes" title="Pacientes">
+                <CRUDPacientes />
               </Tab>
               {Object.keys(datosMapeados).map((tabKey) => (
                 <Tab
