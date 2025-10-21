@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { Modal, Button, Table, Form, Row, Col } from "react-bootstrap";
 import { PencilSquare, Trash, Eye } from "react-bootstrap-icons";
 import Swal from "sweetalert2";
-import "../administrador/Administrador.css";
+import "./CRUDTurnos.css";
 
 const CRUDTurnos = () => {
   const [showModal, setShowModal] = useState(false);
