@@ -52,7 +52,6 @@ const CRUDTurnos = () => {
     return date.getDay() !== 0 && date.getDay() !== 6; // Not Sunday(0) or Saturday(6)
   };
 
-  // Generate time slots from 9:00 to 16:00
   const timeSlots = () => {
     const slots = [];
     for (let h = 9; h <= 16; h++) {
@@ -151,7 +150,6 @@ const CRUDTurnos = () => {
         "El nombre solo puede contener letras y espacios.";
     }
 
-    // Check for conflicts
     const conflict = turnos.some(
       (t, idx) =>
         t.fecha === nuevoTurno.fecha &&
@@ -240,51 +238,7 @@ const CRUDTurnos = () => {
               <th className="text-center">Acciones</th>
             </tr>
           </thead>
-          <tbody>
-            {turnos.length > 0 ? (
-              turnos.map((item, index) => (
-                <tr key={item.id || index}>
-                  <td className="text-center">{item.veterinario.nombre}</td>
-                  <td className="text-center">
-                    <strong>{item.mascota.nombre}</strong>
-                  </td>
-                  <td className="text-center">{formatFecha(item.fecha)}</td>
-                  <td className="text-center">{item.hora}</td>
-                  <td>
-                    <div className="contenedor-iconos-accion">
-                      <button
-                        className="btn-icono-accion ver"
-                        title="Ver"
-                        onClick={() => handleVer(index)}
-                      >
-                        <Eye size={18} />
-                      </button>
-                      <button
-                        className="btn-icono-accion editar"
-                        title="Editar"
-                        onClick={() => handleEditar(index)}
-                      >
-                        <PencilSquare size={18} />
-                      </button>
-                      <button
-                        className="btn-icono-accion eliminar"
-                        title="Eliminar"
-                        onClick={() => handleEliminar(index)}
-                      >
-                        <Trash size={18} />
-                      </button>
-                    </div>
-                  </td>
-                </tr>
-              ))
-            ) : (
-              <tr>
-                <td colSpan={5} className="text-center">
-                  No hay turnos en la lista.
-                </td>
-              </tr>
-            )}
-          </tbody>
+          <tbody>{turnos.length > 0 ? turnos.map((item, index) => <tr key={item.id || index}><td className="text-center">{item.veterinario.nombre}</td><td className="text-center"><strong>{item.mascota.nombre}</strong></td><td className="text-center">{formatFecha(item.fecha)}</td><td className="text-center">{item.hora}</td><td><div className="contenedor-iconos-accion"><button className="btn-icono-accion ver" title="Ver" onClick={() => handleVer(index)}><Eye size={18} /></button><button className="btn-icono-accion editar" title="Editar" onClick={() => handleEditar(index)}><PencilSquare size={18} /></button><button className="btn-icono-accion eliminar" title="Eliminar" onClick={() => handleEliminar(index)}><Trash size={18} /></button></div></td></tr>) : <tr><td colSpan={5} className="text-center">No hay turnos en la lista.</td></tr>}</tbody>
         </Table>
       </div>
       <Modal show={showModal} onHide={cerrarModal} size="lg" centered>
@@ -305,94 +259,7 @@ const CRUDTurnos = () => {
           <div className="form-section">
             <h5>Detalles del Turno</h5>
             <Row>
-              <Col md={6}>
-                <Form.Group className="mb-3">
-                  <Form.Label>Nombre de la Mascota</Form.Label>
-                  <Form.Control
-                    isInvalid={!!errors.mascotaNombre}
-                    name="mascota.nombre"
-                    value={nuevoTurno.mascota.nombre}
-                    onChange={handleChange}
-                    placeholder="Ej: Max"
-                    disabled={isReadOnly}
-                  />
-                  <Form.Control.Feedback type="invalid">
-                    {errors.mascotaNombre}
-                  </Form.Control.Feedback>
-                </Form.Group>
-                <Form.Group className="mb-3">
-                  <Form.Label>Fecha</Form.Label>
-                  <Form.Control
-                    isInvalid={!!errors.fecha}
-                    name="fecha"
-                    type="date"
-                    value={nuevoTurno.fecha}
-                    onChange={handleChange}
-                    disabled={isReadOnly}
-                  />
-                  <Form.Control.Feedback type="invalid">
-                    {errors.fecha}
-                  </Form.Control.Feedback>
-                </Form.Group>
-                <Form.Group className="mb-3">
-                  <Form.Label>Hora</Form.Label>
-                  <Form.Select
-                    isInvalid={!!errors.hora}
-                    name="hora"
-                    value={nuevoTurno.hora}
-                    onChange={handleChange}
-                    disabled={isReadOnly}
-                  >
-                    <option value="">Seleccione una hora</option>
-                    {timeSlots().map((slot) => (
-                      <option key={slot} value={slot}>
-                        {slot}
-                      </option>
-                    ))}
-                  </Form.Select>
-                  <Form.Control.Feedback type="invalid">
-                    {errors.hora}
-                  </Form.Control.Feedback>
-                </Form.Group>
-              </Col>
-              <Col md={6}>
-                <Form.Group className="mb-3">
-                  <Form.Label>Veterinario</Form.Label>
-                  <Form.Select
-                    isInvalid={!!errors.veterinario}
-                    name="veterinario"
-                    value={nuevoTurno.veterinario?.id || ""}
-                    onChange={handleChange}
-                    disabled={isReadOnly}
-                  >
-                    <option value="">Seleccione un veterinario</option>
-                    {veterinarios.map((vet) => (
-                      <option key={vet.id} value={vet.id}>
-                        {vet.nombre}
-                      </option>
-                    ))}
-                  </Form.Select>
-                  <Form.Control.Feedback type="invalid">
-                    {errors.veterinario}
-                  </Form.Control.Feedback>
-                </Form.Group>
-                <Form.Group className="mb-3">
-                  <Form.Label>Detalle de Cita</Form.Label>
-                  <Form.Control
-                    isInvalid={!!errors.detalleCita}
-                    name="detalleCita"
-                    value={nuevoTurno.detalleCita}
-                    onChange={handleChange}
-                    as="textarea"
-                    rows={5}
-                    placeholder="Describa la consulta o motivo del turno"
-                    disabled={isReadOnly}
-                  />
-                  <Form.Control.Feedback type="invalid">
-                    {errors.detalleCita}
-                  </Form.Control.Feedback>
-                </Form.Group>
-              </Col>
+              <Col md={6}><Form.Group className="mb-3"><Form.Label>Nombre de la Mascota</Form.Label><Form.Control isInvalid={!!errors.mascotaNombre} name="mascota.nombre" value={nuevoTurno.mascota.nombre} onChange={handleChange} placeholder="Ej: Max" disabled={isReadOnly} /><Form.Control.Feedback type="invalid">{errors.mascotaNombre}</Form.Control.Feedback></Form.Group><Form.Group className="mb-3"><Form.Label>Fecha</Form.Label><Form.Control isInvalid={!!errors.fecha} name="fecha" type="date" value={nuevoTurno.fecha} onChange={handleChange} disabled={isReadOnly} /><Form.Control.Feedback type="invalid">{errors.fecha}</Form.Control.Feedback></Form.Group><Form.Group className="mb-3"><Form.Label>Hora</Form.Label><Form.Select isInvalid={!!errors.hora} name="hora" value={nuevoTurno.hora} onChange={handleChange} disabled={isReadOnly}><option value="">Seleccione una hora</option>{timeSlots().map((slot) => <option key={slot} value={slot}>{slot}</option>)}</Form.Select><Form.Control.Feedback type="invalid">{errors.hora}</Form.Control.Feedback></Form.Group></Col><Col md={6}><Form.Group className="mb-3"><Form.Label>Veterinario</Form.Label><Form.Select isInvalid={!!errors.veterinario} name="veterinario" value={nuevoTurno.veterinario?.id || ""} onChange={handleChange} disabled={isReadOnly}><option value="">Seleccione un veterinario</option>{veterinarios.map((vet) => <option key={vet.id} value={vet.id}>{vet.nombre}</option>)}</Form.Select><Form.Control.Feedback type="invalid">{errors.veterinario}</Form.Control.Feedback></Form.Group><Form.Group className="mb-3"><Form.Label>Detalle de Cita</Form.Label><Form.Control isInvalid={!!errors.detalleCita} name="detalleCita" value={nuevoTurno.detalleCita} onChange={handleChange} as="textarea" rows={5} placeholder="Describa la consulta o motivo del turno" disabled={isReadOnly} /><Form.Control.Feedback type="invalid">{errors.detalleCita}</Form.Control.Feedback></Form.Group></Col>
             </Row>
           </div>
         </Modal.Body>
