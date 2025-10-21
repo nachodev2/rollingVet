@@ -11,6 +11,7 @@ const CRUDPacientes = () => {
     setShowModal(false);
     setEditIndex(null);
     setNuevoPaciente(pacienteInicial);
+    setErrors({});
   };
 
   const especies = ["Perro", "Gato", "Otro"];
@@ -49,6 +50,7 @@ const CRUDPacientes = () => {
 
   const [nuevoPaciente, setNuevoPaciente] = useState(pacienteInicial);
   const [editIndex, setEditIndex] = useState(null);
+  const [errors, setErrors] = useState({});
 
   useEffect(() => {
     localStorage.setItem("pacientes", JSON.stringify(pacientes));
@@ -59,41 +61,47 @@ const CRUDPacientes = () => {
   }, [nuevoPaciente.petEspecie]);
 
   const handleAgregar = () => {
-    const camposObligatorios = ["ownerNombre", "petNombre"];
-    const faltantes = camposObligatorios.filter(
-      (campo) => !nuevoPaciente[campo]
-    );
+    const newErrors = {};
 
-    if (faltantes.length > 0) {
-      Swal.fire({
-        icon: "warning",
-        title: "Campos obligatorios",
-        text: "El nombre del dueño y el nombre de la mascota son requeridos.",
-      });
-      return;
+    if (!nuevoPaciente.petNombre) newErrors.petNombre = "El nombre de la mascota es obligatorio.";
+    if (!nuevoPaciente.petSexo) newErrors.petSexo = "Seleccione el sexo de la mascota.";
+    if (!nuevoPaciente.petEspecie) newErrors.petEspecie = "Seleccione la especie de la mascota.";
+    if (!nuevoPaciente.petRaza) newErrors.petRaza = "Seleccione la raza de la mascota.";
+    if (!nuevoPaciente.petEdad) newErrors.petEdad = "La edad de la mascota es obligatoria.";
+    else if (isNaN(nuevoPaciente.petEdad) || nuevoPaciente.petEdad <= 0) newErrors.petEdad = "Ingrese una edad válida.";
+    if (!nuevoPaciente.petPeso) newErrors.petPeso = "El peso de la mascota es obligatorio.";
+    else if (isNaN(nuevoPaciente.petPeso) || nuevoPaciente.petPeso <= 0) newErrors.petPeso = "Ingrese un peso válido.";
+    if (!nuevoPaciente.ownerNombre) newErrors.ownerNombre = "El nombre del dueño es obligatorio.";
+    if (!nuevoPaciente.ownerApellido) newErrors.ownerApellido = "El apellido del dueño es obligatorio.";
+    if (!nuevoPaciente.ownerTelefono) newErrors.ownerTelefono = "El teléfono del dueño es obligatorio.";
+    if (!nuevoPaciente.ownerDireccion) newErrors.ownerDireccion = "La dirección del dueño es obligatoria.";
+    if (nuevoPaciente.ownerEmail && !/\S+@\S+\.\S+/.test(nuevoPaciente.ownerEmail)) newErrors.ownerEmail = "Ingrese un email válido.";
+
+    setErrors(newErrors);
+
+    if (Object.keys(newErrors).length === 0) {
+      if (editIndex !== null) {
+        const actualizados = [...pacientes];
+        actualizados[editIndex] = nuevoPaciente;
+        setPacientes(actualizados);
+        Swal.fire({
+          icon: "success",
+          title: "Paciente actualizado",
+          showConfirmButton: false,
+          timer: 1500,
+        });
+      } else {
+        setPacientes([...pacientes, { ...nuevoPaciente, id: Date.now() }]);
+        Swal.fire({
+          icon: "success",
+          title: "Paciente agregado",
+          showConfirmButton: false,
+          timer: 1500,
+        });
+      }
+
+      cerrarModal();
     }
-
-    if (editIndex !== null) {
-      const actualizados = [...pacientes];
-      actualizados[editIndex] = nuevoPaciente;
-      setPacientes(actualizados);
-      Swal.fire({
-        icon: "success",
-        title: "Paciente actualizado",
-        showConfirmButton: false,
-        timer: 1500,
-      });
-    } else {
-      setPacientes([...pacientes, { ...nuevoPaciente, id: Date.now() }]);
-      Swal.fire({
-        icon: "success",
-        title: "Paciente agregado",
-        showConfirmButton: false,
-        timer: 1500,
-      });
-    }
-
-    cerrarModal();
   };
 
   const handleEditar = (index) => {
@@ -207,24 +215,33 @@ const CRUDPacientes = () => {
                 <Form.Group className="mb-3">
                   <Form.Label>Nombre</Form.Label>
                   <Form.Control
+                    isInvalid={!!errors.petNombre}
                     name="petNombre"
                     value={nuevoPaciente.petNombre}
                     onChange={handleChange}
                     autoComplete="off"
                   />
+                  <Form.Control.Feedback type="invalid">
+                    {errors.petNombre}
+                  </Form.Control.Feedback>
                 </Form.Group>
                 <Form.Group className="mb-3">
                   <Form.Label>Peso</Form.Label>
                   <Form.Control
+                    isInvalid={!!errors.petPeso}
                     name="petPeso"
                     value={nuevoPaciente.petPeso}
                     onChange={handleChange}
                     autoComplete="off"
                   />
+                  <Form.Control.Feedback type="invalid">
+                    {errors.petPeso}
+                  </Form.Control.Feedback>
                 </Form.Group>
                 <Form.Group className="mb-3">
                   <Form.Label>Sexo</Form.Label>
                   <Form.Select
+                    isInvalid={!!errors.petSexo}
                     name="petSexo"
                     value={nuevoPaciente.petSexo}
                     onChange={handleChange}
@@ -236,12 +253,16 @@ const CRUDPacientes = () => {
                       </option>
                     ))}
                   </Form.Select>
+                  <Form.Control.Feedback type="invalid">
+                    {errors.petSexo}
+                  </Form.Control.Feedback>
                 </Form.Group>
               </Col>
               <Col md={6}>
                 <Form.Group className="mb-3">
                   <Form.Label>Especie</Form.Label>
                   <Form.Select
+                    isInvalid={!!errors.petEspecie}
                     name="petEspecie"
                     value={nuevoPaciente.petEspecie}
                     onChange={handleChange}
@@ -253,19 +274,27 @@ const CRUDPacientes = () => {
                       </option>
                     ))}
                   </Form.Select>
+                  <Form.Control.Feedback type="invalid">
+                    {errors.petEspecie}
+                  </Form.Control.Feedback>
                 </Form.Group>
                 <Form.Group className="mb-3">
                   <Form.Label>Edad</Form.Label>
                   <Form.Control
+                    isInvalid={!!errors.petEdad}
                     name="petEdad"
                     value={nuevoPaciente.petEdad}
                     onChange={handleChange}
                     autoComplete="off"
                   />
+                  <Form.Control.Feedback type="invalid">
+                    {errors.petEdad}
+                  </Form.Control.Feedback>
                 </Form.Group>
                 <Form.Group className="mb-3">
                   <Form.Label>Raza</Form.Label>
                   <Form.Select
+                    isInvalid={!!errors.petRaza}
                     name="petRaza"
                     value={nuevoPaciente.petRaza}
                     onChange={handleChange}
@@ -277,6 +306,9 @@ const CRUDPacientes = () => {
                       </option>
                     ))}
                   </Form.Select>
+                  <Form.Control.Feedback type="invalid">
+                    {errors.petRaza}
+                  </Form.Control.Feedback>
                 </Form.Group>
               </Col>
             </Row>
@@ -289,50 +321,70 @@ const CRUDPacientes = () => {
                 <Form.Group className="mb-3">
                   <Form.Label>Nombre</Form.Label>
                   <Form.Control
+                    isInvalid={!!errors.ownerNombre}
                     name="ownerNombre"
                     value={nuevoPaciente.ownerNombre}
                     onChange={handleChange}
                     autoComplete="off"
                   />
+                  <Form.Control.Feedback type="invalid">
+                    {errors.ownerNombre}
+                  </Form.Control.Feedback>
                 </Form.Group>
                 <Form.Group className="mb-3">
                   <Form.Label>Teléfono</Form.Label>
                   <Form.Control
+                    isInvalid={!!errors.ownerTelefono}
                     name="ownerTelefono"
                     value={nuevoPaciente.ownerTelefono}
                     onChange={handleChange}
                     autoComplete="off"
                   />
+                  <Form.Control.Feedback type="invalid">
+                    {errors.ownerTelefono}
+                  </Form.Control.Feedback>
                 </Form.Group>
                 <Form.Group className="mb-3">
                   <Form.Label>Apellido</Form.Label>
                   <Form.Control
+                    isInvalid={!!errors.ownerApellido}
                     name="ownerApellido"
                     value={nuevoPaciente.ownerApellido}
                     onChange={handleChange}
                     autoComplete="off"
                   />
+                  <Form.Control.Feedback type="invalid">
+                    {errors.ownerApellido}
+                  </Form.Control.Feedback>
                 </Form.Group>
               </Col>
               <Col md={6}>
                 <Form.Group className="mb-3">
                   <Form.Label>Dirección</Form.Label>
                   <Form.Control
+                    isInvalid={!!errors.ownerDireccion}
                     name="ownerDireccion"
                     value={nuevoPaciente.ownerDireccion}
                     onChange={handleChange}
                     autoComplete="off"
                   />
+                  <Form.Control.Feedback type="invalid">
+                    {errors.ownerDireccion}
+                  </Form.Control.Feedback>
                 </Form.Group>
                 <Form.Group className="mb-3">
                   <Form.Label>Email</Form.Label>
                   <Form.Control
+                    isInvalid={!!errors.ownerEmail}
                     type="email"
                     name="ownerEmail"
                     value={nuevoPaciente.ownerEmail}
                     onChange={handleChange}
                     autoComplete="off"
                   />
+                  <Form.Control.Feedback type="invalid">
+                    {errors.ownerEmail}
+                  </Form.Control.Feedback>
                 </Form.Group>
               </Col>
             </Row>
