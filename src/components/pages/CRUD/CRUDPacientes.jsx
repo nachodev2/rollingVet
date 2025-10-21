@@ -45,7 +45,9 @@ const CRUDPacientes = () => {
     petNombre: "",
     petSexo: "",
     petEdad: "",
+    petUnidadEdad: "años",
     petPeso: "",
+    petUnidadPeso: "kg",
     petEspecie: "",
     petRaza: "",
     ownerNombre: "",
@@ -108,8 +110,10 @@ const CRUDPacientes = () => {
       newErrors.petEdad = "La edad debe ser un número entero.";
     } else {
       const edad = parseInt(nuevoPaciente.petEdad);
-      if (edad < 0 || edad > 30) {
-        newErrors.petEdad = "La edad debe estar entre 0 y 30 años.";
+      const unidad = nuevoPaciente.petUnidadEdad;
+      const maxEdad = unidad === "meses" ? 300 : 30;
+      if (edad < 0 || edad > maxEdad) {
+        newErrors.petEdad = `La edad debe estar entre 0 y ${maxEdad} ${unidad}.`;
       }
     }
 
@@ -121,8 +125,19 @@ const CRUDPacientes = () => {
         "El peso debe tener formato numérico válido (ej: 5.5).";
     } else {
       const peso = parseFloat(nuevoPaciente.petPeso);
-      if (peso < 0.1 || peso > 100) {
-        newErrors.petPeso = "El peso debe estar entre 0.1 y 100 kg.";
+      const unidad = nuevoPaciente.petUnidadPeso;
+      let minPeso, maxPeso, unidadDisplay;
+      if (unidad === "kg") {
+        minPeso = 0.1;
+        maxPeso = 100;
+        unidadDisplay = "kg";
+      } else {
+        minPeso = 100;
+        maxPeso = 100000;
+        unidadDisplay = "g";
+      }
+      if (peso < minPeso || peso > maxPeso) {
+        newErrors.petPeso = `El peso debe estar entre ${minPeso} y ${maxPeso} ${unidadDisplay}.`;
       }
     }
 
@@ -196,7 +211,8 @@ const CRUDPacientes = () => {
         setPacientes(actualizados);
         Swal.fire({
           icon: "success",
-          title: "Paciente actualizado",
+          title: `Paciente "${nuevoPaciente.petNombre}" actualizado correctamente`,
+          confirmButtonColor: "#6c9a72",
           showConfirmButton: false,
           timer: 1500,
         });
@@ -204,7 +220,8 @@ const CRUDPacientes = () => {
         setPacientes([...pacientes, { ...nuevoPaciente, id: Date.now() }]);
         Swal.fire({
           icon: "success",
-          title: "Paciente agregado",
+          title: `Paciente "${nuevoPaciente.petNombre}" creado correctamente`,
+          confirmButtonColor: "#6c9a72",
           showConfirmButton: false,
           timer: 1500,
         });
@@ -215,10 +232,24 @@ const CRUDPacientes = () => {
   };
 
   const handleEditar = (index) => {
-    setNuevoPaciente(pacientes[index]);
-    setEditIndex(index);
-    setIsReadOnly(false);
-    abrirModal();
+    const paciente = pacientes[index];
+    Swal.fire({
+      title: "¿Editar paciente?",
+      text: `¿Seguro que quieres editar los datos de "${paciente.petNombre}"?`,
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonText: "Sí, editar",
+      cancelButtonText: "Cancelar",
+      confirmButtonColor: "#6c9a72",
+      cancelButtonColor: "#6c757d",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        setNuevoPaciente(paciente);
+        setEditIndex(index);
+        setIsReadOnly(false);
+        abrirModal();
+      }
+    });
   };
 
   const handleVer = (index) => {
@@ -237,15 +268,16 @@ const CRUDPacientes = () => {
       showCancelButton: true,
       confirmButtonText: "Sí, eliminar",
       cancelButtonText: "Cancelar",
-      confirmButtonColor: "#d33",
-      cancelButtonColor: "#3085d6",
+      confirmButtonColor: "#6c9a72",
+      cancelButtonColor: "#6c757d",
     }).then((result) => {
       if (result.isConfirmed) {
         const actualizados = pacientes.filter((_, i) => i !== index);
         setPacientes(actualizados);
         Swal.fire({
           icon: "success",
-          title: "Paciente eliminado",
+          title: `Paciente "${paciente.petNombre}" eliminado correctamente`,
+          confirmButtonColor: "#6c9a72",
           showConfirmButton: false,
           timer: 1500,
         });
@@ -276,7 +308,9 @@ const CRUDPacientes = () => {
               pacientes.map((item, index) => (
                 <tr key={item.id || index}>
                   <td className="text-center">{item.ownerNombre}</td>
-                  <td className="text-center">{item.petNombre}</td>
+                  <td className="text-center">
+                    <strong>{item.petNombre}</strong>
+                  </td>
                   <td className="text-center">{item.petEspecie}</td>
                   <td className="text-center">{item.petRaza}</td>
                   <td>
@@ -319,7 +353,7 @@ const CRUDPacientes = () => {
       <Modal show={showModal} onHide={cerrarModal} size="lg" centered>
         <Modal.Header closeButton>
           <Modal.Title className="modal-title text-center w-100 ms-4">
-            {isReadOnly ? "Ver Paciente" : editIndex !== null ? "Editar Paciente" : "Dar de Alta Paciente"}
+            {isReadOnly ? "Historia Clínica" : editIndex !== null ? "Editar Paciente" : "Dar de Alta Paciente"}
           </Modal.Title>
         </Modal.Header>
 
@@ -343,35 +377,64 @@ const CRUDPacientes = () => {
                   </Form.Control.Feedback>
                 </Form.Group>
 
-                <Form.Group className="mb-3">
-                  <Form.Label>Peso</Form.Label>
-                  <Form.Control
-                    isInvalid={!!errors.petPeso}
-                    name="petPeso"
-                    value={nuevoPaciente.petPeso}
-                    onChange={handleChange}
-                    placeholder="Ej: 5.5 kg"
-                    disabled={isReadOnly}
-                  />
-                  <Form.Control.Feedback type="invalid">
-                    {errors.petPeso}
-                  </Form.Control.Feedback>
-                </Form.Group>
-                <Form.Group className="mb-3">
-                  <Form.Label>Edad</Form.Label>
-                  <Form.Control
-                    isInvalid={!!errors.petEdad}
-                    name="petEdad"
-                    value={nuevoPaciente.petEdad}
-                    onChange={handleChange}
-                    placeholder="Ej: 3 años"
-                    type="number"
-                    disabled={isReadOnly}
-                  />
-                  <Form.Control.Feedback type="invalid">
-                    {errors.petEdad}
-                  </Form.Control.Feedback>
-                </Form.Group>
+                <div className="d-flex">
+                  <Form.Group className="mb-3 me-2 flex-fill">
+                    <Form.Label>Peso</Form.Label>
+                    <Form.Control
+                      isInvalid={!!errors.petPeso}
+                      name="petPeso"
+                      value={nuevoPaciente.petPeso}
+                      onChange={handleChange}
+                      placeholder={`Ej: ${nuevoPaciente.petUnidadPeso === 'kg' ? '5.5' : '3500'}`}
+                      type="number"
+                      disabled={isReadOnly}
+                    />
+                    <Form.Control.Feedback type="invalid">
+                      {errors.petPeso}
+                    </Form.Control.Feedback>
+                  </Form.Group>
+                  <Form.Group className="mb-3" style={{ minWidth: '120px' }}>
+                    <Form.Label>Unidad</Form.Label>
+                    <Form.Select
+                      name="petUnidadPeso"
+                      value={nuevoPaciente.petUnidadPeso}
+                      onChange={handleChange}
+                      disabled={isReadOnly}
+                    >
+                      <option value="kg">kg</option>
+                      <option value="g">g</option>
+                    </Form.Select>
+                  </Form.Group>
+                </div>
+                <div className="d-flex">
+                  <Form.Group className="mb-3 me-2 flex-fill">
+                    <Form.Label>Edad</Form.Label>
+                    <Form.Control
+                      isInvalid={!!errors.petEdad}
+                      name="petEdad"
+                      value={nuevoPaciente.petEdad}
+                      onChange={handleChange}
+                      placeholder={`Ej: ${nuevoPaciente.petUnidadEdad === 'años' ? '3' : '6'}`}
+                      type="number"
+                      disabled={isReadOnly}
+                    />
+                    <Form.Control.Feedback type="invalid">
+                      {errors.petEdad}
+                    </Form.Control.Feedback>
+                  </Form.Group>
+                  <Form.Group className="mb-3" style={{ minWidth: '120px' }}>
+                    <Form.Label>Unidad</Form.Label>
+                    <Form.Select
+                      name="petUnidadEdad"
+                      value={nuevoPaciente.petUnidadEdad}
+                      onChange={handleChange}
+                      disabled={isReadOnly}
+                    >
+                      <option value="años">Años</option>
+                      <option value="meses">Meses</option>
+                    </Form.Select>
+                  </Form.Group>
+                </div>
               </Col>
               <Col md={6}>
                 <Form.Group className="mb-3">
