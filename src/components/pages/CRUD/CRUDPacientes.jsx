@@ -63,19 +63,87 @@ const CRUDPacientes = () => {
   const handleAgregar = () => {
     const newErrors = {};
 
-    if (!nuevoPaciente.petNombre) newErrors.petNombre = "El nombre de la mascota es obligatorio.";
+    // Validaciones para petNombre
+    if (!nuevoPaciente.petNombre) {
+      newErrors.petNombre = "El nombre de la mascota es obligatorio.";
+    } else if (nuevoPaciente.petNombre.length < 2 || nuevoPaciente.petNombre.length > 50) {
+      newErrors.petNombre = "El nombre debe tener entre 2 y 50 caracteres.";
+    } else if (!/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/.test(nuevoPaciente.petNombre)) {
+      newErrors.petNombre = "El nombre solo puede contener letras y espacios.";
+    }
+
     if (!nuevoPaciente.petSexo) newErrors.petSexo = "Seleccione el sexo de la mascota.";
+
     if (!nuevoPaciente.petEspecie) newErrors.petEspecie = "Seleccione la especie de la mascota.";
+
     if (!nuevoPaciente.petRaza) newErrors.petRaza = "Seleccione la raza de la mascota.";
-    if (!nuevoPaciente.petEdad) newErrors.petEdad = "La edad de la mascota es obligatoria.";
-    else if (isNaN(nuevoPaciente.petEdad) || nuevoPaciente.petEdad <= 0) newErrors.petEdad = "Ingrese una edad válida.";
-    if (!nuevoPaciente.petPeso) newErrors.petPeso = "El peso de la mascota es obligatorio.";
-    else if (isNaN(nuevoPaciente.petPeso) || nuevoPaciente.petPeso <= 0) newErrors.petPeso = "Ingrese un peso válido.";
-    if (!nuevoPaciente.ownerNombre) newErrors.ownerNombre = "El nombre del dueño es obligatorio.";
-    if (!nuevoPaciente.ownerApellido) newErrors.ownerApellido = "El apellido del dueño es obligatorio.";
-    if (!nuevoPaciente.ownerTelefono) newErrors.ownerTelefono = "El teléfono del dueño es obligatorio.";
-    if (!nuevoPaciente.ownerDireccion) newErrors.ownerDireccion = "La dirección del dueño es obligatoria.";
-    if (nuevoPaciente.ownerEmail && !/\S+@\S+\.\S+/.test(nuevoPaciente.ownerEmail)) newErrors.ownerEmail = "Ingrese un email válido.";
+
+    // Validaciones para petEdad
+    if (!nuevoPaciente.petEdad) {
+      newErrors.petEdad = "La edad de la mascota es obligatoria.";
+    } else if (!/^\d+$/.test(nuevoPaciente.petEdad)) {
+      newErrors.petEdad = "La edad debe ser un número entero.";
+    } else {
+      const edad = parseInt(nuevoPaciente.petEdad);
+      if (edad < 0 || edad > 30) {
+        newErrors.petEdad = "La edad debe estar entre 0 y 30 años.";
+      }
+    }
+
+    // Validaciones para petPeso
+    if (!nuevoPaciente.petPeso) {
+      newErrors.petPeso = "El peso de la mascota es obligatorio.";
+    } else if (!/^[0-9]+(\.[0-9]{1,2})?$/.test(nuevoPaciente.petPeso)) {
+      newErrors.petPeso = "El peso debe tener formato numérico válido (ej: 5.5).";
+    } else {
+      const peso = parseFloat(nuevoPaciente.petPeso);
+      if (peso < 0.1 || peso > 100) {
+        newErrors.petPeso = "El peso debe estar entre 0.1 y 100 kg.";
+      }
+    }
+
+    // Validaciones para ownerNombre
+    if (!nuevoPaciente.ownerNombre) {
+      newErrors.ownerNombre = "El nombre del dueño es obligatorio.";
+    } else if (nuevoPaciente.ownerNombre.length < 2 || nuevoPaciente.ownerNombre.length > 50) {
+      newErrors.ownerNombre = "El nombre debe tener entre 2 y 50 caracteres.";
+    } else if (!/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/.test(nuevoPaciente.ownerNombre)) {
+      newErrors.ownerNombre = "El nombre solo puede contener letras y espacios.";
+    }
+
+    // Validaciones para ownerApellido
+    if (!nuevoPaciente.ownerApellido) {
+      newErrors.ownerApellido = "El apellido del dueño es obligatorio.";
+    } else if (nuevoPaciente.ownerApellido.length < 2 || nuevoPaciente.ownerApellido.length > 50) {
+      newErrors.ownerApellido = "El apellido debe tener entre 2 y 50 caracteres.";
+    } else if (!/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/.test(nuevoPaciente.ownerApellido)) {
+      newErrors.ownerApellido = "El apellido solo puede contener letras y espacios.";
+    }
+
+    // Validaciones para ownerTelefono
+    if (!nuevoPaciente.ownerTelefono) {
+      newErrors.ownerTelefono = "El teléfono del dueño es obligatorio.";
+    } else if (!/^[\d\s\-\+]+$/.test(nuevoPaciente.ownerTelefono)) {
+      newErrors.ownerTelefono = "El teléfono solo puede contener números, espacios, - y +.";
+    } else if (nuevoPaciente.ownerTelefono.replace(/[\s\-\+]/g, '').length < 7 || nuevoPaciente.ownerTelefono.length > 15) {
+      newErrors.ownerTelefono = "El teléfono debe tener entre 7 y 15 caracteres (con símbolos).";
+    }
+
+    // Validaciones para ownerDireccion
+    if (!nuevoPaciente.ownerDireccion) {
+      newErrors.ownerDireccion = "La dirección del dueño es obligatoria.";
+    } else if (nuevoPaciente.ownerDireccion.length < 10 || nuevoPaciente.ownerDireccion.length > 200) {
+      newErrors.ownerDireccion = "La dirección debe tener entre 10 y 200 caracteres.";
+    }
+
+    // Validaciones para ownerEmail
+    if (!nuevoPaciente.ownerEmail) {
+      newErrors.ownerEmail = "El email del dueño es obligatorio.";
+    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(nuevoPaciente.ownerEmail)) {
+      newErrors.ownerEmail = "Ingrese un formato de email válido.";
+    } else if (nuevoPaciente.ownerEmail.length > 100) {
+      newErrors.ownerEmail = "El email no puede superar los 100 caracteres.";
+    }
 
     setErrors(newErrors);
 
