@@ -1,6 +1,7 @@
 import  { useState, useEffect } from "react";
 import { Modal, Button, Table } from "react-bootstrap";
 import { PencilSquare, Trash } from "react-bootstrap-icons";
+import Swal from "sweetalert2";
 
 const CRUDServicios = () => {
   const [showModal, setShowModal] = useState(false);
@@ -34,8 +35,22 @@ const CRUDServicios = () => {
       updated[editIndex] = nuevoServicio;
       setServicios(updated);
       setEditIndex(null);
+
+      Swal.fire({
+        icon: "success",
+        title: "Servicio actualizado",
+        showConfirmButton: false,
+        timer: 1500,
+      });
     } else {
       setServicios([...servicios, { ...nuevoServicio, id: Date.now() }]);
+
+        Swal.fire({
+        icon: "success",
+        title: "Servicio agregado",
+        showConfirmButton: false,
+        timer: 1500,
+      });
     }
     setNuevoServicio({ nombre: "", descripcion: "", costo: "" });
     cerrarModal();
@@ -48,10 +63,31 @@ const CRUDServicios = () => {
   };
 
   const handleEliminar = (index) => {
-    if (window.confirm("¿Eliminar este servicio?")) {
-      const updated = servicios.filter((_, i) => i !== index);
-      setServicios(updated);
-    }
+     const servicio = servicios[index];
+
+    Swal.fire({
+      title: "¿Estás seguro?",
+      text: `Se eliminará el servicio "${servicio.nombre}".`,
+      icon: "warning",
+      showCancelButton: true,
+      confirmButtonText: "Sí, eliminar",
+      cancelButtonText: "Cancelar",
+      confirmButtonColor: "#d33",
+      cancelButtonColor: "#3085d6",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        const updated = servicios.filter((_, i) => i !== index);
+        setServicios(updated);
+
+        Swal.fire({
+          icon: "success",
+          title: "Eliminado",
+          text: "El servicio ha sido eliminado correctamente.",
+          timer: 1500,
+          showConfirmButton: false,
+        });
+      }
+    });
   };
 
   return (
