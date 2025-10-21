@@ -263,7 +263,7 @@ const CRUDPacientes = () => {
         </Button>
       </div>
 
-      <div className="contenedor-tabla">
+      <div className="contenedor-tabla verde-redondeado">
         <Table striped bordered hover responsive>
           <thead>
             <tr>

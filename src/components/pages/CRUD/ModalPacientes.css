@@ -46,3 +46,8 @@ textarea:-webkit-autofill {
   min-width: 120px;
   font-weight: 500;
 }
+
+.verde-redondeado {
+  border: 2px solid green;
+  border-radius: 15px;
+}
