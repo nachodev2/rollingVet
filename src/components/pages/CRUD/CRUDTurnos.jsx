@@ -23,13 +23,24 @@ const CRUDTurnos = () => {
     { id: "vet2", nombre: "Dra. María López" },
   ];
 
+  const [servicios, setServicios] = useState([]);
+
   const turnoInicial = {
-    detalleCita: "",
+    detalleCita: [],
     veterinario: null,
     fecha: "",
     hora: "",
     mascota: { nombre: "" },
   };
+
+  useEffect(() => {
+    const savedServicios = localStorage.getItem("servicios");
+    try {
+      setServicios(savedServicios ? JSON.parse(savedServicios) : []);
+    } catch {
+      setServicios([]);
+    }
+  }, []);
 
   const [turnos, setTurnos] = useState(() => {
     const saved = localStorage.getItem("turnos");
@@ -116,10 +127,8 @@ const CRUDTurnos = () => {
   const handleAgregar = () => {
     const newErrors = {};
 
-    if (!nuevoTurno.detalleCita.trim()) {
-      newErrors.detalleCita = "El detalle de la cita es obligatorio.";
-    } else if (nuevoTurno.detalleCita.length > 500) {
-      newErrors.detalleCita = "El detalle no puede superar los 500 caracteres.";
+    if (!nuevoTurno.detalleCita.length) {
+      newErrors.detalleCita = "Seleccione al menos un servicio.";
     }
 
     if (!nuevoTurno.veterinario) {
@@ -204,6 +213,9 @@ newErrors.fecha = "La fecha no puede ser anterior a hoy.";
         ...prev,
         veterinario: veterinarios.find((v) => v.id === value) || null,
       }));
+    } else if (name === "detalleCita") {
+      const selectedValues = Array.from(e.target.selectedOptions, option => option.value);
+      setNuevoTurno((prev) => ({ ...prev, detalleCita: selectedValues }));
     } else {
       setNuevoTurno((prev) => ({ ...prev, [name]: value }));
     }
