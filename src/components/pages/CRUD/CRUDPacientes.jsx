@@ -112,6 +112,50 @@ const CRUDPacientes = () => {
 
   return (
     <div className="crud-pacientes">
+      <style>
+        {`
+          /* Fondo blanco incluso con autocompletado */
+          input:-webkit-autofill,
+          input:-webkit-autofill:focus,
+          textarea:-webkit-autofill {
+            box-shadow: 0 0 0px 1000px white inset !important;
+            -webkit-text-fill-color: #000 !important;
+            transition: background-color 5000s ease-in-out 0s;
+          }
+
+          /* Estilo general del modal */
+          .modal-content {
+            border-radius: 8px;
+            padding: 1rem;
+          }
+
+          /* Título centrado y con tamaño */
+          .modal-title {
+            text-align: center;
+            font-size: 1.75rem;
+            font-weight: 600;
+          }
+
+          /* Espaciado entre campos */
+          .form-group {
+            margin-bottom: 1.25rem;
+          }
+
+          /* Inputs y textarea */
+          .form-control {
+            background-color: white !important;
+            border: 1px solid #ced4da;
+            border-radius: 4px;
+            font-size: 1rem;
+          }
+
+          /* Botones del modal */
+          .modal-footer .btn {
+            min-width: 120px;
+            font-weight: 500;
+          }
+        `}
+      </style>
 
       <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: "1rem" }}>
         <Button variant="primary" onClick={abrirModal}>
