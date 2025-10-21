@@ -1,10 +1,9 @@
 import { useState, useEffect } from "react";
 import { Modal, Button, Table, Form, Row, Col } from "react-bootstrap";
-import { PencilSquare, Trash } from "react-bootstrap-icons";
+import { PencilSquare, Trash, Eye } from "react-bootstrap-icons";
 import Swal from "sweetalert2";
 import "./ModalPacientes.css";
 import "../administrador/Administrador.css";
-
 
 const CRUDPacientes = () => {
   const [showModal, setShowModal] = useState(false);
@@ -12,6 +11,7 @@ const CRUDPacientes = () => {
   const cerrarModal = () => {
     setShowModal(false);
     setEditIndex(null);
+    setIsReadOnly(false);
     setNuevoPaciente(pacienteInicial);
     setErrors({});
   };
@@ -66,6 +66,7 @@ const CRUDPacientes = () => {
 
   const [nuevoPaciente, setNuevoPaciente] = useState(pacienteInicial);
   const [editIndex, setEditIndex] = useState(null);
+  const [isReadOnly, setIsReadOnly] = useState(false);
   const [errors, setErrors] = useState({});
 
   useEffect(() => {
@@ -216,6 +217,14 @@ const CRUDPacientes = () => {
   const handleEditar = (index) => {
     setNuevoPaciente(pacientes[index]);
     setEditIndex(index);
+    setIsReadOnly(false);
+    abrirModal();
+  };
+
+  const handleVer = (index) => {
+    setNuevoPaciente(pacientes[index]);
+    setEditIndex(null);
+    setIsReadOnly(true);
     abrirModal();
   };
 
@@ -251,18 +260,6 @@ const CRUDPacientes = () => {
 
   return (
     <div className="crud-pacientes p-4">
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "flex-end",
-          marginBottom: "1rem",
-        }}
-      >
-        <Button variant="primary" onClick={abrirModal}>
-          Agregar Paciente
-        </Button>
-      </div>
-
       <div className="contenedor-tabla verde-redondeado">
         <Table striped bordered hover responsive>
           <thead>
@@ -284,10 +281,25 @@ const CRUDPacientes = () => {
                   <td className="text-center">{item.petRaza}</td>
                   <td>
                     <div className="contenedor-iconos-accion">
-                      <button className="btn-icono-accion editar" title="Editar" onClick={() => handleEditar(index)}>
+                      <button
+                        className="btn-icono-accion ver"
+                        title="Ver"
+                        onClick={() => handleVer(index)}
+                      >
+                        <Eye size={18} />
+                      </button>
+                      <button
+                        className="btn-icono-accion editar"
+                        title="Editar"
+                        onClick={() => handleEditar(index)}
+                      >
                         <PencilSquare size={18} />
                       </button>
-                      <button className="btn-icono-accion eliminar" title="Eliminar" onClick={() => handleEliminar(index)}>
+                      <button
+                        className="btn-icono-accion eliminar"
+                        title="Eliminar"
+                        onClick={() => handleEliminar(index)}
+                      >
                         <Trash size={18} />
                       </button>
                     </div>
@@ -306,8 +318,8 @@ const CRUDPacientes = () => {
       </div>
       <Modal show={showModal} onHide={cerrarModal} size="lg" centered>
         <Modal.Header closeButton>
-          <Modal.Title className="modal-title text-center w-100">
-            {editIndex !== null ? "Editar Paciente" : "Dar de Alta Paciente"}
+          <Modal.Title className="modal-title text-center w-100 ms-4">
+            {isReadOnly ? "Ver Paciente" : editIndex !== null ? "Editar Paciente" : "Dar de Alta Paciente"}
           </Modal.Title>
         </Modal.Header>
 
@@ -324,6 +336,7 @@ const CRUDPacientes = () => {
                     value={nuevoPaciente.petNombre}
                     onChange={handleChange}
                     placeholder="Ej: Max"
+                    disabled={isReadOnly}
                   />
                   <Form.Control.Feedback type="invalid">
                     {errors.petNombre}
@@ -338,6 +351,7 @@ const CRUDPacientes = () => {
                     value={nuevoPaciente.petPeso}
                     onChange={handleChange}
                     placeholder="Ej: 5.5 kg"
+                    disabled={isReadOnly}
                   />
                   <Form.Control.Feedback type="invalid">
                     {errors.petPeso}
@@ -352,6 +366,7 @@ const CRUDPacientes = () => {
                     onChange={handleChange}
                     placeholder="Ej: 3 años"
                     type="number"
+                    disabled={isReadOnly}
                   />
                   <Form.Control.Feedback type="invalid">
                     {errors.petEdad}
@@ -366,6 +381,7 @@ const CRUDPacientes = () => {
                     name="petSexo"
                     value={nuevoPaciente.petSexo}
                     onChange={handleChange}
+                    disabled={isReadOnly}
                   >
                     <option value="">Seleccione un sexo</option>
                     {sexos.map((sexo) => (
@@ -385,6 +401,7 @@ const CRUDPacientes = () => {
                     name="petEspecie"
                     value={nuevoPaciente.petEspecie}
                     onChange={handleChange}
+                    disabled={isReadOnly}
                   >
                     <option value="">Seleccione una especie</option>
                     {especies.map((especie) => (
@@ -404,6 +421,7 @@ const CRUDPacientes = () => {
                     name="petRaza"
                     value={nuevoPaciente.petRaza}
                     onChange={handleChange}
+                    disabled={isReadOnly}
                   >
                     <option value="">Seleccione una raza</option>
                     {razasDisponibles.map((raza) => (
@@ -432,6 +450,7 @@ const CRUDPacientes = () => {
                     value={nuevoPaciente.ownerNombre}
                     onChange={handleChange}
                     placeholder="Ej: Juan"
+                    disabled={isReadOnly}
                   />
                   <Form.Control.Feedback type="invalid">
                     {errors.ownerNombre}
@@ -445,6 +464,7 @@ const CRUDPacientes = () => {
                     value={nuevoPaciente.ownerTelefono}
                     onChange={handleChange}
                     placeholder="Ej: 351-1234567"
+                    disabled={isReadOnly}
                   />
                   <Form.Control.Feedback type="invalid">
                     {errors.ownerTelefono}
@@ -458,6 +478,7 @@ const CRUDPacientes = () => {
                     value={nuevoPaciente.ownerApellido}
                     onChange={handleChange}
                     placeholder="Ej: Pérez"
+                    disabled={isReadOnly}
                   />
                   <Form.Control.Feedback type="invalid">
                     {errors.ownerApellido}
@@ -473,6 +494,7 @@ const CRUDPacientes = () => {
                     value={nuevoPaciente.ownerDireccion}
                     onChange={handleChange}
                     placeholder="Ej: Av. Siempre Viva 742"
+                    disabled={isReadOnly}
                   />
                   <Form.Control.Feedback type="invalid">
                     {errors.ownerDireccion}
@@ -487,6 +509,7 @@ const CRUDPacientes = () => {
                     value={nuevoPaciente.ownerEmail}
                     onChange={handleChange}
                     placeholder="Ej: juan@example.com"
+                    disabled={isReadOnly}
                   />
                   <Form.Control.Feedback type="invalid">
                     {errors.ownerEmail}
@@ -499,13 +522,26 @@ const CRUDPacientes = () => {
 
         <Modal.Footer>
           <Button variant="secondary" onClick={cerrarModal}>
-            Cancelar
+            {isReadOnly ? "Cerrar" : "Cancelar"}
           </Button>
-          <Button variant="primary" onClick={handleAgregar}>
-            Guardar
-          </Button>
+          {!isReadOnly && (
+            <Button variant="primary" onClick={handleAgregar}>
+              Guardar
+            </Button>
+          )}
         </Modal.Footer>
       </Modal>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "flex-end",
+          marginBottom: "1rem",
+        }}
+      >
+        <Button variant="primary" onClick={abrirModal} className="mt-3">
+          Agregar Paciente
+        </Button>
+      </div>
     </div>
   );
 };
