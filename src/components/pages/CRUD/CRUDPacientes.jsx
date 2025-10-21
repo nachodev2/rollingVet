@@ -13,6 +13,17 @@ const CRUDPacientes = () => {
     setNuevoPaciente(pacienteInicial);
   };
 
+  const especies = ["Perro", "Gato", "Otro"];
+  const sexos = ["Macho", "Hembra"];
+
+  const razasPorEspecie = {
+    Perro: ["Golden Retriever", "Labrador Retriever", "Poodle", "Bulldog Francés", "Chihuahua", "Otro"],
+    Gato: ["Persa", "Siamés", "Maine Coon", "British Shorthair", "Bengalí", "Otro"],
+    Otro: ["Otro"]
+  };
+
+  const [razasDisponibles, setRazasDisponibles] = useState([]);
+
   const pacienteInicial = {
     petNombre: "",
     petSexo: "",
@@ -42,6 +53,10 @@ const CRUDPacientes = () => {
   useEffect(() => {
     localStorage.setItem("pacientes", JSON.stringify(pacientes));
   }, [pacientes]);
+
+  useEffect(() => {
+    setRazasDisponibles(razasPorEspecie[nuevoPaciente.petEspecie] || []);
+  }, [nuevoPaciente.petEspecie]);
 
   const handleAgregar = () => {
     const camposObligatorios = ["ownerNombre", "petNombre"];
@@ -209,23 +224,35 @@ const CRUDPacientes = () => {
                 </Form.Group>
                 <Form.Group className="mb-3">
                   <Form.Label>Sexo</Form.Label>
-                  <Form.Control
+                  <Form.Select
                     name="petSexo"
                     value={nuevoPaciente.petSexo}
                     onChange={handleChange}
-                    autoComplete="off"
-                  />
+                  >
+                    <option value="">Seleccione un sexo</option>
+                    {sexos.map((sexo) => (
+                      <option key={sexo} value={sexo}>
+                        {sexo}
+                      </option>
+                    ))}
+                  </Form.Select>
                 </Form.Group>
               </Col>
               <Col md={6}>
                 <Form.Group className="mb-3">
                   <Form.Label>Especie</Form.Label>
-                  <Form.Control
+                  <Form.Select
                     name="petEspecie"
                     value={nuevoPaciente.petEspecie}
                     onChange={handleChange}
-                    autoComplete="off"
-                  />
+                  >
+                    <option value="">Seleccione una especie</option>
+                    {especies.map((especie) => (
+                      <option key={especie} value={especie}>
+                        {especie}
+                      </option>
+                    ))}
+                  </Form.Select>
                 </Form.Group>
                 <Form.Group className="mb-3">
                   <Form.Label>Edad</Form.Label>
@@ -238,12 +265,18 @@ const CRUDPacientes = () => {
                 </Form.Group>
                 <Form.Group className="mb-3">
                   <Form.Label>Raza</Form.Label>
-                  <Form.Control
+                  <Form.Select
                     name="petRaza"
                     value={nuevoPaciente.petRaza}
                     onChange={handleChange}
-                    autoComplete="off"
-                  />
+                  >
+                    <option value="">Seleccione una raza</option>
+                    {razasDisponibles.map((raza) => (
+                      <option key={raza} value={raza}>
+                        {raza}
+                      </option>
+                    ))}
+                  </Form.Select>
                 </Form.Group>
               </Col>
             </Row>
@@ -285,8 +318,6 @@ const CRUDPacientes = () => {
                 <Form.Group className="mb-3">
                   <Form.Label>Dirección</Form.Label>
                   <Form.Control
-                    as="textarea"
-                    rows={3}
                     name="ownerDireccion"
                     value={nuevoPaciente.ownerDireccion}
                     onChange={handleChange}
