@@ -133,7 +133,7 @@ const CRUDTurnos = () => {
       const today = new Date();
       today.setHours(0, 0, 0, 0);
       if (selectedDate < today) {
-        newErrors.fecha = "La fecha debe ser en el futuro.";
+newErrors.fecha = "La fecha no puede ser anterior a hoy.";
       } else if (!isWorkingDay(nuevoTurno.fecha)) {
         newErrors.fecha = "Solo se permiten fechas de lunes a viernes.";
       }
@@ -217,15 +217,13 @@ const CRUDTurnos = () => {
   return (
     <div className="crud-turnos">
       <div
-        style={{
+        style={{ 
           display: "flex",
           justifyContent: "flex-end",
           marginBottom: "1rem",
         }}
       >
-        <Button variant="primary" onClick={abrirModal}>
-          Agregar Turno
-        </Button>
+        <Button variant="primary" onClick={abrirModal}>Agregar Turno</Button>
       </div>
       <div className="contenedor-tabla verde-redondeado">
         <Table striped bordered hover responsive>
@@ -271,12 +269,8 @@ const CRUDTurnos = () => {
             </Button>
           ) : (
             <>
-              <Button variant="secondary" onClick={cerrarModal}>
-                Cancelar
-              </Button>
-              <Button variant="primary" onClick={handleAgregar}>
-                Guardar
-              </Button>
+              <Button variant="secondary" onClick={cerrarModal}>Cancelar</Button>
+              <Button variant="primary" onClick={handleAgregar}>Guardar</Button>
             </>
           )}
         </Modal.Footer>
