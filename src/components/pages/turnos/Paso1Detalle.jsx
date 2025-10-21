@@ -70,6 +70,7 @@ const Paso1Detalle = ({ datos, setDatos, siguiente }) => {
                 name="nombre"
                 value={mascota.nombre}
                 onChange={handleMascotaChange}
+                placeholder="ej. Luna"
                 required
               />
             </Form.Group>
@@ -95,6 +96,7 @@ const Paso1Detalle = ({ datos, setDatos, siguiente }) => {
                 name="raza"
                 value={mascota.raza}
                 onChange={handleMascotaChange}
+                placeholder="ej. Labrador Retriever"
                 required
               />
             </Form.Group>
@@ -108,6 +110,7 @@ const Paso1Detalle = ({ datos, setDatos, siguiente }) => {
                 min="0"
                 value={mascota.edad}
                 onChange={handleMascotaChange}
+                placeholder="ej. 5"
                 required
               />
             </Form.Group>

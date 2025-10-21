@@ -2,7 +2,9 @@ import { useState, useEffect } from "react";
 import { Modal, Button, Table, Form, Row, Col } from "react-bootstrap";
 import { PencilSquare, Trash } from "react-bootstrap-icons";
 import Swal from "sweetalert2";
-import './ModalPacientes.css';
+import "./ModalPacientes.css";
+import "../administrador/Administrador.css";
+
 
 const CRUDPacientes = () => {
   const [showModal, setShowModal] = useState(false);
@@ -18,9 +20,23 @@ const CRUDPacientes = () => {
   const sexos = ["Macho", "Hembra"];
 
   const razasPorEspecie = {
-    Perro: ["Golden Retriever", "Labrador Retriever", "Poodle", "Bulldog Francés", "Chihuahua", "Otro"],
-    Gato: ["Persa", "Siamés", "Maine Coon", "British Shorthair", "Bengalí", "Otro"],
-    Otro: ["Otro"]
+    Perro: [
+      "Golden Retriever",
+      "Labrador Retriever",
+      "Poodle",
+      "Bulldog Francés",
+      "Chihuahua",
+      "Otro",
+    ],
+    Gato: [
+      "Persa",
+      "Siamés",
+      "Maine Coon",
+      "British Shorthair",
+      "Bengalí",
+      "Otro",
+    ],
+    Otro: ["Otro"],
   };
 
   const [razasDisponibles, setRazasDisponibles] = useState([]);
@@ -66,17 +82,23 @@ const CRUDPacientes = () => {
     // Validaciones para petNombre
     if (!nuevoPaciente.petNombre) {
       newErrors.petNombre = "El nombre de la mascota es obligatorio.";
-    } else if (nuevoPaciente.petNombre.length < 2 || nuevoPaciente.petNombre.length > 50) {
+    } else if (
+      nuevoPaciente.petNombre.length < 2 ||
+      nuevoPaciente.petNombre.length > 50
+    ) {
       newErrors.petNombre = "El nombre debe tener entre 2 y 50 caracteres.";
     } else if (!/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/.test(nuevoPaciente.petNombre)) {
       newErrors.petNombre = "El nombre solo puede contener letras y espacios.";
     }
 
-    if (!nuevoPaciente.petSexo) newErrors.petSexo = "Seleccione el sexo de la mascota.";
+    if (!nuevoPaciente.petSexo)
+      newErrors.petSexo = "Seleccione el sexo de la mascota.";
 
-    if (!nuevoPaciente.petEspecie) newErrors.petEspecie = "Seleccione la especie de la mascota.";
+    if (!nuevoPaciente.petEspecie)
+      newErrors.petEspecie = "Seleccione la especie de la mascota.";
 
-    if (!nuevoPaciente.petRaza) newErrors.petRaza = "Seleccione la raza de la mascota.";
+    if (!nuevoPaciente.petRaza)
+      newErrors.petRaza = "Seleccione la raza de la mascota.";
 
     // Validaciones para petEdad
     if (!nuevoPaciente.petEdad) {
@@ -94,7 +116,8 @@ const CRUDPacientes = () => {
     if (!nuevoPaciente.petPeso) {
       newErrors.petPeso = "El peso de la mascota es obligatorio.";
     } else if (!/^[0-9]+(\.[0-9]{1,2})?$/.test(nuevoPaciente.petPeso)) {
-      newErrors.petPeso = "El peso debe tener formato numérico válido (ej: 5.5).";
+      newErrors.petPeso =
+        "El peso debe tener formato numérico válido (ej: 5.5).";
     } else {
       const peso = parseFloat(nuevoPaciente.petPeso);
       if (peso < 0.1 || peso > 100) {
@@ -105,35 +128,53 @@ const CRUDPacientes = () => {
     // Validaciones para ownerNombre
     if (!nuevoPaciente.ownerNombre) {
       newErrors.ownerNombre = "El nombre del dueño es obligatorio.";
-    } else if (nuevoPaciente.ownerNombre.length < 2 || nuevoPaciente.ownerNombre.length > 50) {
+    } else if (
+      nuevoPaciente.ownerNombre.length < 2 ||
+      nuevoPaciente.ownerNombre.length > 50
+    ) {
       newErrors.ownerNombre = "El nombre debe tener entre 2 y 50 caracteres.";
     } else if (!/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/.test(nuevoPaciente.ownerNombre)) {
-      newErrors.ownerNombre = "El nombre solo puede contener letras y espacios.";
+      newErrors.ownerNombre =
+        "El nombre solo puede contener letras y espacios.";
     }
 
     // Validaciones para ownerApellido
     if (!nuevoPaciente.ownerApellido) {
       newErrors.ownerApellido = "El apellido del dueño es obligatorio.";
-    } else if (nuevoPaciente.ownerApellido.length < 2 || nuevoPaciente.ownerApellido.length > 50) {
-      newErrors.ownerApellido = "El apellido debe tener entre 2 y 50 caracteres.";
+    } else if (
+      nuevoPaciente.ownerApellido.length < 2 ||
+      nuevoPaciente.ownerApellido.length > 50
+    ) {
+      newErrors.ownerApellido =
+        "El apellido debe tener entre 2 y 50 caracteres.";
     } else if (!/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/.test(nuevoPaciente.ownerApellido)) {
-      newErrors.ownerApellido = "El apellido solo puede contener letras y espacios.";
+      newErrors.ownerApellido =
+        "El apellido solo puede contener letras y espacios.";
     }
 
     // Validaciones para ownerTelefono
     if (!nuevoPaciente.ownerTelefono) {
       newErrors.ownerTelefono = "El teléfono del dueño es obligatorio.";
     } else if (!/^[\d\s\-\+]+$/.test(nuevoPaciente.ownerTelefono)) {
-      newErrors.ownerTelefono = "El teléfono solo puede contener números, espacios, - y +.";
-    } else if (nuevoPaciente.ownerTelefono.replace(/[\s\-\+]/g, '').length < 7 || nuevoPaciente.ownerTelefono.length > 15) {
-      newErrors.ownerTelefono = "El teléfono debe tener entre 7 y 15 caracteres (con símbolos).";
+      newErrors.ownerTelefono =
+        "El teléfono solo puede contener números, espacios, - y +.";
+    } else if (
+      nuevoPaciente.ownerTelefono.replace(/[\s\-\+]/g, "").length < 7 ||
+      nuevoPaciente.ownerTelefono.length > 15
+    ) {
+      newErrors.ownerTelefono =
+        "El teléfono debe tener entre 7 y 15 caracteres (con símbolos).";
     }
 
     // Validaciones para ownerDireccion
     if (!nuevoPaciente.ownerDireccion) {
       newErrors.ownerDireccion = "La dirección del dueño es obligatoria.";
-    } else if (nuevoPaciente.ownerDireccion.length < 10 || nuevoPaciente.ownerDireccion.length > 200) {
-      newErrors.ownerDireccion = "La dirección debe tener entre 10 y 200 caracteres.";
+    } else if (
+      nuevoPaciente.ownerDireccion.length < 10 ||
+      nuevoPaciente.ownerDireccion.length > 200
+    ) {
+      newErrors.ownerDireccion =
+        "La dirección debe tener entre 10 y 200 caracteres.";
     }
 
     // Validaciones para ownerEmail
@@ -222,55 +263,50 @@ const CRUDPacientes = () => {
         </Button>
       </div>
 
-      <Table striped bordered hover responsive>
-        <thead>
-          <tr>
-            <th>Dueño</th>
-            <th>Mascota</th>
-            <th>Especie</th>
-            <th>Raza</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          {pacientes.length > 0 ? (
-            pacientes.map((item, index) => (
-              <tr key={item.id || index}>
-                <td>{item.ownerNombre}</td>
-                <td>{item.petNombre}</td>
-                <td>{item.petEspecie}</td>
-                <td>{item.petRaza}</td>
-                <td>
-                  <Button
-                    size="sm"
-                    variant="warning"
-                    onClick={() => handleEditar(index)}
-                    style={{ marginRight: "0.3rem" }}
-                  >
-                    <PencilSquare />
-                  </Button>
-                  <Button
-                    size="sm"
-                    variant="danger"
-                    onClick={() => handleEliminar(index)}
-                  >
-                    <Trash />
-                  </Button>
+      <div className="contenedor-tabla">
+        <Table striped bordered hover responsive>
+          <thead>
+            <tr>
+              <th className="text-center">Dueño</th>
+              <th className="text-center">Mascota</th>
+              <th className="text-center">Especie</th>
+              <th className="text-center">Raza</th>
+              <th className="text-center">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            {pacientes.length > 0 ? (
+              pacientes.map((item, index) => (
+                <tr key={item.id || index}>
+                  <td className="text-center">{item.ownerNombre}</td>
+                  <td className="text-center">{item.petNombre}</td>
+                  <td className="text-center">{item.petEspecie}</td>
+                  <td className="text-center">{item.petRaza}</td>
+                  <td>
+                    <div className="contenedor-iconos-accion">
+                      <button className="btn-icono-accion editar" title="Editar" onClick={() => handleEditar(index)}>
+                        <PencilSquare size={18} />
+                      </button>
+                      <button className="btn-icono-accion eliminar" title="Eliminar" onClick={() => handleEliminar(index)}>
+                        <Trash size={18} />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan={5} className="text-center">
+                  No hay pacientes en la lista.
                 </td>
               </tr>
-            ))
-          ) : (
-            <tr>
-              <td colSpan={5} className="text-center">
-                No hay pacientes.
-              </td>
-            </tr>
-          )}
-        </tbody>
-      </Table>
+            )}
+          </tbody>
+        </Table>
+      </div>
       <Modal show={showModal} onHide={cerrarModal} size="lg" centered>
         <Modal.Header closeButton>
-          <Modal.Title className="modal-title">
+          <Modal.Title className="modal-title text-center w-100">
             {editIndex !== null ? "Editar Paciente" : "Dar de Alta Paciente"}
           </Modal.Title>
         </Modal.Header>
@@ -287,12 +323,13 @@ const CRUDPacientes = () => {
                     name="petNombre"
                     value={nuevoPaciente.petNombre}
                     onChange={handleChange}
-                    autoComplete="off"
+                    placeholder="ej. Max"
                   />
                   <Form.Control.Feedback type="invalid">
                     {errors.petNombre}
                   </Form.Control.Feedback>
                 </Form.Group>
+
                 <Form.Group className="mb-3">
                   <Form.Label>Peso</Form.Label>
                   <Form.Control
@@ -300,12 +337,28 @@ const CRUDPacientes = () => {
                     name="petPeso"
                     value={nuevoPaciente.petPeso}
                     onChange={handleChange}
-                    autoComplete="off"
+                    placeholder="Ej: 5.5 kg"
                   />
                   <Form.Control.Feedback type="invalid">
                     {errors.petPeso}
                   </Form.Control.Feedback>
                 </Form.Group>
+                <Form.Group className="mb-3">
+                  <Form.Label>Edad</Form.Label>
+                  <Form.Control
+                    isInvalid={!!errors.petEdad}
+                    name="petEdad"
+                    value={nuevoPaciente.petEdad}
+                    onChange={handleChange}
+                    placeholder=" 3 años"
+                    type="number"
+                  />
+                  <Form.Control.Feedback type="invalid">
+                    {errors.petEdad}
+                  </Form.Control.Feedback>
+                </Form.Group>
+              </Col>
+              <Col md={6}>
                 <Form.Group className="mb-3">
                   <Form.Label>Sexo</Form.Label>
                   <Form.Select
@@ -325,8 +378,6 @@ const CRUDPacientes = () => {
                     {errors.petSexo}
                   </Form.Control.Feedback>
                 </Form.Group>
-              </Col>
-              <Col md={6}>
                 <Form.Group className="mb-3">
                   <Form.Label>Especie</Form.Label>
                   <Form.Select
@@ -344,19 +395,6 @@ const CRUDPacientes = () => {
                   </Form.Select>
                   <Form.Control.Feedback type="invalid">
                     {errors.petEspecie}
-                  </Form.Control.Feedback>
-                </Form.Group>
-                <Form.Group className="mb-3">
-                  <Form.Label>Edad</Form.Label>
-                  <Form.Control
-                    isInvalid={!!errors.petEdad}
-                    name="petEdad"
-                    value={nuevoPaciente.petEdad}
-                    onChange={handleChange}
-                    autoComplete="off"
-                  />
-                  <Form.Control.Feedback type="invalid">
-                    {errors.petEdad}
                   </Form.Control.Feedback>
                 </Form.Group>
                 <Form.Group className="mb-3">
@@ -393,7 +431,7 @@ const CRUDPacientes = () => {
                     name="ownerNombre"
                     value={nuevoPaciente.ownerNombre}
                     onChange={handleChange}
-                    autoComplete="off"
+                    placeholder="Ej: Juan"
                   />
                   <Form.Control.Feedback type="invalid">
                     {errors.ownerNombre}
@@ -406,7 +444,7 @@ const CRUDPacientes = () => {
                     name="ownerTelefono"
                     value={nuevoPaciente.ownerTelefono}
                     onChange={handleChange}
-                    autoComplete="off"
+                    placeholder="Ej: 351-1234567"
                   />
                   <Form.Control.Feedback type="invalid">
                     {errors.ownerTelefono}
@@ -419,7 +457,7 @@ const CRUDPacientes = () => {
                     name="ownerApellido"
                     value={nuevoPaciente.ownerApellido}
                     onChange={handleChange}
-                    autoComplete="off"
+                    placeholder="Ej: Pérez"
                   />
                   <Form.Control.Feedback type="invalid">
                     {errors.ownerApellido}
@@ -434,7 +472,7 @@ const CRUDPacientes = () => {
                     name="ownerDireccion"
                     value={nuevoPaciente.ownerDireccion}
                     onChange={handleChange}
-                    autoComplete="off"
+                    placeholder="Ej: Av. Siempre Viva 742"
                   />
                   <Form.Control.Feedback type="invalid">
                     {errors.ownerDireccion}
@@ -448,7 +486,7 @@ const CRUDPacientes = () => {
                     name="ownerEmail"
                     value={nuevoPaciente.ownerEmail}
                     onChange={handleChange}
-                    autoComplete="off"
+                    placeholder="Ej: juan@example.com"
                   />
                   <Form.Control.Feedback type="invalid">
                     {errors.ownerEmail}

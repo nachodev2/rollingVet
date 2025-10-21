@@ -150,13 +150,13 @@ const CRUDServicios = () => {
           <div style={{ marginBottom: "1rem", display: "flex", gap: "0.5rem" }}>
             <input
               type="text"
-              placeholder="Nombre"
+              placeholder="Ej: Vacunación anual"
               value={nuevoServicio.nombre}
               onChange={(e) => setNuevoServicio({ ...nuevoServicio, nombre: e.target.value })}
             />
             <input
               type="text"
-              placeholder="Descripción"
+              placeholder="Ej: Servicio completo de salud y bienestar"
               value={nuevoServicio.descripcion}
               onChange={(e) =>
                 setNuevoServicio({ ...nuevoServicio, descripcion: e.target.value })
@@ -164,7 +164,7 @@ const CRUDServicios = () => {
             />
             <input
               type="number"
-              placeholder="Costo"
+              placeholder="Ej: 1500"
               value={nuevoServicio.costo}
               onChange={(e) => setNuevoServicio({ ...nuevoServicio, costo: e.target.value })}
             />
