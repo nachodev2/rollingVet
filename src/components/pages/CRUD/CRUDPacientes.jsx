@@ -1,293 +1,76 @@
 import { useState, useEffect } from "react";
 import { Modal, Button, Table, Form, Row, Col } from "react-bootstrap";
-import { PencilSquare, Trash, Eye } from "react-bootstrap-icons";
+import { Eye } from "react-bootstrap-icons";
 import Swal from "sweetalert2";
 import "./ModalPacientes.css";
 import "../administrador/Administrador.css";
 
 const CRUDPacientes = () => {
   const [showModal, setShowModal] = useState(false);
-  const abrirModal = () => setShowModal(true);
+  const [usuarios, setUsuarios] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
+  const [usuarioSeleccionado, setUsuarioSeleccionado] = useState(null);
+
   const cerrarModal = () => {
     setShowModal(false);
-    setEditIndex(null);
-    setIsReadOnly(false);
-    setNuevoPaciente(pacienteInicial);
-    setErrors({});
+    setUsuarioSeleccionado(null);
   };
 
-  const especies = ["Perro", "Gato", "Otro"];
-  const sexos = ["Macho", "Hembra"];
-
-  const razasPorEspecie = {
-    Perro: [
-      "Golden Retriever",
-      "Labrador Retriever",
-      "Poodle",
-      "Bulldog Francés",
-      "Chihuahua",
-      "Otro",
-    ],
-    Gato: [
-      "Persa",
-      "Siamés",
-      "Maine Coon",
-      "British Shorthair",
-      "Bengalí",
-      "Otro",
-    ],
-    Otro: ["Otro"],
-  };
-
-  const [razasDisponibles, setRazasDisponibles] = useState([]);
-
-  const pacienteInicial = {
-    petNombre: "",
-    petSexo: "",
-    petEdad: "",
-    petUnidadEdad: "años",
-    petPeso: "",
-    petUnidadPeso: "kg",
-    petEspecie: "",
-    petRaza: "",
-    ownerNombre: "",
-    ownerApellido: "",
-    ownerEmail: "",
-    ownerTelefono: "",
-    ownerDireccion: "",
-  };
-
-  const [pacientes, setPacientes] = useState(() => {
-    const saved = localStorage.getItem("pacientes");
+  const fetchUsuarios = async () => {
+    setIsLoading(true);
+    const token = localStorage.getItem("token");
+    
+    console.log('🔍 Fetching usuarios con token:', token ? 'Token presente' : 'Sin token');
+    
     try {
-      return saved ? JSON.parse(saved) : [];
-    } catch {
-      return [];
+      const response = await fetch('http://localhost:5000/api/v1/usuarios', {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+      
+      console.log('📡 Response status:', response.status);
+      
+      if (response.ok) {
+        const data = await response.json();
+        console.log('✅ Usuarios recibidos:', data);
+        setUsuarios(data.data || []);
+      } else {
+        const errorText = await response.text();
+        console.error('❌ Error response:', response.status, errorText);
+        setUsuarios([]);
+        
+        if (response.status === 401) {
+          Swal.fire({
+            icon: 'error',
+            title: 'No autorizado',
+            text: 'Tu sesión ha expirado. Por favor inicia sesión nuevamente.',
+            confirmButtonColor: '#6c9a72',
+          });
+        }
+      }
+    } catch (error) {
+      console.error('❌ Error fetching usuarios:', error);
+      setUsuarios([]);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error de conexión',
+        text: 'No se pudo conectar con el servidor',
+        confirmButtonColor: '#6c9a72',
+      });
+    } finally {
+      setIsLoading(false);
     }
-  });
-
-  const [nuevoPaciente, setNuevoPaciente] = useState(pacienteInicial);
-  const [editIndex, setEditIndex] = useState(null);
-  const [isReadOnly, setIsReadOnly] = useState(false);
-  const [errors, setErrors] = useState({});
+  };
 
   useEffect(() => {
-    localStorage.setItem("pacientes", JSON.stringify(pacientes));
-  }, [pacientes]);
+    fetchUsuarios();
+  }, []);
 
-  useEffect(() => {
-    setRazasDisponibles(razasPorEspecie[nuevoPaciente.petEspecie] || []);
-  }, [nuevoPaciente.petEspecie]);
-
-  const handleAgregar = () => {
-    const newErrors = {};
-
-    // Validaciones para petNombre
-    if (!nuevoPaciente.petNombre) {
-      newErrors.petNombre = "El nombre de la mascota es obligatorio.";
-    } else if (
-      nuevoPaciente.petNombre.length < 2 ||
-      nuevoPaciente.petNombre.length > 50
-    ) {
-      newErrors.petNombre = "El nombre debe tener entre 2 y 50 caracteres.";
-    } else if (!/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/.test(nuevoPaciente.petNombre)) {
-      newErrors.petNombre = "El nombre solo puede contener letras y espacios.";
-    }
-
-    if (!nuevoPaciente.petSexo)
-      newErrors.petSexo = "Seleccione el sexo de la mascota.";
-
-    if (!nuevoPaciente.petEspecie)
-      newErrors.petEspecie = "Seleccione la especie de la mascota.";
-
-    if (!nuevoPaciente.petRaza)
-      newErrors.petRaza = "Seleccione la raza de la mascota.";
-
-    // Validaciones para petEdad
-    if (!nuevoPaciente.petEdad) {
-      newErrors.petEdad = "La edad de la mascota es obligatoria.";
-    } else if (!/^\d+$/.test(nuevoPaciente.petEdad)) {
-      newErrors.petEdad = "La edad debe ser un número entero.";
-    } else {
-      const edad = parseInt(nuevoPaciente.petEdad);
-      const unidad = nuevoPaciente.petUnidadEdad;
-      const maxEdad = unidad === "meses" ? 300 : 30;
-      if (edad < 0 || edad > maxEdad) {
-        newErrors.petEdad = `La edad debe estar entre 0 y ${maxEdad} ${unidad}.`;
-      }
-    }
-
-    // Validaciones para petPeso
-    if (!nuevoPaciente.petPeso) {
-      newErrors.petPeso = "El peso de la mascota es obligatorio.";
-    } else if (!/^[0-9]+(\.[0-9]{1,2})?$/.test(nuevoPaciente.petPeso)) {
-      newErrors.petPeso =
-        "El peso debe tener formato numérico válido (ej: 5.5).";
-    } else {
-      const peso = parseFloat(nuevoPaciente.petPeso);
-      const unidad = nuevoPaciente.petUnidadPeso;
-      let minPeso, maxPeso, unidadDisplay;
-      if (unidad === "kg") {
-        minPeso = 0.1;
-        maxPeso = 100;
-        unidadDisplay = "kg";
-      } else {
-        minPeso = 100;
-        maxPeso = 100000;
-        unidadDisplay = "g";
-      }
-      if (peso < minPeso || peso > maxPeso) {
-        newErrors.petPeso = `El peso debe estar entre ${minPeso} y ${maxPeso} ${unidadDisplay}.`;
-      }
-    }
-
-    // Validaciones para ownerNombre
-    if (!nuevoPaciente.ownerNombre) {
-      newErrors.ownerNombre = "El nombre del dueño es obligatorio.";
-    } else if (
-      nuevoPaciente.ownerNombre.length < 2 ||
-      nuevoPaciente.ownerNombre.length > 50
-    ) {
-      newErrors.ownerNombre = "El nombre debe tener entre 2 y 50 caracteres.";
-    } else if (!/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/.test(nuevoPaciente.ownerNombre)) {
-      newErrors.ownerNombre =
-        "El nombre solo puede contener letras y espacios.";
-    }
-
-    // Validaciones para ownerApellido
-    if (!nuevoPaciente.ownerApellido) {
-      newErrors.ownerApellido = "El apellido del dueño es obligatorio.";
-    } else if (
-      nuevoPaciente.ownerApellido.length < 2 ||
-      nuevoPaciente.ownerApellido.length > 50
-    ) {
-      newErrors.ownerApellido =
-        "El apellido debe tener entre 2 y 50 caracteres.";
-    } else if (!/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/.test(nuevoPaciente.ownerApellido)) {
-      newErrors.ownerApellido =
-        "El apellido solo puede contener letras y espacios.";
-    }
-
-    // Validaciones para ownerTelefono
-    if (!nuevoPaciente.ownerTelefono) {
-      newErrors.ownerTelefono = "El teléfono del dueño es obligatorio.";
-    } else if (!/^[\d\s\-\+]+$/.test(nuevoPaciente.ownerTelefono)) {
-      newErrors.ownerTelefono =
-        "El teléfono solo puede contener números, espacios, - y +.";
-    } else if (
-      nuevoPaciente.ownerTelefono.replace(/[\s\-\+]/g, "").length < 7 ||
-      nuevoPaciente.ownerTelefono.length > 15
-    ) {
-      newErrors.ownerTelefono =
-        "El teléfono debe tener entre 7 y 15 caracteres (con símbolos).";
-    }
-
-    // Validaciones para ownerDireccion
-    if (!nuevoPaciente.ownerDireccion) {
-      newErrors.ownerDireccion = "La dirección del dueño es obligatoria.";
-    } else if (
-      nuevoPaciente.ownerDireccion.length < 10 ||
-      nuevoPaciente.ownerDireccion.length > 200
-    ) {
-      newErrors.ownerDireccion =
-        "La dirección debe tener entre 10 y 200 caracteres.";
-    }
-
-    // Validaciones para ownerEmail
-    if (!nuevoPaciente.ownerEmail) {
-      newErrors.ownerEmail = "El email del dueño es obligatorio.";
-    } else if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(nuevoPaciente.ownerEmail)) {
-      newErrors.ownerEmail = "Ingrese un formato de email válido.";
-    } else if (nuevoPaciente.ownerEmail.length > 100) {
-      newErrors.ownerEmail = "El email no puede superar los 100 caracteres.";
-    }
-
-    setErrors(newErrors);
-
-    if (Object.keys(newErrors).length === 0) {
-      if (editIndex !== null) {
-        const actualizados = [...pacientes];
-        actualizados[editIndex] = nuevoPaciente;
-        setPacientes(actualizados);
-        Swal.fire({
-          icon: "success",
-          title: `Paciente "${nuevoPaciente.petNombre}" actualizado correctamente`,
-          confirmButtonColor: "#6c9a72",
-          showConfirmButton: false,
-          timer: 1500,
-        });
-      } else {
-        setPacientes([...pacientes, { ...nuevoPaciente, id: Date.now() }]);
-        Swal.fire({
-          icon: "success",
-          title: `Paciente "${nuevoPaciente.petNombre}" creado correctamente`,
-          confirmButtonColor: "#6c9a72",
-          showConfirmButton: false,
-          timer: 1500,
-        });
-      }
-
-      cerrarModal();
-    }
-  };
-
-  const handleEditar = (index) => {
-    const paciente = pacientes[index];
-    Swal.fire({
-      title: "¿Editar paciente?",
-      text: `¿Seguro que quieres editar los datos de "${paciente.petNombre}"?`,
-      icon: "question",
-      showCancelButton: true,
-      confirmButtonText: "Sí, editar",
-      cancelButtonText: "Cancelar",
-      confirmButtonColor: "#6c9a72",
-      cancelButtonColor: "#6c757d",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        setNuevoPaciente(paciente);
-        setEditIndex(index);
-        setIsReadOnly(false);
-        abrirModal();
-      }
-    });
-  };
-
-  const handleVer = (index) => {
-    setNuevoPaciente(pacientes[index]);
-    setEditIndex(null);
-    setIsReadOnly(true);
-    abrirModal();
-  };
-
-  const handleEliminar = (index) => {
-    const paciente = pacientes[index];
-    Swal.fire({
-      title: "¿Eliminar paciente?",
-      text: `Se eliminará "${paciente.petNombre}" de la lista.`,
-      icon: "warning",
-      showCancelButton: true,
-      confirmButtonText: "Sí, eliminar",
-      cancelButtonText: "Cancelar",
-      confirmButtonColor: "#6c9a72",
-      cancelButtonColor: "#6c757d",
-    }).then((result) => {
-      if (result.isConfirmed) {
-        const actualizados = pacientes.filter((_, i) => i !== index);
-        setPacientes(actualizados);
-        Swal.fire({
-          icon: "success",
-          title: `Paciente "${paciente.petNombre}" eliminado correctamente`,
-          confirmButtonColor: "#6c9a72",
-          showConfirmButton: false,
-          timer: 1500,
-        });
-      }
-    });
-  };
-
-  const handleChange = (e) => {
-    const { name, value } = e.target;
-    setNuevoPaciente((prev) => ({ ...prev, [name]: value }));
+  const handleVerUsuario = (usuario) => {
+    setUsuarioSeleccionado(usuario);
+    setShowModal(true);
   };
 
   return (
@@ -296,45 +79,43 @@ const CRUDPacientes = () => {
         <Table striped bordered hover responsive>
           <thead>
             <tr>
-              <th className="text-center">Dueño</th>
-              <th className="text-center">Mascota</th>
-              <th className="text-center">Especie</th>
-              <th className="text-center">Raza</th>
+              <th className="text-center">Nombre</th>
+              <th className="text-center">Email</th>
+              <th className="text-center">Rol</th>
+              <th className="text-center">Fecha Registro</th>
               <th className="text-center">Acciones</th>
             </tr>
           </thead>
           <tbody>
-            {pacientes.length > 0 ? (
-              pacientes.map((item, index) => (
-                <tr key={item.id || index}>
-                  <td className="text-center">{item.ownerNombre}</td>
+            {isLoading ? (
+              <tr>
+                <td colSpan={5} className="text-center">
+                  Cargando usuarios...
+                </td>
+              </tr>
+            ) : usuarios.length > 0 ? (
+              usuarios.map((usuario, index) => (
+                <tr key={usuario._id || index}>
                   <td className="text-center">
-                    <strong>{item.petNombre}</strong>
+                    <strong>{usuario.nombre}</strong>
                   </td>
-                  <td className="text-center">{item.petEspecie}</td>
-                  <td className="text-center">{item.petRaza}</td>
+                  <td className="text-center">{usuario.email}</td>
+                  <td className="text-center">
+                    <span className={`badge ${usuario.role === 'admin' ? 'bg-danger' : 'bg-primary'}`}>
+                      {usuario.role}
+                    </span>
+                  </td>
+                  <td className="text-center">
+                    {usuario.createdAt ? new Date(usuario.createdAt).toLocaleDateString('es-AR') : 'N/A'}
+                  </td>
                   <td>
                     <div className="contenedor-iconos-accion">
                       <button
                         className="btn-icono-accion ver"
-                        title="Ver"
-                        onClick={() => handleVer(index)}
+                        title="Ver detalles"
+                        onClick={() => handleVerUsuario(usuario)}
                       >
                         <Eye size={18} />
-                      </button>
-                      <button
-                        className="btn-icono-accion editar"
-                        title="Editar"
-                        onClick={() => handleEditar(index)}
-                      >
-                        <PencilSquare size={18} />
-                      </button>
-                      <button
-                        className="btn-icono-accion eliminar"
-                        title="Eliminar"
-                        onClick={() => handleEliminar(index)}
-                      >
-                        <Trash size={18} />
                       </button>
                     </div>
                   </td>
@@ -343,268 +124,82 @@ const CRUDPacientes = () => {
             ) : (
               <tr>
                 <td colSpan={5} className="text-center">
-                  No hay pacientes en la lista.
+                  No hay usuarios registrados.
                 </td>
               </tr>
             )}
           </tbody>
         </Table>
       </div>
+
       <Modal show={showModal} onHide={cerrarModal} size="lg" centered>
         <Modal.Header closeButton>
           <Modal.Title className="modal-title text-center w-100 ms-4">
-            {isReadOnly ? "Historia Clínica" : editIndex !== null ? "Editar Paciente" : "Dar de Alta Paciente"}
+            Detalles del Usuario
           </Modal.Title>
         </Modal.Header>
 
         <Modal.Body>
-          <div className="form-section">
-            <h5>Datos del Paciente</h5>
-            <Row>
-              <Col md={6}>
-                <Form.Group className="mb-3">
-                  <Form.Label>Nombre</Form.Label>
-                  <Form.Control
-                    isInvalid={!!errors.petNombre}
-                    name="petNombre"
-                    value={nuevoPaciente.petNombre}
-                    onChange={handleChange}
-                    placeholder="Ej: Max"
-                    disabled={isReadOnly}
-                  />
-                  <Form.Control.Feedback type="invalid">
-                    {errors.petNombre}
-                  </Form.Control.Feedback>
-                </Form.Group>
-
-                <div className="d-flex">
-                  <Form.Group className="mb-3 me-2 flex-fill">
-                    <Form.Label>Peso</Form.Label>
+          {usuarioSeleccionado && (
+            <div className="form-section">
+              <h5>Información del Usuario</h5>
+              <Row>
+                <Col md={6}>
+                  <Form.Group className="mb-3">
+                    <Form.Label>Nombre</Form.Label>
                     <Form.Control
-                      isInvalid={!!errors.petPeso}
-                      name="petPeso"
-                      value={nuevoPaciente.petPeso}
-                      onChange={handleChange}
-                      placeholder={`Ej: ${nuevoPaciente.petUnidadPeso === 'kg' ? '5.5' : '3500'}`}
-                      type="number"
-                      disabled={isReadOnly}
+                      value={usuarioSeleccionado.nombre || 'N/A'}
+                      disabled
                     />
-                    <Form.Control.Feedback type="invalid">
-                      {errors.petPeso}
-                    </Form.Control.Feedback>
                   </Form.Group>
-                  <Form.Group className="mb-3" style={{ minWidth: '120px' }}>
-                    <Form.Label>Unidad</Form.Label>
-                    <Form.Select
-                      name="petUnidadPeso"
-                      value={nuevoPaciente.petUnidadPeso}
-                      onChange={handleChange}
-                      disabled={isReadOnly}
-                    >
-                      <option value="kg">kg</option>
-                      <option value="g">g</option>
-                    </Form.Select>
-                  </Form.Group>
-                </div>
-                <div className="d-flex">
-                  <Form.Group className="mb-3 me-2 flex-fill">
-                    <Form.Label>Edad</Form.Label>
+                  <Form.Group className="mb-3">
+                    <Form.Label>Email</Form.Label>
                     <Form.Control
-                      isInvalid={!!errors.petEdad}
-                      name="petEdad"
-                      value={nuevoPaciente.petEdad}
-                      onChange={handleChange}
-                      placeholder={`Ej: ${nuevoPaciente.petUnidadEdad === 'años' ? '3' : '6'}`}
-                      type="number"
-                      disabled={isReadOnly}
+                      type="email"
+                      value={usuarioSeleccionado.email || 'N/A'}
+                      disabled
                     />
-                    <Form.Control.Feedback type="invalid">
-                      {errors.petEdad}
-                    </Form.Control.Feedback>
                   </Form.Group>
-                  <Form.Group className="mb-3" style={{ minWidth: '120px' }}>
-                    <Form.Label>Unidad</Form.Label>
-                    <Form.Select
-                      name="petUnidadEdad"
-                      value={nuevoPaciente.petUnidadEdad}
-                      onChange={handleChange}
-                      disabled={isReadOnly}
-                    >
-                      <option value="años">Años</option>
-                      <option value="meses">Meses</option>
-                    </Form.Select>
+                </Col>
+                <Col md={6}>
+                  <Form.Group className="mb-3">
+                    <Form.Label>Rol</Form.Label>
+                    <Form.Control
+                      value={usuarioSeleccionado.role || 'N/A'}
+                      disabled
+                    />
                   </Form.Group>
-                </div>
-              </Col>
-              <Col md={6}>
-                <Form.Group className="mb-3">
-                  <Form.Label>Sexo</Form.Label>
-                  <Form.Select
-                    isInvalid={!!errors.petSexo}
-                    name="petSexo"
-                    value={nuevoPaciente.petSexo}
-                    onChange={handleChange}
-                    disabled={isReadOnly}
-                  >
-                    <option value="">Seleccione un sexo</option>
-                    {sexos.map((sexo) => (
-                      <option key={sexo} value={sexo}>
-                        {sexo}
-                      </option>
-                    ))}
-                  </Form.Select>
-                  <Form.Control.Feedback type="invalid">
-                    {errors.petSexo}
-                  </Form.Control.Feedback>
-                </Form.Group>
-                <Form.Group className="mb-3">
-                  <Form.Label>Especie</Form.Label>
-                  <Form.Select
-                    isInvalid={!!errors.petEspecie}
-                    name="petEspecie"
-                    value={nuevoPaciente.petEspecie}
-                    onChange={handleChange}
-                    disabled={isReadOnly}
-                  >
-                    <option value="">Seleccione una especie</option>
-                    {especies.map((especie) => (
-                      <option key={especie} value={especie}>
-                        {especie}
-                      </option>
-                    ))}
-                  </Form.Select>
-                  <Form.Control.Feedback type="invalid">
-                    {errors.petEspecie}
-                  </Form.Control.Feedback>
-                </Form.Group>
-                <Form.Group className="mb-3">
-                  <Form.Label>Raza</Form.Label>
-                  <Form.Select
-                    isInvalid={!!errors.petRaza}
-                    name="petRaza"
-                    value={nuevoPaciente.petRaza}
-                    onChange={handleChange}
-                    disabled={isReadOnly}
-                  >
-                    <option value="">Seleccione una raza</option>
-                    {razasDisponibles.map((raza) => (
-                      <option key={raza} value={raza}>
-                        {raza}
-                      </option>
-                    ))}
-                  </Form.Select>
-                  <Form.Control.Feedback type="invalid">
-                    {errors.petRaza}
-                  </Form.Control.Feedback>
-                </Form.Group>
-              </Col>
-            </Row>
-          </div>
-
-          <div className="form-section">
-            <h5>Datos del Dueño</h5>
-            <Row>
-              <Col md={6}>
-                <Form.Group className="mb-3">
-                  <Form.Label>Nombre</Form.Label>
-                  <Form.Control
-                    isInvalid={!!errors.ownerNombre}
-                    name="ownerNombre"
-                    value={nuevoPaciente.ownerNombre}
-                    onChange={handleChange}
-                    placeholder="Ej: Juan"
-                    disabled={isReadOnly}
-                  />
-                  <Form.Control.Feedback type="invalid">
-                    {errors.ownerNombre}
-                  </Form.Control.Feedback>
-                </Form.Group>
-                <Form.Group className="mb-3">
-                  <Form.Label>Teléfono</Form.Label>
-                  <Form.Control
-                    isInvalid={!!errors.ownerTelefono}
-                    name="ownerTelefono"
-                    value={nuevoPaciente.ownerTelefono}
-                    onChange={handleChange}
-                    placeholder="Ej: 351-1234567"
-                    disabled={isReadOnly}
-                  />
-                  <Form.Control.Feedback type="invalid">
-                    {errors.ownerTelefono}
-                  </Form.Control.Feedback>
-                </Form.Group>
-                <Form.Group className="mb-3">
-                  <Form.Label>Apellido</Form.Label>
-                  <Form.Control
-                    isInvalid={!!errors.ownerApellido}
-                    name="ownerApellido"
-                    value={nuevoPaciente.ownerApellido}
-                    onChange={handleChange}
-                    placeholder="Ej: Pérez"
-                    disabled={isReadOnly}
-                  />
-                  <Form.Control.Feedback type="invalid">
-                    {errors.ownerApellido}
-                  </Form.Control.Feedback>
-                </Form.Group>
-              </Col>
-              <Col md={6}>
-                <Form.Group className="mb-3">
-                  <Form.Label>Dirección</Form.Label>
-                  <Form.Control
-                    isInvalid={!!errors.ownerDireccion}
-                    name="ownerDireccion"
-                    value={nuevoPaciente.ownerDireccion}
-                    onChange={handleChange}
-                    placeholder="Ej: Av. Siempre Viva 742"
-                    disabled={isReadOnly}
-                  />
-                  <Form.Control.Feedback type="invalid">
-                    {errors.ownerDireccion}
-                  </Form.Control.Feedback>
-                </Form.Group>
-                <Form.Group className="mb-3">
-                  <Form.Label>Email</Form.Label>
-                  <Form.Control
-                    isInvalid={!!errors.ownerEmail}
-                    type="email"
-                    name="ownerEmail"
-                    value={nuevoPaciente.ownerEmail}
-                    onChange={handleChange}
-                    placeholder="Ej: juan@example.com"
-                    disabled={isReadOnly}
-                  />
-                  <Form.Control.Feedback type="invalid">
-                    {errors.ownerEmail}
-                  </Form.Control.Feedback>
-                </Form.Group>
-              </Col>
-            </Row>
-          </div>
+                  <Form.Group className="mb-3">
+                    <Form.Label>Fecha de Registro</Form.Label>
+                    <Form.Control
+                      value={usuarioSeleccionado.createdAt ? new Date(usuarioSeleccionado.createdAt).toLocaleString('es-AR') : 'N/A'}
+                      disabled
+                    />
+                  </Form.Group>
+                </Col>
+              </Row>
+              <Row>
+                <Col md={12}>
+                  <Form.Group className="mb-3">
+                    <Form.Label>ID</Form.Label>
+                    <Form.Control
+                      value={usuarioSeleccionado._id || 'N/A'}
+                      disabled
+                      style={{fontFamily: 'monospace', fontSize: '0.85rem'}}
+                    />
+                  </Form.Group>
+                </Col>
+              </Row>
+            </div>
+          )}
         </Modal.Body>
 
         <Modal.Footer>
           <Button variant="secondary" onClick={cerrarModal}>
-            {isReadOnly ? "Cerrar" : "Cancelar"}
+            Cerrar
           </Button>
-          {!isReadOnly && (
-            <Button variant="primary" onClick={handleAgregar}>
-              Guardar
-            </Button>
-          )}
         </Modal.Footer>
       </Modal>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "flex-end",
-          marginBottom: "1rem",
-        }}
-      >
-        <Button variant="primary" onClick={abrirModal} className="mt-3">
-          Agregar Paciente
-        </Button>
-      </div>
     </div>
   );
 };
