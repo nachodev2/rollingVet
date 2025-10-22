@@ -1,4 +1,4 @@
-import  { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Modal, Button, Table } from "react-bootstrap";
 import { PencilSquare, Trash } from "react-bootstrap-icons";
 import Swal from "sweetalert2";
@@ -45,7 +45,7 @@ const CRUDServicios = () => {
     } else {
       setServicios([...servicios, { ...nuevoServicio, id: Date.now() }]);
 
-        Swal.fire({
+      Swal.fire({
         icon: "success",
         title: "Servicio agregado",
         showConfirmButton: false,
@@ -63,7 +63,7 @@ const CRUDServicios = () => {
   };
 
   const handleEliminar = (index) => {
-     const servicio = servicios[index];
+    const servicio = servicios[index];
 
     Swal.fire({
       title: "¿Estás seguro?",
@@ -92,59 +92,70 @@ const CRUDServicios = () => {
 
   return (
     <div className="crud-servicios">
-      
-      <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: "1rem" }}>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "flex-end",
+          marginBottom: "1rem",
+        }}
+      >
         <Button variant="primary" onClick={abrirModal}>
           Agregar Servicio
         </Button>
       </div>
-
-      
-      <Table striped bordered hover responsive>
-        <thead>
-          <tr>
-            <th>Nombre</th>
-            <th>Descripción</th>
-            <th>Costo</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          {servicios.length > 0 ? (
-            servicios.map((item, index) => (
-              <tr key={item.id || index}>
-                <td>{item.nombre}</td>
-                <td>{item.descripcion}</td>
-                <td>{item.costo}</td>
-                <td>
-                  <Button
-                    size="sm"
-                    variant="warning"
-                    onClick={() => handleEditar(index)}
-                    style={{ marginRight: "0.3rem" }}
-                  >
-                    <PencilSquare />
-                  </Button>
-                  <Button size="sm" variant="danger" onClick={() => handleEliminar(index)}>
-                    <Trash />
-                  </Button>
+      <div className="contenedor-tabla verde-redondeado">
+        <Table striped bordered hover responsive>
+          <thead>
+            <tr>
+              <th className="text-center">Nombre</th>
+              <th className="text-center">Descripción</th>
+              <th className="text-center">Costo</th>
+              <th className="text-center">Acciones</th>
+            </tr>
+          </thead>
+          <tbody>
+            {servicios.length > 0 ? (
+              servicios.map((item, index) => (
+                <tr key={item.id || index}>
+                  <td className="text-center">{item.nombre}</td>
+                  <td className="text-center">{item.descripcion}</td>
+                  <td className="text-center">{item.costo}</td>
+                  <td>
+                    <div className="contenedor-iconos-accion">
+                      <button
+                        className="btn-icono-accion editar"
+                        title="Editar"
+                        onClick={() => handleEditar(index)}
+                      >
+                        <PencilSquare size={18} />
+                      </button>
+                      <button
+                        className="btn-icono-accion eliminar"
+                        title="Eliminar"
+                        onClick={() => handleEliminar(index)}
+                      >
+                        <Trash size={18} />
+                      </button>
+                    </div>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan={4} className="text-center">
+                  No hay servicios.
                 </td>
               </tr>
-            ))
-          ) : (
-            <tr>
-              <td colSpan={4} className="text-center">
-                No hay servicios.
-              </td>
-            </tr>
-          )}
-        </tbody>
-      </Table>
+            )}
+          </tbody>
+        </Table>
+      </div>
 
-      
       <Modal show={showModal} onHide={cerrarModal} size="lg">
         <Modal.Header closeButton>
-          <Modal.Title>{editIndex !== null ? "Editar Servicio" : "Agregar Servicio"}</Modal.Title>
+          <Modal.Title>
+            {editIndex !== null ? "Editar Servicio" : "Agregar Servicio"}
+          </Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <div style={{ marginBottom: "1rem", display: "flex", gap: "0.5rem" }}>
@@ -152,21 +163,28 @@ const CRUDServicios = () => {
               type="text"
               placeholder="Ej: Vacunación anual"
               value={nuevoServicio.nombre}
-              onChange={(e) => setNuevoServicio({ ...nuevoServicio, nombre: e.target.value })}
+              onChange={(e) =>
+                setNuevoServicio({ ...nuevoServicio, nombre: e.target.value })
+              }
             />
             <input
               type="text"
               placeholder="Ej: Servicio completo de salud y bienestar"
               value={nuevoServicio.descripcion}
               onChange={(e) =>
-                setNuevoServicio({ ...nuevoServicio, descripcion: e.target.value })
+                setNuevoServicio({
+                  ...nuevoServicio,
+                  descripcion: e.target.value,
+                })
               }
             />
             <input
               type="number"
               placeholder="Ej: 1500"
               value={nuevoServicio.costo}
-              onChange={(e) => setNuevoServicio({ ...nuevoServicio, costo: e.target.value })}
+              onChange={(e) =>
+                setNuevoServicio({ ...nuevoServicio, costo: e.target.value })
+              }
             />
             <Button variant="success" onClick={handleAgregar}>
               {editIndex !== null ? "Guardar" : "Agregar"}
