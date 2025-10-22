@@ -1,6 +1,8 @@
 import Button from "react-bootstrap/Button";
+import { useNavigate } from 'react-router-dom';
 
 function SeccionTablaPlanes() {
+  const navigate = useNavigate();
   return (
     <div>
       <section>
@@ -35,7 +37,7 @@ function SeccionTablaPlanes() {
           </div>
         </div>
         <div className="plan-footer">
-          <Button variant="success" className="plan-button text-dark">
+          <Button variant="success" className="plan-button text-dark" onClick={() => navigate('/error404')}>
             Adquirir Plan
           </Button>
         </div>
