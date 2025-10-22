@@ -32,7 +32,8 @@ function App() {
             <Route path="/administracion" element={<Administrador />} />
           </Route>
           <Route path="/producto/:id" element={<Producto />} />
-          
+          <Route path="/error404" element={<Error404 />} />
+
           <Route path="*" element={<Error404 />} />
         </Routes>
       </main>
