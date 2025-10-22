@@ -220,7 +220,7 @@ const CRUDPacientes = () => {
   const handleEditar = (paciente, index) => {
     Swal.fire({
       title: "¿Editar paciente?",
-      text: `¿Seguro que quieres editar los datos de "${paciente.nombreMascota}"?`,
+      text: `¿Seguro que quieres editar los datos de "${paciente.nombreDueno}"?`,
       icon: "question",
       showCancelButton: true,
       confirmButtonText: "Sí, editar",
@@ -271,7 +271,7 @@ const CRUDPacientes = () => {
   const handleEliminar = async (paciente) => {
     Swal.fire({
       title: "¿Eliminar paciente?",
-      text: `Se eliminará "${paciente.nombreMascota}" de la lista.`,
+      text: `Se eliminará el paciente de "${paciente.nombreDueno}" de la lista.`,
       icon: "warning",
       showCancelButton: true,
       confirmButtonText: "Sí, eliminar",
