@@ -7,7 +7,7 @@ const VETERINARIOS = [
 ];
 const DURACION_CITA_MINUTOS = 30;
 
-const Paso2Horario = ({ datos, setDatos, siguiente, anterior }) => {
+const Paso2Horario = ({ datos, setDatos, servicios, setServicioSeleccionado, servicioSeleccionado, siguiente, anterior }) => {
     const [fechaSeleccionada, setFechaSeleccionada] = useState(datos.fecha || '');
     const [veterinarioAsignado, setVeterinarioAsignado] = useState(datos.veterinario || null);
     const [horasDisponibles, setHorasDisponibles] = useState([]);
@@ -46,7 +46,7 @@ const Paso2Horario = ({ datos, setDatos, siguiente, anterior }) => {
             return;
         }
 
-        setDatos({
+                        setDatos({
             ...datos,
             fecha: fechaSeleccionada,
             hora: horaSeleccionada,
@@ -58,6 +58,33 @@ const Paso2Horario = ({ datos, setDatos, siguiente, anterior }) => {
     return (
         <Form onSubmit={handleSubmit}>
             <h3>Horario y Profesional</h3>
+            <Form.Group className="mb-3">
+                <Form.Label>Servicio (*)</Form.Label>
+                <Form.Select
+                    value={datos.servicio || ''}
+                    onChange={(e) => {
+                        const servicioId = e.target.value;
+                        const servicio = servicios.find(s => s._id === servicioId);
+                        setServicioSeleccionado(servicio);
+                        setDatos({
+                            ...datos,
+                            servicio: servicioId,
+                            precioTotal: servicio?.precio || 0,
+                            detalleCita: servicio ? `${servicio.nombre} - ${servicio.descripcion} - $${servicio.precio}` : ''
+                        });
+                    }}
+                    required
+                >
+                    <option value="">Seleccionar servicio...</option>
+                    {servicios
+                        .filter(servicio => servicio && servicio.precio !== undefined && servicio.precio !== null && servicio.precio > 0)
+                        .map(servicio => (
+                        <option key={servicio._id} value={servicio._id}>
+                            {servicio.nombre} - ${(servicio.precio || 0).toLocaleString('es-AR')}
+                        </option>
+                    ))}
+                </Form.Select>
+            </Form.Group>
             <Form.Group className="mb-3">
                 <Form.Label>Selecciona la Fecha (*)</Form.Label>
                 <Form.Control

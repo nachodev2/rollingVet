@@ -7,16 +7,16 @@ import "./Administrador.css";
 
 
 const generarDatosSimulados = (prefijo, cantidad) => {
-  const datos = [];
-  for (let i = 1; i <= cantidad; i++) {
-    datos.push({
-      id: i,
-      campo1: `${prefijo} ${i}`,
-      campo2: `Detalle ${i}`,
-      campo3: `Valor ${Math.floor(Math.random() * 100)}`,
-    });
-  }
-  return datos;
+    const datos = [];
+    for (let i = 1; i <= cantidad; i++) {
+        datos.push({
+            id: i,
+            campo1: `${prefijo} ${i}`,
+            campo2: `Detalle ${i}`,
+            campo3: `Valor ${Math.floor(Math.random() * 100)}`,
+        });
+    }
+    return datos;
 };
 
 const encabezados = {
@@ -24,7 +24,16 @@ const encabezados = {
 };
 
 const Administrador = () => {
-  const [key, setKey] = useState("servicios"); 
+    const [key, setKey] = useState("servicios");
+    const [turnosReales, setTurnosReales] = useState([]);
+    const [isLoading, setIsLoading] = useState(true);
+    const [paginaActual, setPaginaActual] = useState({
+        servicios: 1,
+        pacientes: 1,
+        turnos: 1,
+    });
+    const [mostrarModal, setMostrarModal] = useState(false);
+    const [turnoAEditar, setTurnoAEditar] = useState(null);
 
   const handleCambioPestana = (nuevaKey) => {
     setKey(nuevaKey);

@@ -96,6 +96,7 @@ const Menu = () => {
           <Nav className="justify-content-center">
             {navLinks.map((link, index) => (
               <Nav.Link
+                key={link.href}
                 as={NavLink}
                 to={link.href}
                 className="link-inicial mx-3"
@@ -123,6 +124,7 @@ const Menu = () => {
             <Nav className="mx-auto enlaces-centrales">
               {navLinks.map((link, index) => (
                 <Nav.Link
+                  key={link.href}
                   as={NavLink}
                   to={link.href}
                   className="link-inicial mx-3"

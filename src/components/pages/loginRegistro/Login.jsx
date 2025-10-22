@@ -1,97 +1,321 @@
-import { useState } from 'react';
-import { Button, Modal, Form } from 'react-bootstrap';
+import { useState } from "react";
+import { Button, Modal, Form } from "react-bootstrap";
+import Swal from "sweetalert2";
+import { useNavigate } from "react-router";
 import "./loginRegistro.css";
 
-function Login({ handleLogin }) {
-  const [show, setShow] = useState(false);
-  const [email, setEmail] = useState('');
-  const [password, setPassword] = useState('');
-  const [passwordError, setPasswordError] = useState('');
 
-  const handleClose = () => setShow(false);
+const API_BASE_URL = "http://localhost:5000/api/v1/auth";
+
+function Login({ handleLogin }) {
+  const navigate = useNavigate();
+  const [show, setShow] = useState(false);
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const [showChangePasswordModal, setShowChangePasswordModal] = useState(false);
+  const [showPasswordChangedModal, setShowPasswordChangedModal] = useState(false);
+  const [tempOldPassword, setTempOldPassword] = useState("");
+  const [newPassword, setNewPassword] = useState("");
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [changePasswordErrors, setChangePasswordErrors] = useState({});
+  const [changingPassword, setChangingPassword] = useState(false);
+
+  const handleClose = () => {
+    setShow(false);
+    setEmail("");
+    setPassword("");
+  };
   const handleShow = () => setShow(true);
 
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true);
 
-    const passwordRegex = /(?=.*[@$!%*?&])/;
-    if (password.length < 6 || !passwordRegex.test(password)) {
-      setPasswordError('La contraseña debe tener al menos 6 caracteres y contener al menos un carácter especial (@$!%*?&)');
-      return;
-    } else {
-      setPasswordError('');
-    }
+    try {
+      const response = await fetch(`${API_BASE_URL}/login`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ email, password }),
+      });
 
-    const ADMIN_EMAIL = import.meta.env.VITE_ADMIN_EMAIL;
-    const ADMIN_PASS = import.meta.env.VITE_ADMIN_PASSWORD_SIMULATION;
+      const data = await response.json();
 
-    if (handleLogin) {
-      if (email === ADMIN_EMAIL && password === ADMIN_PASS) {
-        handleLogin('admin', 'Administrador');
-      } else {
-        handleLogin('user', 'Usuario');
+      if (!response.ok) {
+        throw new Error(data.error || "Error de conexión.");
       }
-    }
 
-    handleClose();
+      localStorage.setItem("token", data.token);
+
+      const isTempPassword = /^[a-z]+$/i.test(password) && !/\d/.test(password);
+
+      if (isTempPassword) {
+        setTempOldPassword(password);
+        setShowChangePasswordModal(true);
+        setShow(false);
+        return;
+      } else {
+        Swal.fire({
+          icon: "success",
+          title: `¡Bienvenido, ${data.user.nombre}!`,
+          showConfirmButton: false,
+          timer: 1500,
+        });
+
+        handleLogin(data.user.role, data.user.nombre);
+        navigate('/');
+        handleClose();
+      }
+    } catch (err) {
+      Swal.fire({
+        icon: "error",
+        title: "Error de acceso",
+        text: err.message,
+      });
+    } finally {
+      setLoading(false);
+    }
   };
 
-    return (
-        <>
-            <Button className="btn-acceso rounded-pill px-4" onClick={handleShow}>
-                Iniciar sesión
-            </Button>
+  const handleChangePasswordSubmit = async (e) => {
+    e.preventDefault();
+    setChangePasswordErrors({});
 
-            <Modal
-                show={show}
-                onHide={handleClose}
-                backdrop="static"
-                keyboard={false}
-            >
-                <Modal.Header closeButton>
-                    <Modal.Title>Iniciar sesión</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <Form onSubmit={handleSubmit}>
-                        <Form.Group className="mb-3" controlId="ControlInput1">
-                            <Form.Label>Email</Form.Label>
-                            <Form.Control
-                                type="email"
-                                placeholder="Ejemplo@gmail.com"
-                                required
-                                autoFocus
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                            />
-                        </Form.Group>
-                        <Form.Group className="mb-3" controlId="ControlInput2">
-                            <Form.Label>Contraseña</Form.Label>
-                            <Form.Control
-                                type="password"
-                                placeholder="********"
-                                required
-                                value={password}
-                                onChange={(e) => setPassword(e.target.value)}
-                            />
-                            <Form.Text id="formTextPassword" className="text-danger">
-                                {passwordError}
-                            </Form.Text>
-                        </Form.Group>
-                        <div className='d-grid'>
-                           <Button variant="primary" type="submit" className='mt-3'>
-                                Ingresar
-                            </Button>
-                        </div>
-                    </Form>
-                </Modal.Body>
-                <Modal.Footer className='d-flex justify-content-start'>
-                    <Button variant="secondary" onClick={handleClose}>
-                        Cerrar
-                    </Button>
-                </Modal.Footer>
-            </Modal>
-        </>
-    );
+    const errors = {};
+    if (newPassword.length < 6) {
+      errors.newPassword = "La nueva contraseña debe tener al menos 6 caracteres.";
+    }
+    if (newPassword === tempOldPassword) {
+      errors.newPassword = "La nueva contraseña no puede ser igual a la anterior.";
+    }
+    if (newPassword !== confirmPassword) {
+      errors.confirmPassword = "Las contraseñas no coinciden.";
+    }
+
+    if (Object.keys(errors).length > 0) {
+      setChangePasswordErrors(errors);
+      return;
+    }
+
+    setChangingPassword(true);
+
+    try {
+      const response = await fetch(`${API_BASE_URL}/change-password`, {
+        method: "PUT",
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${localStorage.getItem("token")}`,
+        },
+        body: JSON.stringify({ oldPassword: tempOldPassword, newPassword, confirmPassword }),
+      });
+
+      const data = await response.json();
+
+      if (response.ok) {
+        if (data.token) {
+          localStorage.setItem("token", data.token);
+        }
+        if (data.user) {
+          handleLogin(data.user.role, data.user.nombre);
+        }
+        setShowChangePasswordModal(false);
+        setNewPassword('');
+        setConfirmPassword('');
+        setTempOldPassword('');
+        setChangePasswordErrors({});
+        setShowPasswordChangedModal(true);
+      } else if (response.status === 400) {
+        const data = await response.json();
+        Swal.fire({
+          icon: "error",
+          title: "Error al cambiar contraseña",
+          text: data.error || "Error de validación. Intenta nuevamente.",
+          confirmButtonColor: "#6c9a72",
+        });
+      } else {
+        Swal.fire({
+          icon: "error",
+          title: "Error al cambiar contraseña",
+          text: "No se pudo cambiar la contraseña. Intenta nuevamente.",
+          confirmButtonColor: "#6c9a72",
+        });
+      }
+    } catch (err) {
+      Swal.fire({
+        icon: "error",
+        title: "Error de conexión",
+        text: "No se pudo conectar al servidor.",
+      });
+    } finally {
+      setChangingPassword(false);
+    }
+  };
+
+  const handleChangePasswordClose = () => {
+    localStorage.removeItem("token");
+    setShowChangePasswordModal(false);
+    setEmail("");
+    setPassword("");
+    setNewPassword("");
+    setConfirmPassword("");
+    setTempOldPassword("");
+    window.location.reload();
+  };
+
+  const handlePasswordChangedCloseAndLogin = () => {
+    setShowPasswordChangedModal(false);
+    setShow(true);
+  };
+
+  return (
+    <>
+      <Button className="btn-acceso rounded-pill px-4" onClick={handleShow}>
+        Iniciar sesión
+      </Button>
+
+      <Modal
+        show={show}
+        onHide={handleClose}
+        backdrop="static"
+        keyboard={false}
+      >
+        <Modal.Header closeButton>
+          <Modal.Title>Iniciar sesión</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <Form onSubmit={handleSubmit}>
+            <Form.Group className="mb-3" controlId="ControlInput1">
+              <Form.Label>Email</Form.Label>
+              <Form.Control
+                type="email"
+                placeholder="Ejemplo@gmail.com"
+                required
+                autoFocus
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+              />
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="ControlInput2">
+              <Form.Label>Contraseña</Form.Label>
+              <Form.Control
+                type="password"
+                placeholder="********"
+                required
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
+              />
+            </Form.Group>
+            <div className="d-grid">
+              <Button
+                variant="primary"
+                type="submit"
+                className="mt-3"
+                disabled={loading}
+              >
+                {loading ? "Cargando..." : "Ingresar"}
+              </Button>
+            </div>
+          </Form>
+        </Modal.Body>
+        <Modal.Footer className="d-flex justify-content-start">
+          <Button variant="secondary" onClick={handleClose} disabled={loading}>
+            Cerrar
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      <Modal
+        show={showChangePasswordModal}
+        onHide={handleChangePasswordClose}
+        backdrop="static"
+        keyboard={false}
+      >
+        <Modal.Header closeButton={false}>
+          <Modal.Title>Cambiar Contraseña Temporal</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <p className="text-muted">
+            Tu contraseña es temporal. Debes cambiarla para continuar accediendo al sistema.
+          </p>
+          <Form onSubmit={handleChangePasswordSubmit}>
+            <Form.Group className="mb-3" controlId="newPassword">
+              <Form.Label>Nueva Contraseña</Form.Label>
+              <Form.Control
+                type="password"
+                placeholder="Nueva contraseña (mín 6 carácteres)"
+                required
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                isInvalid={!!changePasswordErrors.newPassword}
+              />
+              <Form.Control.Feedback type="invalid">
+                {changePasswordErrors.newPassword}
+              </Form.Control.Feedback>
+            </Form.Group>
+            <Form.Group className="mb-3" controlId="confirmPassword">
+              <Form.Label>Confirmar Nueva Contraseña</Form.Label>
+              <Form.Control
+                type="password"
+                placeholder="Repite la nueva contraseña"
+                required
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                isInvalid={!!changePasswordErrors.confirmPassword}
+              />
+              <Form.Control.Feedback type="invalid">
+                {changePasswordErrors.confirmPassword}
+              </Form.Control.Feedback>
+            </Form.Group>
+            <div className="d-grid">
+              <Button
+                variant="primary"
+                type="submit"
+                disabled={changingPassword}
+              >
+                {changingPassword ? "Cambiando..." : "Cambiar Contraseña"}
+              </Button>
+            </div>
+          </Form>
+        </Modal.Body>
+        <Modal.Footer className="d-flex justify-content-start">
+          <Button
+            variant="secondary"
+            onClick={handleChangePasswordClose}
+            disabled={changingPassword}
+          >
+            Cancelar (Cerrar Sesión)
+          </Button>
+        </Modal.Footer>
+      </Modal>
+
+      <Modal
+        show={showPasswordChangedModal}
+        onHide={handlePasswordChangedCloseAndLogin}
+        backdrop="static"
+        keyboard={false}
+      >
+        <Modal.Header closeButton={false}>
+          <Modal.Title>Contraseña cambiada correctamente</Modal.Title>
+        </Modal.Header>
+        <Modal.Body>
+          <p className="text-center">
+            Tu contraseña temporal ha sido cambiada exitosamente.
+          </p>
+        </Modal.Body>
+        <Modal.Footer className="d-flex justify-content-center">
+          <Button
+            variant="primary"
+            onClick={handlePasswordChangedCloseAndLogin}
+          >
+            Iniciar sesión
+          </Button>
+        </Modal.Footer>
+      </Modal>
+    </>
+  );
 }
 
 export default Login;
