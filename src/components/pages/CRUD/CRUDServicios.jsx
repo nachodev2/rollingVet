@@ -8,48 +8,90 @@ const CRUDServicios = () => {
   const abrirModal = () => setShowModal(true);
   const cerrarModal = () => setShowModal(false);
 
-  const [servicios, setServicios] = useState(() => {
-    const saved = localStorage.getItem("servicios");
-    try {
-      return saved ? JSON.parse(saved) : [];
-    } catch {
-      return [];
-    }
-  });
-
+  const [servicios, setServicios] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [nuevoServicio, setNuevoServicio] = useState({
     nombre: "",
     descripcion: "",
     costo: "",
   });
   const [editIndex, setEditIndex] = useState(null);
+  const [editId, setEditId] = useState(null);
+
+  const fetchServicios = async () => {
+    setIsLoading(true);
+    const token = localStorage.getItem("token");
+    try {
+      const response = await fetch('http://localhost:5000/api/v1/servicios', {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+      if (response.ok) {
+        const data = await response.json();
+        setServicios(data.data || []);
+      } else {
+        console.error('Error fetching servicios:', response.status);
+        setServicios([]);
+      }
+    } catch (error) {
+      console.error('Error fetching servicios:', error);
+      setServicios([]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   useEffect(() => {
-    localStorage.setItem("servicios", JSON.stringify(servicios));
-  }, [servicios]);
+    fetchServicios();
+  }, []);
 
-  const handleAgregar = () => {
+  const handleAgregar = async () => {
     if (!nuevoServicio.nombre) return alert("El nombre es obligatorio");
-    if (editIndex !== null) {
-      const updated = [...servicios];
-      updated[editIndex] = nuevoServicio;
-      setServicios(updated);
-      setEditIndex(null);
 
-      Swal.fire({
-        icon: "success",
-        title: "Servicio actualizado",
-        showConfirmButton: false,
-        timer: 1500,
+    const token = localStorage.getItem("token");
+    const isEdit = editId !== null;
+    const url = isEdit
+      ? `http://localhost:5000/api/v1/servicios/${editId}`
+      : 'http://localhost:5000/api/v1/servicios';
+    const method = isEdit ? 'PUT' : 'POST';
+
+    try {
+      const response = await fetch(url, {
+        method,
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(nuevoServicio),
       });
-    } else {
-      setServicios([...servicios, { ...nuevoServicio, id: Date.now() }]);
 
+      if (response.ok) {
+        fetchServicios(); // Reload list
+        cerrarModal();
         Swal.fire({
-        icon: "success",
-        title: "Servicio agregado",
-        showConfirmButton: false,
-        timer: 1500,
+          icon: "success",
+          title: isEdit ? "Servicio actualizado" : "Servicio agregado",
+          showConfirmButton: false,
+          timer: 1500,
+        });
+      } else {
+        const error = await response.json();
+        Swal.fire({
+          icon: 'error',
+          title: 'Error',
+          text: error.error || 'No se pudo guardar el servicio',
+          confirmButtonColor: '#6c9a72',
+        });
+      }
+    } catch (error) {
+      console.error('Error guardando servicio:', error);
+      Swal.fire({
+        icon: 'error',
+        title: 'Error de conexión',
+        text: 'No se pudo guardar el servicio',
+        confirmButtonColor: '#6c9a72',
       });
     }
     setNuevoServicio({ nombre: "", descripcion: "", costo: "" });
@@ -58,13 +100,11 @@ const CRUDServicios = () => {
 
   const handleEditar = (index) => {
     setNuevoServicio(servicios[index]);
-    setEditIndex(index);
+    setEditId(servicios[index]._id);
     abrirModal();
   };
 
-  const handleEliminar = (index) => {
-     const servicio = servicios[index];
-
+  const handleEliminar = async (servicio) => {
     Swal.fire({
       title: "¿Estás seguro?",
       text: `Se eliminará el servicio "${servicio.nombre}".`,
@@ -74,18 +114,46 @@ const CRUDServicios = () => {
       cancelButtonText: "Cancelar",
       confirmButtonColor: "#d33",
       cancelButtonColor: "#3085d6",
-    }).then((result) => {
+    }).then(async (result) => {
       if (result.isConfirmed) {
-        const updated = servicios.filter((_, i) => i !== index);
-        setServicios(updated);
+        const token = localStorage.getItem("token");
 
-        Swal.fire({
-          icon: "success",
-          title: "Eliminado",
-          text: "El servicio ha sido eliminado correctamente.",
-          timer: 1500,
-          showConfirmButton: false,
-        });
+        try {
+          const response = await fetch(`http://localhost:5000/api/v1/servicios/${servicio._id}`, {
+            method: 'DELETE',
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json',
+            },
+          });
+
+          if (response.ok) {
+            fetchServicios(); // Reload list
+            Swal.fire({
+              icon: "success",
+              title: "Eliminado",
+              text: "El servicio ha sido eliminado correctamente.",
+              timer: 1500,
+              showConfirmButton: false,
+            });
+          } else {
+            const error = await response.json();
+            Swal.fire({
+              icon: 'error',
+              title: 'Error',
+              text: error.error || 'No se pudo eliminar el servicio',
+              confirmButtonColor: '#6c9a72',
+            });
+          }
+        } catch (error) {
+          console.error('Error eliminando servicio:', error);
+          Swal.fire({
+            icon: 'error',
+            title: 'Error de conexión',
+            text: 'No se pudo eliminar el servicio',
+            confirmButtonColor: '#6c9a72',
+          });
+        }
       }
     });
   };
@@ -110,9 +178,15 @@ const CRUDServicios = () => {
           </tr>
         </thead>
         <tbody>
-          {servicios.length > 0 ? (
+          {isLoading ? (
+            <tr>
+              <td colSpan={4} className="text-center">
+                Cargando servicios...
+              </td>
+            </tr>
+          ) : servicios.length > 0 ? (
             servicios.map((item, index) => (
-              <tr key={item.id || index}>
+              <tr key={item._id || index}>
                 <td>{item.nombre}</td>
                 <td>{item.descripcion}</td>
                 <td>{item.costo}</td>
@@ -125,7 +199,7 @@ const CRUDServicios = () => {
                   >
                     <PencilSquare />
                   </Button>
-                  <Button size="sm" variant="danger" onClick={() => handleEliminar(index)}>
+                  <Button size="sm" variant="danger" onClick={() => handleEliminar(item)}>
                     <Trash />
                   </Button>
                 </td>
@@ -144,7 +218,7 @@ const CRUDServicios = () => {
       
       <Modal show={showModal} onHide={cerrarModal} size="lg">
         <Modal.Header closeButton>
-          <Modal.Title>{editIndex !== null ? "Editar Servicio" : "Agregar Servicio"}</Modal.Title>
+          <Modal.Title>{editId !== null ? "Editar Servicio" : "Agregar Servicio"}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
           <div style={{ marginBottom: "1rem", display: "flex", gap: "0.5rem" }}>
@@ -169,7 +243,7 @@ const CRUDServicios = () => {
               onChange={(e) => setNuevoServicio({ ...nuevoServicio, costo: e.target.value })}
             />
             <Button variant="success" onClick={handleAgregar}>
-              {editIndex !== null ? "Guardar" : "Agregar"}
+              {editId !== null ? "Guardar" : "Agregar"}
             </Button>
           </div>
         </Modal.Body>
