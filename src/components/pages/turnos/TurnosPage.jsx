@@ -29,8 +29,8 @@ const handlePagarEnLocal = () => {
     alert("Pago registrado como pendiente. Puedes pagar al momento de la consulta.");
 };
 
-const handleConfirmarTurno = async () => { 
-    
+const handleConfirmarTurno = async () => {
+
     const datosParaEnvio = {
         fecha: datosTurno.fecha,
         hora: datosTurno.hora,
@@ -39,11 +39,16 @@ const handleConfirmarTurno = async () => {
         mascota: datosTurno.mascota
     };
 
+    console.log('Enviando turno:', datosParaEnvio);
+
+    const token = localStorage.getItem('token');
+
     try {
-        const response = await fetch('http://localhost:5000/api/turnos', {
+        const response = await fetch('http://localhost:5000/api/v1/turnos', {
             method: 'POST',
             headers: {
                 'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}`,
             },
             body: JSON.stringify(datosParaEnvio),
         });

@@ -7,7 +7,7 @@ import "./CRUDTurnos.css";
 const CRUDTurnos = () => {
   const [showModal, setShowModal] = useState(false);
   const [isReadOnly, setIsReadOnly] = useState(false);
-  const [editIndex, setEditIndex] = useState(null);
+  const [editId, setEditId] = useState(null);
 
   const abrirModal = () => setShowModal(true);
   const cerrarModal = () => {
@@ -15,7 +15,7 @@ const CRUDTurnos = () => {
     setIsReadOnly(false);
     setNuevoTurno(turnoInicial);
     setErrors({});
-    setEditIndex(null);
+    setEditId(null);
   };
 
   const veterinarios = [
@@ -42,21 +42,44 @@ const CRUDTurnos = () => {
     }
   }, []);
 
-  const [turnos, setTurnos] = useState(() => {
-    const saved = localStorage.getItem("turnos");
-    try {
-      return saved ? JSON.parse(saved) : [];
-    } catch {
-      return [];
-    }
-  });
-
+  const [turnos, setTurnos] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
   const [nuevoTurno, setNuevoTurno] = useState(turnoInicial);
   const [errors, setErrors] = useState({});
 
+  const fetchTurnos = async () => {
+    setIsLoading(true);
+    const token = localStorage.getItem("token");
+    try {
+      const response = await fetch('http://localhost:5000/api/v1/turnos', {
+        headers: {
+          'Authorization': `Bearer ${token}`,
+          'Content-Type': 'application/json',
+        },
+      });
+      if (response.ok) {
+        try {
+          const data = await response.json();
+          setTurnos(data.data || []);
+        } catch (jsonError) {
+          console.error('Error parsing JSON:', jsonError);
+          setTurnos([]);
+        }
+      } else {
+        console.error('Error fetching turnos:', response.status);
+        setTurnos([]);
+      }
+    } catch (error) {
+      console.error('Error fetching turnos:', error);
+      setTurnos([]);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   useEffect(() => {
-    localStorage.setItem("turnos", JSON.stringify(turnos));
-  }, [turnos]);
+    fetchTurnos();
+  }, []);
 
   const isWorkingDay = (dateString) => {
     const date = new Date(dateString);
@@ -81,7 +104,7 @@ const CRUDTurnos = () => {
     const turno = turnos[index];
     Swal.fire({
       title: "¿Editar turno?",
-      text: `¿Seguro que quieres editar el turno de ${turno.mascota.nombre}?`,
+      text: `¿Seguro que quieres editar el turno de ${turno.mascota?.nombre || 'Sin asignar'}?`,
       icon: "question",
       showCancelButton: true,
       confirmButtonText: "Sí, editar",
@@ -91,49 +114,69 @@ const CRUDTurnos = () => {
     }).then((result) => {
       if (result.isConfirmed) {
         setNuevoTurno(turno);
-        setEditIndex(index);
+        setEditId(turno._id);
         setIsReadOnly(false);
         abrirModal();
       }
     });
   };
 
-  const handleEliminar = (index) => {
-    const turno = turnos[index];
+  const handleEliminar = async (turno) => {
     Swal.fire({
       title: "¿Eliminar turno?",
-      text: `Se eliminará el turno de ${turno.mascota.nombre} con ${turno.veterinario.nombre}.`,
+      text: `Se eliminará el turno de ${turno.mascota?.nombre || 'Sin asignar'} con ${turno.veterinario?.nombre || 'Sin asignar'}.`,
       icon: "warning",
       showCancelButton: true,
       confirmButtonText: "Sí, eliminar",
       cancelButtonText: "Cancelar",
       confirmButtonColor: "#6c9a72",
       cancelButtonColor: "#6c757d",
-    }).then((result) => {
+    }).then(async (result) => {
       if (result.isConfirmed) {
-        const actualizados = turnos.filter((_, i) => i !== index);
-        setTurnos(actualizados);
-        Swal.fire({
-          icon: "success",
-          title: "Turno eliminado correctamente",
-          confirmButtonColor: "#6c9a72",
-          showConfirmButton: false,
-          timer: 1500,
-        });
+        const token = localStorage.getItem("token");
+
+        try {
+          const response = await fetch(`http://localhost:5000/api/v1/turnos/${turno._id}`, {
+            method: 'DELETE',
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json',
+            },
+          });
+
+          if (response.ok) {
+            fetchTurnos(); // Reload list
+            Swal.fire({
+              icon: "success",
+              title: "Turno eliminado correctamente",
+              confirmButtonColor: "#6c9a72",
+              showConfirmButton: false,
+              timer: 1500,
+            });
+          } else {
+            const error = await response.json();
+            Swal.fire({
+              icon: 'error',
+              title: 'Error',
+              text: error.error || 'No se pudo eliminar el turno',
+              confirmButtonColor: '#6c9a72',
+            });
+          }
+        } catch (error) {
+          console.error('Error eliminando turno:', error);
+          Swal.fire({
+            icon: 'error',
+            title: 'Error de conexión',
+            text: 'No se pudo eliminar el turno',
+            confirmButtonColor: '#6c9a72',
+          });
+        }
       }
     });
   };
 
-  const handleAgregar = () => {
+  const handleAgregar = async () => {
     const newErrors = {};
-
-    if (!nuevoTurno.detalleCita.length) {
-      newErrors.detalleCita = "Seleccione al menos un servicio.";
-    }
-
-    if (!nuevoTurno.veterinario) {
-      newErrors.veterinario = "Seleccione un veterinario.";
-    }
 
     if (!nuevoTurno.fecha) {
       newErrors.fecha = "Seleccione una fecha.";
@@ -142,7 +185,7 @@ const CRUDTurnos = () => {
       const today = new Date();
       today.setHours(0, 0, 0, 0);
       if (selectedDate < today) {
-newErrors.fecha = "La fecha no puede ser anterior a hoy.";
+        newErrors.fecha = "La fecha no puede ser anterior a hoy.";
       } else if (!isWorkingDay(nuevoTurno.fecha)) {
         newErrors.fecha = "Solo se permiten fechas de lunes a viernes.";
       }
@@ -152,48 +195,51 @@ newErrors.fecha = "La fecha no puede ser anterior a hoy.";
       newErrors.hora = "Seleccione una hora.";
     }
 
-    if (!nuevoTurno.mascota.nombre.trim()) {
-      newErrors.mascotaNombre = "El nombre de la mascota es obligatorio.";
-    } else if (!/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/.test(nuevoTurno.mascota.nombre)) {
-      newErrors.mascotaNombre =
-        "El nombre solo puede contener letras y espacios.";
-    }
-
-    const conflict = turnos.some(
-      (t, idx) =>
-        t.fecha === nuevoTurno.fecha &&
-        t.hora === nuevoTurno.hora &&
-        t.veterinario?.id === nuevoTurno.veterinario?.id &&
-        (editIndex === null || idx !== editIndex)
-    );
-    if (conflict) {
-      newErrors.general =
-        "Ya existe un turno para ese veterinario en la misma fecha y hora.";
-    }
-
     setErrors(newErrors);
 
     if (Object.keys(newErrors).length === 0) {
-      if (editIndex !== null) {
-        const actualizados = [...turnos];
-        actualizados[editIndex] = nuevoTurno;
-        setTurnos(actualizados);
-        Swal.fire({
-          icon: "success",
-          title: "Turno actualizado correctamente",
-          confirmButtonColor: "#6c9a72",
-          showConfirmButton: false,
-          timer: 1500,
-        });
+      if (editId !== null) {
+        // Update turno
+        const token = localStorage.getItem("token");
+        try {
+          const response = await fetch(`http://localhost:5000/api/v1/turnos/${editId}`, {
+            method: 'PUT',
+            headers: {
+              'Authorization': `Bearer ${token}`,
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(nuevoTurno),
+          });
+
+          if (response.ok) {
+            fetchTurnos(); // Reload list
+            Swal.fire({
+              icon: "success",
+              title: "Turno actualizado correctamente",
+              confirmButtonColor: "#6c9a72",
+              showConfirmButton: false,
+              timer: 1500,
+            });
+          } else {
+            const error = await response.json();
+            Swal.fire({
+              icon: 'error',
+              title: 'Error',
+              text: error.error || 'No se pudo actualizar el turno',
+              confirmButtonColor: '#6c9a72',
+            });
+          }
+        } catch (error) {
+          console.error('Error actualizando turno:', error);
+          Swal.fire({
+            icon: 'error',
+            title: 'Error de conexión',
+            text: 'No se pudo actualizar el turno',
+            confirmButtonColor: '#6c9a72',
+          });
+        }
       } else {
-        setTurnos([...turnos, { ...nuevoTurno, id: Date.now() }]);
-        Swal.fire({
-          icon: "success",
-          title: "Turno creado correctamente",
-          confirmButtonColor: "#6c9a72",
-          showConfirmButton: false,
-          timer: 1500,
-        });
+        alert('Admin no puede agregar turnos. Solo puede editar turnos existentes.');
       }
 
       cerrarModal();
@@ -248,7 +294,13 @@ newErrors.fecha = "La fecha no puede ser anterior a hoy.";
               <th className="text-center">Acciones</th>
             </tr>
           </thead>
-          <tbody>{turnos.length > 0 ? turnos.map((item, index) => <tr key={item.id || index}><td className="text-center">{item.veterinario.nombre}</td><td className="text-center"><strong>{item.mascota.nombre}</strong></td><td className="text-center">{formatFecha(item.fecha)}</td><td className="text-center">{item.hora}</td><td><div className="contenedor-iconos-accion"><button className="btn-icono-accion ver" title="Ver" onClick={() => handleVer(index)}><Eye size={18} /></button><button className="btn-icono-accion editar" title="Editar" onClick={() => handleEditar(index)}><PencilSquare size={18} /></button><button className="btn-icono-accion eliminar" title="Eliminar" onClick={() => handleEliminar(index)}><Trash size={18} /></button></div></td></tr>) : <tr><td colSpan={5} className="text-center">No hay turnos en la lista.</td></tr>}</tbody>
+          <tbody>{isLoading ? (
+            <tr>
+              <td colSpan={5} className="text-center">
+                Cargando turnos...
+              </td>
+            </tr>
+          ) : turnos.length > 0 ? turnos.map((item, index) => <tr key={item._id || index}><td className="text-center">{item.veterinario?.nombre || 'Sin asignar'}</td><td className="text-center"><strong>{item.mascota?.nombre || 'Sin asignar'}</strong></td><td className="text-center">{formatFecha(item.fecha)}</td><td className="text-center">{item.hora}</td><td><div className="contenedor-iconos-accion"><button className="btn-icono-accion ver" title="Ver" onClick={() => handleVer(index)}><Eye size={18} /></button><button className="btn-icono-accion editar" title="Editar" onClick={() => handleEditar(index)}><PencilSquare size={18} /></button><button className="btn-icono-accion eliminar" title="Eliminar" onClick={() => handleEliminar(item)}><Trash size={18} /></button></div></td></tr>) : <tr><td colSpan={5} className="text-center">No hay turnos en la lista.</td></tr>}</tbody>
         </Table>
       </div>
       <Modal show={showModal} onHide={cerrarModal} size="lg" centered>
@@ -256,7 +308,7 @@ newErrors.fecha = "La fecha no puede ser anterior a hoy.";
           <Modal.Title className="modal-title text-center w-100 ms-4">
             {isReadOnly
               ? "Detalles del Turno"
-              : editIndex !== null
+              : editId !== null
               ? "Editar Turno"
               : "Agregar Nuevo Turno"}
           </Modal.Title>

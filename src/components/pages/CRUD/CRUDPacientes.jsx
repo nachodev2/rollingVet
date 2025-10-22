@@ -75,8 +75,13 @@ const CRUDPacientes = () => {
       });
       
       if (response.ok) {
-        const data = await response.json();
-        setPacientes(data.data || []);
+        try {
+          const data = await response.json();
+          setPacientes(data.data || []);
+        } catch (jsonError) {
+          console.error('Error parsing JSON pacientes:', jsonError);
+          setPacientes([]);
+        }
       } else {
         console.error('Error fetching pacientes:', response.status);
         setPacientes([]);

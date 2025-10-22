@@ -29,8 +29,13 @@ const CRUDServicios = () => {
         },
       });
       if (response.ok) {
-        const data = await response.json();
-        setServicios(data.data || []);
+        try {
+          const data = await response.json();
+          setServicios(data.data || []);
+        } catch (jsonError) {
+          console.error('Error parsing JSON servicios:', jsonError);
+          setServicios([]);
+        }
       } else {
         console.error('Error fetching servicios:', response.status);
         setServicios([]);

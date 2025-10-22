@@ -1,8 +1,10 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Form, Button, Row, Col, Card } from "react-bootstrap";
 
 const Paso1Detalle = ({ datos, setDatos, siguiente }) => {
   const [detalleCita, setDetalleCita] = useState(datos.detalleCita || "");
+  const [servicios, setServicios] = useState([]);
+  const [cargando, setCargando] = useState(true);
   const [mascota, setMascota] = useState(
     datos.mascota || {
       nombre: "",
@@ -20,6 +22,41 @@ const Paso1Detalle = ({ datos, setDatos, siguiente }) => {
       [name]: value,
     }));
   };
+
+  useEffect(() => {
+    const fetchServicios = async () => {
+      setCargando(true);
+      const token = localStorage.getItem("token");
+      try {
+        const response = await fetch('http://localhost:5000/api/v1/servicios', {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+            'Content-Type': 'application/json',
+          },
+        });
+        if (response.ok) {
+          try {
+            const data = await response.json();
+            setServicios(data.data || []);
+          } catch (jsonError) {
+            console.error('Error parsing JSON servicios:', jsonError);
+            setServicios([]);
+          }
+        } else {
+          console.error('Error fetching servicios:', response.status);
+          setServicios([]);
+        }
+      } catch (error) {
+        console.error('Error fetching servicios:', error);
+        alert('Error al cargar servicios desde el servidor.');
+        setServicios([]);
+      } finally {
+        setCargando(false);
+      }
+    };
+
+    fetchServicios();
+  }, []);
 
   const handleSubmit = (e) => {
     e.preventDefault();
@@ -48,15 +85,30 @@ const Paso1Detalle = ({ datos, setDatos, siguiente }) => {
     <Form onSubmit={handleSubmit}>
       <h3>Detalles de la Cita</h3>
       <Form.Group className="mb-4" controlId="formDetalleCita">
-        <Form.Label>Detalle de la cita / Motivo de la consulta (*)</Form.Label>
-        <Form.Control
-          as="textarea"
-          rows={3}
-          placeholder="Describe el motivo de la consulta (ej: Vacunación anual, chequeo general, etc.)"
+        <Form.Label>Servicio/s para la cita (*)</Form.Label>
+        <Form.Select
           value={detalleCita}
           onChange={(e) => setDetalleCita(e.target.value)}
           required
-        />
+        >
+          {cargando ? (
+            <option>Cargando servicios...</option>
+          ) : servicios.length > 0 ? (
+            <>
+              <option value="">Seleccionar un servicio</option>
+              {servicios.map((s) => (
+                <option
+                  key={s._id}
+                  value={`${s.nombre} - ${s.descripcion} - $${s.costo}`}
+                >
+                  {s.nombre} - ${s.costo}
+                </option>
+              ))}
+            </>
+          ) : (
+            <option>No hay servicios disponibles</option>
+          )}
+        </Form.Select>
       </Form.Group>
 
       <h3>Datos de tu Mascota</h3>
