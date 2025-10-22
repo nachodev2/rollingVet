@@ -31,7 +31,7 @@ function SeccionTablaPlanes() {
           <div className="plan-detail-item">Básicas y Refuerzos</div>
           <div className="plan-detail-item">Solo si es necesario</div>
           <div className="plan-detail-item">
-            <span className="icon-cross">&#10007;</span> Chequeo visual básico
+            <span className="icon-cross">&#10007;</span> Chequeo dental básico
           </div>
         </div>
         <div className="plan-footer">
