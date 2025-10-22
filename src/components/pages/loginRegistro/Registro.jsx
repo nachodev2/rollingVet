@@ -1,10 +1,11 @@
-import { Button, Modal, Col, InputGroup, Form, Row } from "react-bootstrap";
+import { Button, Modal, Col, InputGroup, Form, Row, Toast } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useState, useEffect } from "react";
 import "./loginRegistro.css";
 
-function Registro() { 
+function Registro() {
     const [lgShow, setLgShow] = useState(false);
+    const [showToast, setShowToast] = useState(false);
 
     const {
         register,
@@ -14,8 +15,10 @@ function Registro() {
     } = useForm();
 
     const onSubmit = (data) => {
-        console.log(data); 
-        setLgShow(false); 
+        console.log(data);
+        setShowToast(true);
+        setLgShow(false);
+        setTimeout(() => setShowToast(false), 3000);
     };
 
     const onError = (errors) => {
@@ -190,6 +193,12 @@ function Registro() {
                     </Form>
                 </Modal.Body>
             </Modal>
+            <Toast show={showToast} onClose={() => setShowToast(false)} delay={3000} autohide style={{ position: 'fixed', top: 10, right: 10, zIndex: 9999 }}>
+                <Toast.Header>
+                    <strong className="mr-auto">Registro</strong>
+                </Toast.Header>
+                <Toast.Body>¡Registro exitoso!</Toast.Body>
+            </Toast>
         </>
     );
 }

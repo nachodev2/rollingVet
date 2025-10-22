@@ -292,6 +292,17 @@ const CRUDPacientes = () => {
 
   return (
     <div className="crud-pacientes p-4">
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "flex-end",
+          marginBottom: "1rem",
+        }}
+      >
+        <Button variant="primary" onClick={abrirModal}>
+          Agregar Paciente
+        </Button>
+      </div>
       <div className="contenedor-tabla verde-redondeado">
         <Table striped bordered hover responsive>
           <thead>
@@ -349,17 +360,6 @@ const CRUDPacientes = () => {
             )}
           </tbody>
         </Table>
-      </div>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "flex-end",
-          marginBottom: "1rem",
-        }}
-      >
-        <Button variant="primary" onClick={abrirModal} className="mt-3">
-          Agregar Paciente
-        </Button>
       </div>
       <Modal show={showModal} onHide={cerrarModal} size="lg" centered>
         <Modal.Header closeButton>
