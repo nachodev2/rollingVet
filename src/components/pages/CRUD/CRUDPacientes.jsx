@@ -571,6 +571,11 @@ const CRUDPacientes = () => {
                     {errors.emailDueno}
                   </Form.Control.Feedback>
                 </Form.Group>
+                {editId === null && (
+                  <div className="alert alert-warning mt-2 small border border-warning rounded" style={{ fontSize: '0.88rem', backgroundColor: '#fff3cd', borderColor: '#ffc107', color: '#856404' }}>
+                    <strong>¡Importante!</strong> Al cargar un paciente se creará automáticamente una contraseña temporal, que será el nombre completo de la persona cargada (sin espacios ni mayúsculas). <em>Ej: Juan Pérez = juanperez</em>
+                  </div>
+                )}
               </Col>
               <Col md={6}>
                 <Form.Group className="mb-3">
