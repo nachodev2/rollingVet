@@ -21,8 +21,8 @@ function SobreNosotros() {
             <Card className="mt-4 card-sobreNosotros px-2 rounded-4">
               <Card.Img
                 variant="top"
-                src="../images/zepeto-lu.png"
-                alt="Luciana Ruiz"
+                src="../images/nosotros/Nacho.png"
+                alt="Tomás Ruiz"
                 className="img-card-sobreNosotros d-flex m-auto"
               />
               <Card.Body>
@@ -39,7 +39,7 @@ function SobreNosotros() {
             <Card className="mt-4 card-sobreNosotros px-2 rounded-4">
               <Card.Img
                 variant="top"
-                src="../public/images/zepeto-lu.png"
+                src="../images/nosotros/Luciana.png"
                 alt="Luciana Ruiz"
                 className="img-card-sobreNosotros d-flex m-auto"
               />
@@ -57,8 +57,8 @@ function SobreNosotros() {
             <Card className="mt-4 card-sobreNosotros px-2 rounded-4">
               <Card.Img
                 variant="top"
-                src="../images/zepeto-lu.png"
-                alt="Luciana Ruiz"
+                src="../images/nosotros/José.png"
+                alt="José Romero"
                 className="img-card-sobreNosotros d-flex m-auto"
               />
               <Card.Body>
