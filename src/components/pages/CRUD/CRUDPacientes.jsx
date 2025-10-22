@@ -61,7 +61,7 @@ const CRUDPacientes = () => {
     Otro: ["Otro"],
   };
 
-  // Fetch pacientes desde la API
+
   const fetchPacientes = async () => {
     setIsLoading(true);
     const token = localStorage.getItem("token");
@@ -88,12 +88,6 @@ const CRUDPacientes = () => {
       }
     } catch (error) {
       console.error('Error fetching pacientes:', error);
-      Swal.fire({
-        icon: 'error',
-        title: 'Error de conexión',
-        text: 'No se pudo cargar la lista de pacientes',
-        confirmButtonColor: '#6c9a72',
-      });
       setPacientes([]);
     } finally {
       setIsLoading(false);
@@ -108,7 +102,7 @@ const CRUDPacientes = () => {
     setRazasDisponibles(razasPorEspecie[nuevoPaciente.especie] || []);
   }, [nuevoPaciente.especie]);
 
-  // Validaciones
+
   const validarPaciente = () => {
     const newErrors = {};
 
@@ -168,7 +162,7 @@ const CRUDPacientes = () => {
     return Object.keys(newErrors).length === 0;
   };
 
-  // Crear o actualizar paciente
+
   const handleAgregar = async () => {
     if (!validarPaciente()) return;
 
@@ -221,7 +215,6 @@ const CRUDPacientes = () => {
     }
   };
 
-  // Editar paciente
   const handleEditar = (paciente, index) => {
     Swal.fire({
       title: "¿Editar paciente?",
@@ -253,7 +246,7 @@ const CRUDPacientes = () => {
     });
   };
 
-  // Ver paciente
+
   const handleVer = (paciente) => {
     setNuevoPaciente({
       nombreMascota: paciente.nombreMascota || "",
@@ -272,7 +265,7 @@ const CRUDPacientes = () => {
     abrirModal();
   };
 
-  // Eliminar paciente
+ 
   const handleEliminar = async (paciente) => {
     Swal.fire({
       title: "¿Eliminar paciente?",
@@ -295,7 +288,6 @@ const CRUDPacientes = () => {
               'Content-Type': 'application/json',
             },
           });
-
           if (response.ok) {
             Swal.fire({
               icon: "success",
@@ -617,4 +609,4 @@ const CRUDPacientes = () => {
   );
 };
 
-export default CRUDPacientes;
+export default CRUDPacientes 

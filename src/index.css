@@ -14,16 +14,16 @@
 
 
 .integrado-central-links {
-    /* Fondo transparente, sin blur ni borde */
+
     background-color: transparent !important;
     border-radius: 0 !important;
     padding: 0 !important;
     backdrop-filter: none !important;
 }
 
-/* Estilos de los links en estado flotante (scrolled) - EL BLUR */
+
 .flotante-central-links {
-    /* 2. El Rectángulo Flotante con Blur */
+    
     background-color: rgba(255, 255, 255, 0.4) !important; 
     border-radius: 50px !important; 
     padding: 0.5rem 2rem !important;
@@ -33,7 +33,7 @@
     -webkit-backdrop-filter: blur(10px);
     
     box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
-    transition: all 0.3s ease; /* Transición suave para el rectángulo */
+    transition: all 0.3s ease; 
 }
 
 .titulo {

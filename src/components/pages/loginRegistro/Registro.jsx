@@ -188,7 +188,7 @@ function Registro() {
                                         {...register("codigoArea", {
                                             required: "El teléfono es requerido",
                                             pattern: {
-                                                value: /^\d{10,}$/, // Al menos 10 dígitos para teléfono + área
+                                                value: /^\d{10,}$/,
                                                 message: "Ingrese un número de teléfono válido",
                                             },
                                         })}
@@ -203,11 +203,9 @@ function Registro() {
 
                         <hr />
 
-                        {/* === SECCIÓN 2: DATOS DE LA MASCOTA === */}
                         <h5 className="mb-3 mt-4 text-success">Datos de la Mascota</h5>
 
                         <Row className="mb-3">
-                            {/* Nombre Mascota */}
                             <Form.Group as={Col} md="6" controlId="validationPetName">
                                 <Form.Label>Nombre de la Mascota</Form.Label>
                                 <Form.Control
@@ -225,7 +223,6 @@ function Registro() {
                                 </Form.Control.Feedback>
                             </Form.Group>
 
-                            {/* Especie */}
                             <Form.Group as={Col} md="6" controlId="validationPetSpecies">
                                 <Form.Label>Especie</Form.Label>
                                 <Form.Select
@@ -247,7 +244,6 @@ function Registro() {
                         </Row>
 
                         <Row className="mb-4">
-                            {/* Raza */}
                             <Form.Group as={Col} md="6" controlId="validationPetBreed">
                                 <Form.Label>Raza</Form.Label>
                                 <Form.Control
@@ -263,8 +259,6 @@ function Registro() {
                                     {errors.raza?.message}
                                 </Form.Control.Feedback>
                             </Form.Group>
-
-                            {/* Edad */}
                             <Form.Group as={Col} md="6" controlId="validationPetAge">
                                 <Form.Label>Edad (Años)</Form.Label>
                                 <Form.Control
@@ -284,8 +278,6 @@ function Registro() {
                                 </Form.Control.Feedback>
                             </Form.Group>
                         </Row>
-
-                        {/* --- Botón de Registro --- */}
                         <div className="d-grid mt-4">
                             <Button type="submit" disabled={loading}>
                                 {loading ? "Registrando..." : "Registrarme"}

@@ -39,15 +39,14 @@ const Paso1Detalle = ({ datos, setDatos, siguiente }) => {
             const data = await response.json();
             setServicios(data.data || []);
           } catch (jsonError) {
-            console.error('Error parsing JSON servicios:', jsonError);
+
             setServicios([]);
           }
         } else {
-          console.error('Error fetching servicios:', response.status);
           setServicios([]);
         }
       } catch (error) {
-        console.error('Error fetching servicios:', error);
+
         alert('Error al cargar servicios desde el servidor.');
         setServicios([]);
       } finally {

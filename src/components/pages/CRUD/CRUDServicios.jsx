@@ -14,7 +14,9 @@ const CRUDServicios = () => {
   const [nuevoServicio, setNuevoServicio] = useState({
     nombre: "",
     descripcion: "",
-    costo: "",
+    precio: "",
+    categoria: "consulta",
+    duracionMinutos: "30",
   });
   const [editIndex, setEditIndex] = useState(null);
   const [editId, setEditId] = useState(null);
@@ -55,7 +57,13 @@ const CRUDServicios = () => {
   }, []);
 
   const handleAgregar = async () => {
-    if (!nuevoServicio.nombre) return alert("El nombre es obligatorio");
+    const precioParsed = parseInt(nuevoServicio.precio, 10);
+    if (!nuevoServicio.nombre?.trim()) return alert("El nombre es obligatorio");
+    if (!nuevoServicio.descripcion?.trim()) return alert("La descripción es obligatoria");
+    if (isNaN(precioParsed) || precioParsed <= 0) return alert("El precio debe ser un número mayor a 0");
+    if (!nuevoServicio.categoria) return alert("La categoría es obligatoria");
+    const duracion = parseInt(nuevoServicio.duracionMinutos, 10);
+    if (isNaN(duracion) || duracion < 15) return alert("La duración debe ser al menos 15 minutos");
 
     const token = localStorage.getItem("token");
     const isEdit = editId !== null;
@@ -64,6 +72,12 @@ const CRUDServicios = () => {
       : 'http://localhost:5000/api/v1/servicios';
     const method = isEdit ? 'PUT' : 'POST';
 
+    const servicioData = {
+      ...nuevoServicio,
+      precio: precioParsed,
+      duracionMinutos: duracion,
+    };
+
     try {
       const response = await fetch(url, {
         method,
@@ -71,11 +85,11 @@ const CRUDServicios = () => {
           'Authorization': `Bearer ${token}`,
           'Content-Type': 'application/json',
         },
-        body: JSON.stringify(nuevoServicio),
+        body: JSON.stringify(servicioData),
       });
 
       if (response.ok) {
-        fetchServicios(); // Reload list
+        fetchServicios();
         cerrarModal();
         Swal.fire({
           icon: "success",
@@ -101,13 +115,26 @@ const CRUDServicios = () => {
         confirmButtonColor: '#6c9a72',
       });
     }
-    setNuevoServicio({ nombre: "", descripcion: "", costo: "" });
+    setNuevoServicio({
+      nombre: "",
+      descripcion: "",
+      precio: "",
+      categoria: "consulta",
+      duracionMinutos: "30"
+    });
     cerrarModal();
   };
 
   const handleEditar = (index) => {
-    setNuevoServicio(servicios[index]);
-    setEditId(servicios[index]._id);
+    const servicio = servicios[index];
+    setNuevoServicio({
+      nombre: servicio.nombre,
+      descripcion: servicio.descripcion,
+      precio: servicio.precio?.toString() || '',
+      categoria: servicio.categoria,
+      duracionMinutos: servicio.duracionMinutos?.toString() || '30',
+    });
+    setEditId(servicio._id);
     abrirModal();
   };
 
@@ -185,7 +212,7 @@ const CRUDServicios = () => {
             <tr>
               <th>Nombre</th>
               <th>Descripción</th>
-              <th>Costo</th>
+              <th>Precio</th>
               <th>Acciones</th>
             </tr>
           </thead>
@@ -201,7 +228,7 @@ const CRUDServicios = () => {
                 <tr key={item._id || index}>
                   <td>{item.nombre}</td>
                   <td>{item.descripcion}</td>
-                  <td>{item.costo}</td>
+                  <td>{item.precio}</td>
                   <td>
                     <Button
                       size="sm"
@@ -254,13 +281,46 @@ const CRUDServicios = () => {
               />
             </Form.Group>
             <Form.Group className="mb-3">
-              <Form.Label>Costo</Form.Label>
+              <Form.Label>Precio (ARS) *</Form.Label>
               <Form.Control
                 type="number"
-                placeholder="Ej: 1500"
-                value={nuevoServicio.costo}
-                onChange={(e) => setNuevoServicio({ ...nuevoServicio, costo: e.target.value })}
+                placeholder="1500"
+                value={nuevoServicio.precio}
+                onChange={(e) => setNuevoServicio({ ...nuevoServicio, precio: e.target.value })}
+                min="1"
+                step="1"
+                required
               />
+              <small>Solo números enteros</small>
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Categoría *</Form.Label>
+              <Form.Select
+                value={nuevoServicio.categoria}
+                onChange={(e) => setNuevoServicio({ ...nuevoServicio, categoria: e.target.value })}
+                required
+              >
+                <option value="consulta">Consulta</option>
+                <option value="cirugia">Cirugía</option>
+                <option value="vacunacion">Vacunación</option>
+                <option value="desparasitacion">Desparasitación</option>
+                <option value="baño">Baño y Aseo</option>
+                <option value="peluqueria">Peluquería</option>
+                <option value="otros">Otros</option>
+              </Form.Select>
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Duración (minutos) *</Form.Label>
+              <Form.Control
+                type="number"
+                placeholder="30"
+                value={nuevoServicio.duracionMinutos}
+                onChange={(e) => setNuevoServicio({ ...nuevoServicio, duracionMinutos: e.target.value })}
+                min="15"
+                step="15"
+                required
+              />
+              <small>Mínimo 15 minutos</small>
             </Form.Group>
           </div>
         </Modal.Body>

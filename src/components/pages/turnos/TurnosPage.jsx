@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { Container, Row, Col, Card } from "react-bootstrap";
 import Swal from "sweetalert2";
 
@@ -10,90 +10,164 @@ const TurnosPage = () => {
   const [pasoActual, setPasoActual] = useState(1);
   const [datosTurno, setDatosTurno] = useState({
     detalleCita: "",
+    servicio: null,
     veterinario: null,
     fecha: null,
     hora: null,
     mascota: { nombre: "", especie: "", raza: "", edad: "" },
+    precioTotal: 0,
   });
+
+  const [servicios, setServicios] = useState([]);
+  const [servicioSeleccionado, setServicioSeleccionado] = useState(null);
+  const [loadingPago, setLoadingPago] = useState(false);
+
+  useEffect(() => {
+    const cargarServicios = async () => {
+      try {
+        const token = getToken();
+        if (!token) return;
+
+        const response = await fetch('http://localhost:5000/api/v1/servicios/activos', {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          },
+        });
+        const data = await response.json();
+        if (data.success) {
+          setServicios(data.data);
+          
+        } else {
+          
+          setServicios([]);
+        }
+      } catch (error) {
+        
+        setServicios([]);
+      }
+    };
+    cargarServicios();
+  }, []);
 
   const siguientePaso = () => setPasoActual(pasoActual + 1);
   const anteriorPaso = () => setPasoActual(pasoActual - 1);
 
   const handlePagarConMercadoPago = () => {
-    console.log("Iniciando redirección a Mercado Pago...");
+
     alert("Simulación: Redireccionando a la pasarela de Mercado Pago.");
 };
 
 const handlePagarEnLocal = () => {
-    console.log("Pago registrado como pendiente/en local.");
     alert("Pago registrado como pendiente. Puedes pagar al momento de la consulta.");
 };
 
-const handleConfirmarTurno = async () => {
+const getToken = () => {
+  const token = localStorage.getItem('token') || sessionStorage.getItem('token');
+  if (!token) {
+    window.location.href = '/login';
+    return null;
+  }
+  return token;
+};
 
-    const datosParaEnvio = {
-        fecha: datosTurno.fecha,
-        hora: datosTurno.hora,
-        detalleCita: datosTurno.detalleCita,
-        veterinario: datosTurno.veterinario,
-        mascota: datosTurno.mascota
+const confirmarTurnoYPagar = async () => {
+  if (!servicioSeleccionado || !servicioSeleccionado.precio) {
+    Swal.fire({
+      title: 'Servicio inválido',
+      text: 'Debes seleccionar un servicio válido para pagar.',
+      icon: 'warning',
+      confirmButtonText: 'Entendido'
+    });
+    return;
+  }
+
+  setLoadingPago(true);
+
+  try {
+    const token = getToken();
+    if (!token) return;
+
+
+
+    const turnoData = {
+      fecha: datosTurno.fecha,
+      hora: datosTurno.hora,
+      detalleCita: datosTurno.detalleCita,
+      servicio: datosTurno.servicio,
+      veterinario: {
+        nombre: datosTurno.veterinario?.nombre,
+        id: datosTurno.veterinario.id
+      },
+      mascota: datosTurno.mascota
     };
 
-    console.log('Enviando turno:', datosParaEnvio);
+    
 
-    const token = localStorage.getItem('token');
+    const turnoResponse = await fetch('http://localhost:5000/api/v1/turnos', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      },
+      body: JSON.stringify(turnoData)
+    });
 
-    try {
-        const response = await fetch('http://localhost:5000/api/v1/turnos', {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-                'Authorization': `Bearer ${token}`,
-            },
-            body: JSON.stringify(datosParaEnvio),
-        });
+    
 
-        const data = await response.json();
-
-        if (response.ok) {
-            
-            Swal.fire({
-                title: '¡Turno Confirmado con Éxito!',
-                html: `Tu turno ha sido reservado. Código de la cita: <b>${data.data._id}</b>`,
-                icon: 'success',
-                showCancelButton: true,
-                confirmButtonText: 'Pagar con Mercado Pago (Ficticio)',
-                cancelButtonText: 'Pagar en el Local',
-                confirmButtonColor: '#009ee3',
-                cancelButtonColor: '#3085d6',
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    handlePagarConMercadoPago();
-                } else if (result.dismiss === Swal.DismissReason.cancel) {
-                    handlePagarEnLocal();
-                }
-            });
-            
-            
-
-        } else {
-            
-            Swal.fire({
-                title: 'Error al Reservar',
-                text: data.msg || data.error || 'Hubo un problema de validación en el servidor.',
-                icon: 'error',
-                confirmButtonText: 'Entendido'
-            });
-        }
-    } catch (error) {
-        console.error('Error de conexión:', error);
-        Swal.fire({
-            title: 'Error de Red',
-            text: 'No se pudo conectar con el servidor de RollingVet. Asegúrate que el backend esté encendido.',
-            icon: 'error',
-            confirmButtonText: 'Reintentar'
-        });
+    if (!turnoResponse.ok) {
+      const errorText = await turnoResponse.text();
+      
+      throw new Error('Error al crear turno. Verifica los datos.');
     }
+
+    const turnoResult = await turnoResponse.json();
+    
+
+    if (!turnoResult.success) {
+      throw new Error(turnoResult.msg || turnoResult.error || 'Error al crear turno');
+    }
+
+    const turnoId = turnoResult.data._id;
+    
+
+    
+    const pagoResponse = await fetch(`http://localhost:5000/api/v1/turnos/${turnoId}/pagar`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`
+      }
+    });
+
+    
+
+    if (!pagoResponse.ok) {
+      const errorText = await pagoResponse.text();
+      
+      throw new Error('Error al crear pago MercadoPago. Intente nuevamente.');
+    }
+
+    const pagoData = await pagoResponse.json();
+    
+
+    if (!pagoData.success || !pagoData.init_point) {
+      throw new Error('Error procesando el pago. URL de pago no disponible.');
+    }
+
+    
+    window.location.href = pagoData.init_point;
+
+  } catch (error) {
+    
+    Swal.fire({
+      title: 'Error',
+      text: error.message || 'Error procesando el turno y pago',
+      icon: 'error',
+      confirmButtonText: 'Entendido'
+    });
+  } finally {
+    setLoadingPago(false);
+  }
 };
 
   const renderPaso = () => {
@@ -111,17 +185,72 @@ const handleConfirmarTurno = async () => {
           <Paso2Horario
             datos={datosTurno}
             setDatos={setDatosTurno}
+            servicios={servicios}
+            setServicioSeleccionado={setServicioSeleccionado}
+            servicioSeleccionado={servicioSeleccionado}
             siguiente={siguientePaso}
             anterior={anteriorPaso}
           />
         );
       case 3:
         return (
-          <Paso3Confirmacion
-            datos={datosTurno}
-            confirmar={handleConfirmarTurno}
-            anterior={anteriorPaso}
-          />
+          <div className="paso-3">
+            <h3>Confirmación y Pago</h3>
+            <div className="resumen-turno p-3 my-4 bg-light border rounded">
+              <div className="resumen-item d-flex justify-content-between align-items-center py-2 border-bottom">
+                <span className="label fw-semibold text-muted">Servicio:</span>
+                <span className="value">{servicioSeleccionado?.nombre || 'No seleccionado'}</span>
+              </div>
+              <div className="resumen-item d-flex justify-content-between align-items-center py-2">
+                <span className="label fw-semibold text-muted">Precio:</span>
+                <span className="value precio fs-5 fw-bold text-success">${datosTurno.precioTotal?.toLocaleString('es-AR') || servicioSeleccionado?.costo?.toLocaleString('es-AR') || '0'}</span>
+              </div>
+              <div className="resumen-item d-flex justify-content-between align-items-center py-2 border-bottom">
+                <span className="label fw-semibold text-muted">Fecha:</span>
+                <span className="value">{datosTurno.fecha}</span>
+              </div>
+              <div className="resumen-item d-flex justify-content-between align-items-center py-2 border-bottom">
+                <span className="label fw-semibold text-muted">Hora:</span>
+                <span className="value">{datosTurno.hora}</span>
+              </div>
+              <div className="resumen-item d-flex justify-content-between align-items-center py-2 border-bottom">
+                <span className="label fw-semibold text-muted">Veterinario:</span>
+                <span className="value">{datosTurno.veterinario?.nombre}</span>
+              </div>
+              <div className="resumen-item d-flex justify-content-between align-items-center py-2">
+                <span className="label fw-semibold text-muted">Mascota:</span>
+                <span className="value">{datosTurno.mascota.nombre} - {datosTurno.mascota.especie}</span>
+              </div>
+            </div>
+            <div className="acciones-pago d-flex justify-content-between mt-4">
+              <button className="btn btn-secondary px-4 py-2"
+                onClick={() => setPasoActual(2)}
+              >
+                ← Atrás
+              </button>
+              <button className="btn-pagar-mp px-4 py-2"
+                onClick={confirmarTurnoYPagar}
+                disabled={loadingPago || !servicioSeleccionado}
+                style={{
+                  background: loadingPago ? '#ccc' : '#009ee3',
+                  color: 'white',
+                  border: 'none',
+                  borderRadius: '6px',
+                  fontWeight: '600',
+                  cursor: loadingPago || !servicioSeleccionado ? 'not-allowed' : 'pointer'
+                }}
+              >
+                {loadingPago ? (
+                  <>
+                    <div className="spinner-border spinner-border-sm me-2" role="status"></div>
+                    Procesando...
+                  </>
+                ) : (
+                  'Pagar con Mercado Pago'
+                )}
+              </button>
+            </div>
+          </div>
         );
       default:
         return <h2>Error: Paso no encontrado.</h2>;

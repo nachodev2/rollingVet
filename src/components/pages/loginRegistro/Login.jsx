@@ -4,7 +4,7 @@ import Swal from "sweetalert2";
 import { useNavigate } from "react-router";
 import "./loginRegistro.css";
 
-// URL base de tu backend.
+
 const API_BASE_URL = "http://localhost:5000/api/v1/auth";
 
 function Login({ handleLogin }) {
@@ -14,7 +14,6 @@ function Login({ handleLogin }) {
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
 
-  // States for change password modal
   const [showChangePasswordModal, setShowChangePasswordModal] = useState(false);
   const [showPasswordChangedModal, setShowPasswordChangedModal] = useState(false);
   const [tempOldPassword, setTempOldPassword] = useState("");
@@ -51,16 +50,14 @@ function Login({ handleLogin }) {
 
       localStorage.setItem("token", data.token);
 
-      // Check if password is temporary (all lowercase letters, no numbers)
       const isTempPassword = /^[a-z]+$/i.test(password) && !/\d/.test(password);
 
       if (isTempPassword) {
         setTempOldPassword(password);
         setShowChangePasswordModal(true);
-        setShow(false); // Close login modal
+        setShow(false);
         return;
       } else {
-        // Normal login proceed
         Swal.fire({
           icon: "success",
           title: `¡Bienvenido, ${data.user.nombre}!`,
@@ -118,21 +115,17 @@ function Login({ handleLogin }) {
       const data = await response.json();
 
       if (response.ok) {
-        // Update token if provided
         if (data.token) {
           localStorage.setItem("token", data.token);
         }
-        // Update login state if user provided
         if (data.user) {
           handleLogin(data.user.role, data.user.nombre);
         }
-        // Close modal and clean fields
         setShowChangePasswordModal(false);
         setNewPassword('');
         setConfirmPassword('');
         setTempOldPassword('');
         setChangePasswordErrors({});
-        // Show new modal
         setShowPasswordChangedModal(true);
       } else if (response.status === 400) {
         const data = await response.json();
@@ -142,7 +135,6 @@ function Login({ handleLogin }) {
           text: data.error || "Error de validación. Intenta nuevamente.",
           confirmButtonColor: "#6c9a72",
         });
-        // Modal stays open for retry
       } else {
         Swal.fire({
           icon: "error",
@@ -163,7 +155,6 @@ function Login({ handleLogin }) {
   };
 
   const handleChangePasswordClose = () => {
-    // If they cancel, log out
     localStorage.removeItem("token");
     setShowChangePasswordModal(false);
     setEmail("");
@@ -171,12 +162,12 @@ function Login({ handleLogin }) {
     setNewPassword("");
     setConfirmPassword("");
     setTempOldPassword("");
-    window.location.reload(); // Force login again
+    window.location.reload();
   };
 
   const handlePasswordChangedCloseAndLogin = () => {
     setShowPasswordChangedModal(false);
-    setShow(true); // Open login modal
+    setShow(true);
   };
 
   return (

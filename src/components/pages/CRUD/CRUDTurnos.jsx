@@ -83,7 +83,7 @@ const CRUDTurnos = () => {
 
   const isWorkingDay = (dateString) => {
     const date = new Date(dateString);
-    return date.getDay() !== 0 && date.getDay() !== 6; // Not Sunday(0) or Saturday(6)
+    return date.getDay() !== 0 && date.getDay() !== 6;
   };
 
   const timeSlots = () => {
@@ -199,7 +199,6 @@ const CRUDTurnos = () => {
 
     if (Object.keys(newErrors).length === 0) {
       if (editId !== null) {
-        // Update turno
         const token = localStorage.getItem("token");
         try {
           const response = await fetch(`http://localhost:5000/api/v1/turnos/${editId}`, {
@@ -212,7 +211,7 @@ const CRUDTurnos = () => {
           });
 
           if (response.ok) {
-            fetchTurnos(); // Reload list
+            fetchTurnos();
             Swal.fire({
               icon: "success",
               title: "Turno actualizado correctamente",
