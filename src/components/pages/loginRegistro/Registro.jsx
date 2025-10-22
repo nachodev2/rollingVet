@@ -75,7 +75,10 @@ function Registro() {
                                     placeholder="********"
                                     {...register("password", {
                                         minLength: { value: 6, message: "Mínimo 6 caracteres" },
-                                        maxLength: { value: 12, message: "Máximo 12 caracteres" },
+                                        pattern: {
+                                            value: /(?=.*[@$!%*?&])/,
+                                            message: "La contraseña debe contener al menos un carácter especial (@$!%*?&)",
+                                        },
                                         required: "Este campo es Obligatorio",
                                     })}
                                 />
