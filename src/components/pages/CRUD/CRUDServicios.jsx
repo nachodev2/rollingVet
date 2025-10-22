@@ -78,7 +78,7 @@ const CRUDServicios = () => {
         setEditIndex(null);
         Swal.fire({
           icon: "success",
-          title: "Servicio actualizado correctamente",
+          title: `Servicio "${nuevoServicio.nombre}" actualizado correctamente`,
           confirmButtonColor: "#6c9a72",
           showConfirmButton: false,
           timer: 1500,
@@ -108,14 +108,14 @@ const CRUDServicios = () => {
     const servicio = servicios[index];
 
     Swal.fire({
-      title: "¿Estás seguro?",
-      text: `Se eliminará el servicio "${servicio.nombre}".`,
+      title: "¿Eliminar servicio?",
+      text: `Se eliminará "${servicio.nombre}" de la lista.`,
       icon: "warning",
       showCancelButton: true,
       confirmButtonText: "Sí, eliminar",
       cancelButtonText: "Cancelar",
-      confirmButtonColor: "#d33",
-      cancelButtonColor: "#3085d6",
+      confirmButtonColor: "#6c9a72",
+      cancelButtonColor: "#6c757d",
     }).then((result) => {
       if (result.isConfirmed) {
         const updated = servicios.filter((_, i) => i !== index);
@@ -123,10 +123,10 @@ const CRUDServicios = () => {
 
         Swal.fire({
           icon: "success",
-          title: "Eliminado",
-          text: "El servicio ha sido eliminado correctamente.",
-          timer: 1500,
+          title: `Servicio "${servicio.nombre}" eliminado correctamente`,
+          confirmButtonColor: "#6c9a72",
           showConfirmButton: false,
+          timer: 1500,
         });
       }
     });
@@ -161,7 +161,7 @@ const CRUDServicios = () => {
                 <tr key={item.id || index}>
                   <td className="text-center">{item.nombre}</td>
                   <td className="text-center">{item.descripcion}</td>
-                  <td className="text-center">{item.costo}</td>
+                  <td className="text-center">${item.costo}</td>
                   <td>
                     <div className="contenedor-iconos-accion">
                       <button
