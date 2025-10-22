@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import { useState, useMemo, useEffect } from "react";
 import CRUDServicios from "../CRUD/CRUDServicios.jsx";
 import Swal from "sweetalert2";
@@ -11,6 +12,13 @@ import {
     Pagination,
 } from "react-bootstrap";
 import { PencilSquare, Trash } from "react-bootstrap-icons";
+=======
+import  { useState } from "react";
+import CRUDServicios from "../CRUD/CRUDServicios.jsx";
+import CRUDPacientes from "../CRUD/CRUDPacientes.jsx";
+import CRUDTurnos from "../CRUD/CRUDTurnos.jsx";
+import { Container, Row, Col, Tabs, Tab } from "react-bootstrap";
+>>>>>>> dde175cf5e5046151dc0783984deff3ea75516db
 import "./Administrador.css";
 
 
@@ -27,12 +35,17 @@ const generarDatosSimulados = (prefijo, cantidad) => {
     return datos;
 };
 
+<<<<<<< HEAD
 const datosPacientes = generarDatosSimulados("Paciente Max", 48);
 
 const encabezados = {
     servicios: ["Nombre", "Descripción", "Costo"],
     pacientes: ["Dueño", "Mascota", "Especie", "Raza"],
     turnos: ["Fecha", "Hora", "Mascota", "Veterinario"],
+=======
+const encabezados = {
+  servicios: ["Nombre", "Descripción", "Costo"],
+>>>>>>> dde175cf5e5046151dc0783984deff3ea75516db
 };
 
 const Administrador = () => {
@@ -47,6 +60,7 @@ const Administrador = () => {
     const [mostrarModal, setMostrarModal] = useState(false);
     const [turnoAEditar, setTurnoAEditar] = useState(null);
 
+<<<<<<< HEAD
     const elementosPorPagina = 10;
 
     const fetchTurnos = async () => {
@@ -311,6 +325,45 @@ const Administrador = () => {
             </Container>
         </main>
     );
+=======
+  const handleCambioPestana = (nuevaKey) => {
+    setKey(nuevaKey);
+  };
+
+  return (
+    <main className="seccion-principal-admin">
+      <Container>
+        <Row className="fila-titulo-admin">
+          <Col>
+            <h1 className="titulo-administracion">Administración</h1>
+            <hr className="linea-division" />
+          </Col>
+        </Row>
+
+        <Row className="fila-contenido-admin">
+          <Col>
+            <Tabs
+              id="navegacion-admin"
+              activeKey={key}
+              onSelect={handleCambioPestana}
+              className="pestanas-crud mb-3"
+            >
+              <Tab eventKey="servicios" title="Servicios">
+                <CRUDServicios />
+              </Tab>
+              <Tab eventKey="pacientes" title="Pacientes">
+                <CRUDPacientes />
+              </Tab>
+              <Tab eventKey="turnos" title="Turnos">
+                <CRUDTurnos />
+              </Tab>
+            </Tabs>
+          </Col>
+        </Row>
+      </Container>
+    </main>
+  );
+>>>>>>> dde175cf5e5046151dc0783984deff3ea75516db
 };
 
 export default Administrador;
