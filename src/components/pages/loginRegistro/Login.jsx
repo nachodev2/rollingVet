@@ -1,6 +1,6 @@
 import { useState } from "react";
-import { Button, Modal, Form, Row, Col } from "react-bootstrap";
-import Swal from "sweetalert2"; // 👈 Importar SweetAlert2
+import { Button, Modal, Form } from "react-bootstrap";
+import Swal from "sweetalert2";
 import { useNavigate } from "react-router";
 import "./loginRegistro.css";
 

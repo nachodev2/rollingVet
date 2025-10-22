@@ -10,14 +10,14 @@ function SeccionProductosRecomendados() {
   const [scrollLeft, setScrollLeft] = useState(0);
 
   const productos = [
-    { id: 1, nombre: "Alimento Premium Perro", imagen: "/images/alimento-perros.png", precio: "$15.000", alt: "Bolsa de alimento", texto: "Alimento premium..." },
-    { id: 2, nombre: "Juguete Interactivo", imagen: "/images/juguete-perros.png", precio: "$3.500", alt: "Juguete para perros", texto: "Juguete..." },
-    { id: 3, nombre: "Shampoo Piel Sensible", imagen: "/images/shampoo-animales.png", precio: "$5.800", alt: "Botella de shampoo", texto: "Shampoo..." },
-    { id: 4, nombre: "Correa Reforzada", imagen: "/images/correa.png", precio: "$2.100", alt: "Correa de paseo", texto: "Correa..." },
-    { id: 5, nombre: "Juguete Gato Plumas", imagen: "/images/juguetes-gatos.png", precio: "$1.200", alt: "Juguete de gato", texto: "Juguete..." },
-    { id: 6, nombre: "Antiparasitario", imagen: "/images/medicamento-perros.png", precio: "$9.000", alt: "Medicamento para perros", texto: "Medicamento..." },
-    { id: 7, nombre: "Perfume para Gatos", imagen: "/images/perfume-gato.png", precio: "$4.500", alt: "Perfume para mascotas", texto: "Perfume..." },
-    { id: 8, nombre: "Ropa de Invierno", imagen: "/images/ropa-perros.png", precio: "$7.200", alt: "Abrigo para perros", texto: "Ropa..." },
+    { id: 1, nombre: "Alimento Premium Perro", imagen: "/images/productos/alimento-perros.png", precio: "$15.000", alt: "Bolsa de alimento", texto: "Alimento premium..." },
+    { id: 2, nombre: "Juguete Interactivo", imagen: "/images/productos/juguete-perros.png", precio: "$3.500", alt: "Juguete para perros", texto: "Juguete..." },
+    { id: 3, nombre: "Shampoo Piel Sensible", imagen: "/images/productos/shampoo-animales.png", precio: "$5.800", alt: "Botella de shampoo", texto: "Shampoo..." },
+    { id: 4, nombre: "Correa Reforzada", imagen: "/images/productos/correa.png", precio: "$2.100", alt: "Correa de paseo", texto: "Correa..." },
+    { id: 5, nombre: "Juguete Gato Plumas", imagen: "/images/productos/juguetes-gatos.png", precio: "$1.200", alt: "Juguete de gato", texto: "Juguete..." },
+    { id: 6, nombre: "Antiparasitario", imagen: "/images/productos/medicamento-perros.png", precio: "$9.000", alt: "Medicamento para perros", texto: "Medicamento..." },
+    { id: 7, nombre: "Perfume para Gatos", imagen: "/images/productos/perfume-gato.png", precio: "$4.500", alt: "Perfume para mascotas", texto: "Perfume..." },
+    { id: 8, nombre: "Ropa de Invierno", imagen: "/images/productos/ropa-perros.png", precio: "$7.200", alt: "Abrigo para perros", texto: "Ropa..." },
   ];
 
   const productosLoop = productos.concat(productos).concat(productos);

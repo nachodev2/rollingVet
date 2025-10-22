@@ -23,7 +23,7 @@ function SeccionServicios() {
         <Row className="my-5">
           <Col xs={12} md={6} lg={3} className="mb-4 border p-4">
             <div className="service-block">
-                <img src="/images/huella.png" alt="Icono Huella" className="service-icon-img mb-3" />
+                <img src="/images/productos/huella.png" alt="Icono Huella" className="service-icon-img mb-3" />
                 <h5 className="service-title text-black mb-3">Atencion Personalizada</h5>
                 <p>Tu mascota, nuestra prioridad. Ofrecemos consultas detalladas, planes de salud a medida y un trato cálido y empático para ti y tu compañero animal.</p>
             </div>

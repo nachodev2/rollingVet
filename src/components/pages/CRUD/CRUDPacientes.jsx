@@ -58,14 +58,14 @@ const CRUDPacientes = () => {
       "Bengalí",
       "Otro",
     ],
-  Otro: ["Otro"],
+    Otro: ["Otro"],
   };
 
   // Fetch pacientes desde la API
   const fetchPacientes = async () => {
     setIsLoading(true);
     const token = localStorage.getItem("token");
-    
+
     try {
       const response = await fetch('http://localhost:5000/api/v1/pacientes', {
         headers: {
@@ -73,7 +73,7 @@ const CRUDPacientes = () => {
           'Content-Type': 'application/json',
         },
       });
-      
+
       if (response.ok) {
         try {
           const data = await response.json();
@@ -173,10 +173,10 @@ const CRUDPacientes = () => {
     if (!validarPaciente()) return;
 
     const token = localStorage.getItem("token");
-    const url = editId 
+    const url = editId
       ? `http://localhost:5000/api/v1/pacientes/${editId}`
       : 'http://localhost:5000/api/v1/pacientes';
-    
+
     const method = editId ? 'PUT' : 'POST';
 
     try {
@@ -192,7 +192,7 @@ const CRUDPacientes = () => {
       if (response.ok) {
         Swal.fire({
           icon: "success",
-          title: editId 
+          title: editId
             ? `Paciente "${nuevoPaciente.nombreMascota}" actualizado correctamente`
             : `Paciente "${nuevoPaciente.nombreMascota}" creado correctamente`,
           confirmButtonColor: "#6c9a72",
@@ -286,7 +286,7 @@ const CRUDPacientes = () => {
     }).then(async (result) => {
       if (result.isConfirmed) {
         const token = localStorage.getItem("token");
-        
+
         try {
           const response = await fetch(`http://localhost:5000/api/v1/pacientes/${paciente._id}`, {
             method: 'DELETE',

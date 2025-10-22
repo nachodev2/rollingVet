@@ -1,7 +1,8 @@
-import  { useState, useEffect } from "react";
-import { Modal, Button, Table } from "react-bootstrap";
+import { useState, useEffect } from "react";
+import { Modal, Button, Table, Form } from "react-bootstrap";
 import { PencilSquare, Trash } from "react-bootstrap-icons";
 import Swal from "sweetalert2";
+import "./CRUDTurnos.css";
 
 const CRUDServicios = () => {
   const [showModal, setShowModal] = useState(false);
@@ -17,6 +18,7 @@ const CRUDServicios = () => {
   });
   const [editIndex, setEditIndex] = useState(null);
   const [editId, setEditId] = useState(null);
+  const [errors, setErrors] = useState({});
 
   const fetchServicios = async () => {
     setIsLoading(true);
@@ -111,14 +113,14 @@ const CRUDServicios = () => {
 
   const handleEliminar = async (servicio) => {
     Swal.fire({
-      title: "¿Estás seguro?",
-      text: `Se eliminará el servicio "${servicio.nombre}".`,
+      title: "¿Eliminar servicio?",
+      text: `Se eliminará "${servicio.nombre}" de la lista.`,
       icon: "warning",
       showCancelButton: true,
       confirmButtonText: "Sí, eliminar",
       cancelButtonText: "Cancelar",
-      confirmButtonColor: "#d33",
-      cancelButtonColor: "#3085d6",
+      confirmButtonColor: "#6c9a72",
+      cancelButtonColor: "#6c757d",
     }).then(async (result) => {
       if (result.isConfirmed) {
         const token = localStorage.getItem("token");
@@ -165,96 +167,109 @@ const CRUDServicios = () => {
 
   return (
     <div className="crud-servicios">
-      
-      <div style={{ display: "flex", justifyContent: "flex-end", marginBottom: "1rem" }}>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "flex-end",
+          marginBottom: "1rem",
+        }}
+      >
         <Button variant="primary" onClick={abrirModal}>
           Agregar Servicio
         </Button>
       </div>
 
-      
-      <Table striped bordered hover responsive>
-        <thead>
-          <tr>
-            <th>Nombre</th>
-            <th>Descripción</th>
-            <th>Costo</th>
-            <th>Acciones</th>
-          </tr>
-        </thead>
-        <tbody>
-          {isLoading ? (
+      <div className="contenedor-tabla verde-redondeado">
+        <Table striped bordered hover responsive>
+          <thead>
             <tr>
-              <td colSpan={4} className="text-center">
-                Cargando servicios...
-              </td>
+              <th>Nombre</th>
+              <th>Descripción</th>
+              <th>Costo</th>
+              <th>Acciones</th>
             </tr>
-          ) : servicios.length > 0 ? (
-            servicios.map((item, index) => (
-              <tr key={item._id || index}>
-                <td>{item.nombre}</td>
-                <td>{item.descripcion}</td>
-                <td>{item.costo}</td>
-                <td>
-                  <Button
-                    size="sm"
-                    variant="warning"
-                    onClick={() => handleEditar(index)}
-                    style={{ marginRight: "0.3rem" }}
-                  >
-                    <PencilSquare />
-                  </Button>
-                  <Button size="sm" variant="danger" onClick={() => handleEliminar(item)}>
-                    <Trash />
-                  </Button>
+          </thead>
+          <tbody>
+            {isLoading ? (
+              <tr>
+                <td colSpan={4} className="text-center">
+                  Cargando servicios...
                 </td>
               </tr>
-            ))
-          ) : (
-            <tr>
-              <td colSpan={4} className="text-center">
-                No hay servicios.
-              </td>
-            </tr>
-          )}
-        </tbody>
-      </Table>
+            ) : servicios.length > 0 ? (
+              servicios.map((item, index) => (
+                <tr key={item._id || index}>
+                  <td>{item.nombre}</td>
+                  <td>{item.descripcion}</td>
+                  <td>{item.costo}</td>
+                  <td>
+                    <Button
+                      size="sm"
+                      variant="warning"
+                      onClick={() => handleEditar(index)}
+                      style={{ marginRight: "0.3rem" }}
+                    >
+                      <PencilSquare />
+                    </Button>
+                    <Button size="sm" variant="danger" onClick={() => handleEliminar(item)}>
+                      <Trash />
+                    </Button>
+                  </td>
+                </tr>
+              ))
+            ) : (
+              <tr>
+                <td colSpan={4} className="text-center">
+                  No hay servicios.
+                </td>
+              </tr>
+            )}
+          </tbody>
+        </Table>
+      </div>
 
-      
-      <Modal show={showModal} onHide={cerrarModal} size="lg">
+      <Modal show={showModal} onHide={cerrarModal} size="lg" centered>
         <Modal.Header closeButton>
           <Modal.Title>{editId !== null ? "Editar Servicio" : "Agregar Servicio"}</Modal.Title>
         </Modal.Header>
         <Modal.Body>
-          <div style={{ marginBottom: "1rem", display: "flex", gap: "0.5rem" }}>
-            <input
-              type="text"
-              placeholder="Ej: Vacunación anual"
-              value={nuevoServicio.nombre}
-              onChange={(e) => setNuevoServicio({ ...nuevoServicio, nombre: e.target.value })}
-            />
-            <input
-              type="text"
-              placeholder="Ej: Servicio completo de salud y bienestar"
-              value={nuevoServicio.descripcion}
-              onChange={(e) =>
-                setNuevoServicio({ ...nuevoServicio, descripcion: e.target.value })
-              }
-            />
-            <input
-              type="number"
-              placeholder="Ej: 1500"
-              value={nuevoServicio.costo}
-              onChange={(e) => setNuevoServicio({ ...nuevoServicio, costo: e.target.value })}
-            />
-            <Button variant="success" onClick={handleAgregar}>
-              {editId !== null ? "Guardar" : "Agregar"}
-            </Button>
+          <div className="form-section">
+            <Form.Group className="mb-3">
+              <Form.Label>Nombre del Servicio</Form.Label>
+              <Form.Control
+                type="text"
+                placeholder="Ej: Vacunación anual"
+                value={nuevoServicio.nombre}
+                onChange={(e) => setNuevoServicio({ ...nuevoServicio, nombre: e.target.value })}
+              />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Descripción</Form.Label>
+              <Form.Control
+                as="textarea"
+                rows={3}
+                placeholder="Ej: Servicio completo de salud y bienestar"
+                value={nuevoServicio.descripcion}
+                onChange={(e) => setNuevoServicio({ ...nuevoServicio, descripcion: e.target.value })}
+              />
+            </Form.Group>
+            <Form.Group className="mb-3">
+              <Form.Label>Costo</Form.Label>
+              <Form.Control
+                type="number"
+                placeholder="Ej: 1500"
+                value={nuevoServicio.costo}
+                onChange={(e) => setNuevoServicio({ ...nuevoServicio, costo: e.target.value })}
+              />
+            </Form.Group>
           </div>
         </Modal.Body>
         <Modal.Footer>
           <Button variant="secondary" onClick={cerrarModal}>
             Cerrar
+          </Button>
+          <Button variant="primary" onClick={handleAgregar}>
+            {editId !== null ? "Guardar" : "Agregar"}
           </Button>
         </Modal.Footer>
       </Modal>

@@ -3,7 +3,7 @@ import { Navbar, Nav, Button, Container } from "react-bootstrap";
 import { BoxArrowRight } from "react-bootstrap-icons";
 import Registro from "../pages/loginRegistro/Registro";
 import Login from "../pages/loginRegistro/Login";
-import { NavLink } from "react-router";
+import { NavLink, useNavigate } from "react-router";
 import "./Menu.css";
 
 
@@ -29,6 +29,7 @@ const AuthButtons = ({ isLoggedIn, userRole, userName, handleLogout, handleLogin
 };
 
 const Menu = () => {
+  const reset = useNavigate();
   const [estaEnScroll, setEstaEnScroll] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [userRole, setUserRole] = useState("visitante");
@@ -65,6 +66,7 @@ const Menu = () => {
     setIsLoggedIn(false);
     setUserRole("visitante");
     setUserName("");
+    reset("/");
   };
 
   

@@ -1,4 +1,4 @@
-import { Button, Modal, Col, InputGroup, Form, Row } from "react-bootstrap";
+import { Button, Modal, Col, InputGroup, Form, Row, Toast } from "react-bootstrap";
 import { useForm } from "react-hook-form";
 import { useState, useEffect } from "react";
 import Swal from "sweetalert2";
@@ -14,24 +14,24 @@ function Registro() {
         register,
         handleSubmit,
         reset,
-        watch, 
+        watch,
         formState: { errors },
     } = useForm();
-    
-    
+
+
     const especieSeleccionada = watch("especie");
 
     const onSubmit = async (data) => {
         setLoading(true);
 
         const payload = {
-            
+
             nombreDueno: data.nombreCompleto,
             emailDueno: data.email,
             password: data.password,
-            telefonoDueno: data.codigoArea, 
-            
-            
+            telefonoDueno: data.codigoArea,
+
+
             nombreMascota: data.nombreMascota,
             especie: data.especie,
             raza: data.raza,
@@ -50,7 +50,7 @@ function Registro() {
             const responseData = await response.json();
 
             if (!response.ok) {
-                
+
                 throw new Error(responseData.error || "Error al registrar.");
             }
 
@@ -98,7 +98,7 @@ function Registro() {
                 Registro
             </Button>
             <Modal
-                size="xl" 
+                size="xl"
                 show={lgShow}
                 onHide={() => setLgShow(false)}
                 aria-labelledby="Registro-modal-sizes-title-xl"
@@ -110,11 +110,11 @@ function Registro() {
                 </Modal.Header>
                 <Modal.Body>
                     <Form noValidate onSubmit={handleSubmit(onSubmit, onError)}>
-                        
-                        
+
+
                         <h5 className="mb-3 mt-2 text-primary">Datos del Dueño</h5>
                         <Row className="mb-3">
-                            
+
                             <Form.Group as={Col} md="6" controlId="validationOwnerName">
                                 <Form.Label>Nombre Completo</Form.Label>
                                 <Form.Control
@@ -131,8 +131,8 @@ function Registro() {
                                     {errors.nombreCompleto?.message}
                                 </Form.Control.Feedback>
                             </Form.Group>
-                            
-                            
+
+
                             <Form.Group as={Col} md="6" controlId="validationOwnerEmail">
                                 <Form.Label>Email</Form.Label>
                                 <InputGroup hasValidation>
@@ -158,7 +158,7 @@ function Registro() {
                         </Row>
 
                         <Row className="mb-4">
-                            
+
                             <Form.Group as={Col} md="6" controlId="validationPassword">
                                 <Form.Label>Contraseña</Form.Label>
                                 <Form.Control
@@ -175,8 +175,8 @@ function Registro() {
                                     {errors.password?.message}
                                 </Form.Control.Feedback>
                             </Form.Group>
-                            
-                            
+
+
                             <Form.Group as={Col} md="6" controlId="validationPhone">
                                 <Form.Label>Teléfono</Form.Label>
                                 <InputGroup hasValidation>
@@ -185,7 +185,7 @@ function Registro() {
                                         type="tel"
                                         placeholder="Código de Área + Número (Ej: 3816543210)"
                                         required
-                                        {...register("codigoArea", { 
+                                        {...register("codigoArea", {
                                             required: "El teléfono es requerido",
                                             pattern: {
                                                 value: /^\d{10,}$/, // Al menos 10 dígitos para teléfono + área
@@ -205,7 +205,7 @@ function Registro() {
 
                         {/* === SECCIÓN 2: DATOS DE LA MASCOTA === */}
                         <h5 className="mb-3 mt-4 text-success">Datos de la Mascota</h5>
-                        
+
                         <Row className="mb-3">
                             {/* Nombre Mascota */}
                             <Form.Group as={Col} md="6" controlId="validationPetName">
@@ -224,7 +224,7 @@ function Registro() {
                                     {errors.nombreMascota?.message}
                                 </Form.Control.Feedback>
                             </Form.Group>
-                            
+
                             {/* Especie */}
                             <Form.Group as={Col} md="6" controlId="validationPetSpecies">
                                 <Form.Label>Especie</Form.Label>
@@ -245,7 +245,7 @@ function Registro() {
                                 </Form.Control.Feedback>
                             </Form.Group>
                         </Row>
-                        
+
                         <Row className="mb-4">
                             {/* Raza */}
                             <Form.Group as={Col} md="6" controlId="validationPetBreed">
@@ -263,7 +263,7 @@ function Registro() {
                                     {errors.raza?.message}
                                 </Form.Control.Feedback>
                             </Form.Group>
-                            
+
                             {/* Edad */}
                             <Form.Group as={Col} md="6" controlId="validationPetAge">
                                 <Form.Label>Edad (Años)</Form.Label>
