@@ -292,6 +292,17 @@ const CRUDPacientes = () => {
 
   return (
     <div className="crud-pacientes p-4">
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "flex-end",
+          marginBottom: "1rem",
+        }}
+      >
+        <Button variant="primary" onClick={abrirModal}>
+          Agregar Paciente
+        </Button>
+      </div>
       <div className="contenedor-tabla verde-redondeado">
         <Table striped bordered hover responsive>
           <thead>
@@ -353,7 +364,11 @@ const CRUDPacientes = () => {
       <Modal show={showModal} onHide={cerrarModal} size="lg" centered>
         <Modal.Header closeButton>
           <Modal.Title className="modal-title text-center w-100 ms-4">
-            {isReadOnly ? "Historia Clínica" : editIndex !== null ? "Editar Paciente" : "Dar de Alta Paciente"}
+            {isReadOnly
+              ? "Historia Clínica"
+              : editIndex !== null
+              ? "Editar Paciente"
+              : "Dar de Alta Paciente"}
           </Modal.Title>
         </Modal.Header>
 
@@ -385,7 +400,9 @@ const CRUDPacientes = () => {
                       name="petPeso"
                       value={nuevoPaciente.petPeso}
                       onChange={handleChange}
-                      placeholder={`Ej: ${nuevoPaciente.petUnidadPeso === 'kg' ? '5.5' : '3500'}`}
+                      placeholder={`Ej: ${
+                        nuevoPaciente.petUnidadPeso === "kg" ? "5.5" : "3500"
+                      }`}
                       type="number"
                       disabled={isReadOnly}
                     />
@@ -393,7 +410,7 @@ const CRUDPacientes = () => {
                       {errors.petPeso}
                     </Form.Control.Feedback>
                   </Form.Group>
-                  <Form.Group className="mb-3" style={{ minWidth: '120px' }}>
+                  <Form.Group className="mb-3" style={{ minWidth: "120px" }}>
                     <Form.Label>Unidad</Form.Label>
                     <Form.Select
                       name="petUnidadPeso"
@@ -414,7 +431,9 @@ const CRUDPacientes = () => {
                       name="petEdad"
                       value={nuevoPaciente.petEdad}
                       onChange={handleChange}
-                      placeholder={`Ej: ${nuevoPaciente.petUnidadEdad === 'años' ? '3' : '6'}`}
+                      placeholder={`Ej: ${
+                        nuevoPaciente.petUnidadEdad === "años" ? "3" : "6"
+                      }`}
                       type="number"
                       disabled={isReadOnly}
                     />
@@ -422,7 +441,7 @@ const CRUDPacientes = () => {
                       {errors.petEdad}
                     </Form.Control.Feedback>
                   </Form.Group>
-                  <Form.Group className="mb-3" style={{ minWidth: '120px' }}>
+                  <Form.Group className="mb-3" style={{ minWidth: "120px" }}>
                     <Form.Label>Unidad</Form.Label>
                     <Form.Select
                       name="petUnidadEdad"
@@ -594,17 +613,6 @@ const CRUDPacientes = () => {
           )}
         </Modal.Footer>
       </Modal>
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "flex-end",
-          marginBottom: "1rem",
-        }}
-      >
-        <Button variant="primary" onClick={abrirModal} className="mt-3">
-          Agregar Paciente
-        </Button>
-      </div>
     </div>
   );
 };

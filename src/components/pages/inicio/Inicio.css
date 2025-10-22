@@ -25,7 +25,7 @@
 
 
 .features-column {
-    text-align: left;
+    text-align: center;
     font-weight: 500;
     color: #333;
 }
@@ -41,9 +41,7 @@
     justify-content: center;
 }
 
-.features-column .plan-header {
-    justify-content: flex-start;
-}
+
 
 .plan-title {
     font-size: 1.1em;
@@ -53,8 +51,8 @@
 
 .plan-detail-group {
     display: grid;
-    grid-template-rows: repeat(4, 1fr); 
-    flex-grow: 1; 
+    grid-template-rows: repeat(4, 65px);
+    height: 260px;
 }
 
 .plan-detail-item {
@@ -65,9 +63,7 @@
     justify-content: center;
 }
 
-.features-column .plan-detail-item {
-    justify-content: flex-start;
-}
+
 
 .plan-detail-group .plan-detail-item:last-child {
     border-bottom: none;
@@ -407,8 +403,28 @@
     .titulo {
         font-size: 3rem;
     }
-
     .vet-background-bar {
         height: 70%;
+    }
+}
+
+@media (max-width: 991.98px) {
+    .plan-comparison-container {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 575.98px) {
+    .plan-comparison-container {
+        display: flex;
+        overflow-x: auto;
+    }
+    .plan-card {
+        min-width: 300px;
+        flex-shrink: 0;
+        border-right: 1px solid #eee;
+    }
+    .plan-card:last-child {
+        border-right: none;
     }
 }
