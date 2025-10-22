@@ -9,7 +9,7 @@ const Footer = () => {
                 <Row className="g-4"> 
                     <Col xs={12} md={4} className="d-flex">
                         <div className="logo-alineado d-lg-flex align-items-center justify-content-center mx-auto">
-                            <img src="../../../../public/images/logo.svg" alt="logo" className="logoFooter d-block mx-auto me-lg-2" />
+                            <img src="/images/logos/logo.svg" alt="logo" className="logoFooter d-block mx-auto me-lg-2" />
                             <h5 className="fw-bold display-6 mt-2 mt-lg-0 text-black">RollingVet</h5> 
                         </div>
                     </Col>

@@ -39,7 +39,7 @@ function SobreNosotros() {
             <Card className="mt-4 card-sobreNosotros px-2 rounded-4">
               <Card.Img
                 variant="top"
-                src="../images/zepeto-lu.png"
+                src="../public/images/zepeto-lu.png"
                 alt="Luciana Ruiz"
                 className="img-card-sobreNosotros d-flex m-auto"
               />
